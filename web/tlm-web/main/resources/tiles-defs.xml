@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+	<definition name="base.global"> 
+         <put-attribute name="global-styles" value="/WEB-INF/views/layouts/global/global-styles.jsp" />
+         <put-attribute name="theme-global-styles" value="/WEB-INF/views/layouts/global/theme-global-styles.jsp" />
+     </definition>
+	
+  	<definition name="base.layout2" extends="base.global"
+         template="/WEB-INF/views/layouts/layout2/layout.jsp"> 
+         <put-attribute name="page-header" value="/WEB-INF/views/layouts/layout2/page-header.jsp" />
+         <put-attribute name="page-sidebar" value="/WEB-INF/views/layouts/layout2/page-sidebar.jsp" />
+         <put-attribute name="page-footer" value="/WEB-INF/views/layouts/layout2/page-footer.jsp" />
+     </definition>
+     
+     <definition name="base.layout3" extends="base.global"
+         template="/WEB-INF/views/layouts/layout3/layout3.jsp"> 
+         <put-attribute name="page-header" value="/WEB-INF/views/layouts/layout3/page-header.jsp" />
+         <put-attribute name="page-toolbar" value="/WEB-INF/views/layouts/layout3/page-toolbar.jsp" />
+         <put-attribute name="quick-sidebar" value="/WEB-INF/views/layouts/global/quick-sidebar.jsp" />
+         <put-attribute name="page-footer" value="/WEB-INF/views/layouts/layout3/page-footer.jsp" />
+     </definition>  
+     
+     <definition name="login" template="/WEB-INF/views/login.jsp" extends="base.global">
+     </definition>
+     
+     <definition name="lock" template="/WEB-INF/views/system/lock.jsp" extends="base.global">
+     </definition>
+     
+     <definition name="login_sample" template="/WEB-INF/views/login_sample.jsp">
+     </definition>
+     
+     <definition name="home" template="/WEB-INF/views/home.jsp">
+     </definition>
+     
+     <definition name="user" extends="base.layout2">
+        <put-attribute name="page-plugins-styles" value="/WEB-INF/views/user_styles.jsp" />
+        <put-attribute name="body" value="/WEB-INF/views/user.jsp" />
+    </definition>
+     
+     <definition name="errors/*" extends="base.layout2">
+     	<put-attribute name="page-plugins-styles" value="/WEB-INF/views/errors/{1}_styles.jsp" />
+        <put-attribute name="body" value="/WEB-INF/views/errors/{1}.jsp" />
+    </definition>
+    
+    
+    <definition name="**.modal" template="/WEB-INF/views/{1}.jsp">
+    </definition>
+    
+    <definition name="*" extends="base.layout2">
+        <put-attribute name="page-plugins-styles" value="/WEB-INF/views/{1}_styles.jsp" />
+        <put-attribute name="body" value="/WEB-INF/views/{1}.jsp" />
+    </definition>
+
+    <definition name="*/*" extends="base.layout2">
+    	<put-attribute name="page-plugins-styles" value="/WEB-INF/views/{1}/{2}_styles.jsp" />
+        <put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp" />
+    </definition>
+
+    <definition name="*/*/*" extends="base.layout2">
+    	<put-attribute name="page-plugins-styles" value="/WEB-INF/views/{1}/{2}/{3}_styles.jsp" />
+        <put-attribute name="body" value="/WEB-INF/views/{1}/{2}/{3}.jsp" />
+    </definition>
+
+
+</tiles-definitions>

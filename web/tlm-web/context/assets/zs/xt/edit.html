@@ -1,0 +1,118 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+    <h4 class="modal-title" id="title">编辑习题信息</h4>
+</div>
+<div class="modal-body">
+	<form action="#" class="form-horizontal " id="form_remark">
+		<input type="hidden" name="id" value="-1"/>
+    	<div class="form-body">
+    		<div class="form-group">
+           		<label class="control-label col-md-3">类型: </label>
+           		<div class="col-md-4">
+                	<div class="input-icon right">
+                    	<i class="fa"></i>
+                     	<select name="typeId" class="form-control" validate="{required:true}"></select>
+                    </div>
+                </div>
+       		</div>
+    		<div class='form-group'>
+                <label class="control-label col-md-3">难度<span class="required">*</span></label>
+                <div class="col-md-4">
+                	<div class="input-icon right">
+                    	<i class="fa"></i>
+                    	<select name="ndId" class="form-control" validate="{required:true}">
+                     	</select>
+                    </div>
+                </div>
+            </div>
+            <div class='form-group'>
+                <label class="control-label col-md-3">专题</label>
+                <div class="col-md-4">
+                	<div class="input-icon left input-group">
+                    	<i class="fa"></i>
+                     	<input type="hidden" name="ztId" class="form-control" value="-1"/>
+                     	<input type="text" name="ztName" class="form-control" readonly="readonly"/>
+                     	<span class="input-group-btn">
+		                	<a class="btn blue select-zt"> 选择</a>
+		               	</span>
+                    </div>
+                </div>
+            </div>
+            <div class='form-group'>
+                <label class="control-label col-md-3">知识点<span class="required">*</span></label>
+                <div class="col-md-4">
+                	<div class="input-icon left input-group">
+	                    <span class="control-label display-zsd" style="padding: 0 15px;">0</span>
+	                    <span class="input-group-btn" style="vertical-align: inherit;font-size: inherit;">
+		                	<a class="btn blue select-zsd"> 选择</a>
+		               	</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+           		<label class="control-label col-md-3">简介<span class="required">*</span></label>
+           		<div class="col-md-4">
+                	<div class="input-icon right">
+                    	<i class="fa"></i>
+                     	<input type="text" name="name" class="form-control" validate="{required:true}"/>
+                    </div>
+                </div>
+       		</div>
+       		<div class="form-group">
+           		<label class="control-label col-md-3">是否原创: </label>
+           		<div class="col-md-4">
+                	<div class="input-icon right">
+                    	<i class="fa"></i>
+                     	<select name="isOriginal" class="form-control" validate="{required:true}">
+                     		<option value="1">原创</option>
+                     		<option value="2">非原创</option>
+                     	</select>
+                    </div>
+                </div>
+       		</div>
+       		<div class="form-group">
+				<label class="control-label col-md-3">消耗积分数: <span class="required">*</span></label>
+				<div class="col-md-4">
+					<div class="input-icon right">
+						<i class="fa"></i> 
+						<input type="number" name="yyfs" class="form-control" validate="{required:true, max: 10, min:1}" value=1/>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+           		<label class="control-label col-md-3">是否隐藏: </label>
+           		<div class="col-md-4">
+                	<div class="input-icon right">
+                    	<i class="fa"></i>
+                     	<select name="isShare" class="form-control" validate="{required:true}">
+                     		<option value="1">显示</option>
+                     		<option value="2">隐藏</option>
+                     	</select>
+                    </div>
+                </div>
+       		</div>
+            <div class='form-group'>
+                <label class="control-label col-md-3">题目<span class="required">*</span></label>
+                <div class="col-md-8">
+                	<div class="input-icon right">
+                    	<i class="fa"></i>
+                    	<textarea row="2" contenteditable="true" id="xt_content" name="content" class="form-control" validate="{required:true}"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class='form-group'>
+                <label class="control-label col-md-3">详解<span class="required">*</span></label>
+                <div class="col-md-8">
+                	<div class="input-icon right">
+                    	<i class="fa"></i>
+                    	<textarea row="2" contenteditable="true" id="xt_answer" name="answer" class="form-control" validate="{required:true}"></textarea>
+                    </div>
+                </div>
+            </div>
+   		</div>
+	</form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn dark btn-outline" data-dismiss="modal">关闭</button>
+    <button type="submit" class="btn green save">保存</button>
+</div>

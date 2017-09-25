@@ -1,0 +1,119 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+    <h4 class="modal-title" id="title">审核任务</h4>
+</div>
+<div class="modal-body">
+	<form action="#" class="form-horizontal " id="form_remark">
+    	<div class="form-body">
+    		<div class="row">
+       			<div class="col-md-5">
+    				<div class='form-group'>
+		                <label class="control-label col-md-4">任务类型</label>
+		                <div class="col-md-8">
+		                	<input type="text" name="rwTypeName" class="form-control" disabled>
+		                	<input type="hidden" name="id">
+		                	<input type="hidden" name="userNo">
+		                	<input type="hidden" name="rwJf">
+		                </div>
+		            </div>
+    			</div>
+    			<div class="col-md-7">
+    				<div class="form-group">
+		                <label class="control-label col-md-3">完成用户</label>
+		                <div class="col-md-8">
+		                     <input type="text" name="userName" class="form-control" disabled>
+		                </div>
+		            </div>
+    			</div>
+    		</div>
+    		<div class="row">
+    			<div class="col-md-5">
+    				<div class='form-group'>
+		                <label class="control-label col-md-4">任务名称</label>
+		                <div class="col-md-8">
+		                    <input type="text" name="rwName" class="form-control" readonly="readonly">
+		                </div>
+		            </div>
+    			</div>
+    			<div class="col-md-7">
+    				<div class="form-group hide">
+		           		<label class="control-label col-md-3">习题名称: </label>
+		           		<div class="col-md-8">
+		         	  		<input type="text" name="xtName" class="form-control" disabled>
+		           		</div>
+		       		</div>
+    			</div>
+    			<div class="col-md-7">
+    				<div class="form-group hide">
+		           		<label class="control-label col-md-3">知识点简介: </label>
+		           		<div class="col-md-8">
+		         	  		<input type="text" name="zsdContentName" class="form-control" disabled>
+		           		</div>
+		       		</div>
+    			</div>
+    			<div class="col-md-7">
+    				<div class="form-group hide">
+		           		<label class="control-label col-md-3">专题简介: </label>
+		           		<div class="col-md-8">
+		         	  		<input type="text" name="ztContentName" class="form-control" disabled>
+		           		</div>
+		       		</div>
+    			</div>
+    		</div>
+    		<div class="row">
+    			<div class="col-md-5">
+    				<div class='form-group'>
+		                <label class="control-label col-md-4">任务描述</label>
+		                <div class="col-md-8">
+		                	<div class="input-icon right">
+		                     <i class="fa"></i>
+		                     <textarea name="rwDesc" class="form-control" disabled></textarea>
+		                    </div>
+		                </div>
+		            </div>
+    			</div>
+    			<div class="col-md-7">
+    				<div class='form-group content'>
+		                <label class="control-label col-md-3"></label>
+		                <div class="col-md-8">
+		                    <div class="cke_textarea_inline"></div>
+		                </div>
+		            </div>
+    			</div>
+    		</div>
+    		<div class="row">
+       			<div class="col-md-5">
+    				<div class='form-group'>
+		                <label class="control-label col-md-4">审核<span class="required">*</span></label>
+		                <div class="col-md-8">
+		                	<div class="radio-list">
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="1" checked> 通过 
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="2"> 不通过 
+                                </label>
+                            </div>
+		                </div>
+		            </div>
+    			</div>
+    			<div class="col-md-7">
+    				<div class="form-group">
+		                <label class="control-label col-md-3">审核意见</label>
+		                <div class="col-md-8">
+		                	<div class="input-icon right">
+		                     <i class="fa"></i>
+		                     <textarea name="shyj" class="form-control" placeholder="" validate="{required:true}"></textarea>
+		                    </div>
+		                    <span class="help-block">请填写审核结果的意见。</span>
+		                </div>
+		            </div>
+    			</div>
+    		</div>
+   		</div>
+	</form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn dark btn-outline" data-dismiss="modal">关闭</button>
+    <button type="submit" class="btn green save">保存</button>
+</div>

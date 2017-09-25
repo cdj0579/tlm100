@@ -1,0 +1,48 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+    <h4 class="modal-title" id="title">编辑章节信息</h4>
+</div>
+<div class="modal-body">
+	<form action="#" class="form-horizontal " id="form_remark">
+		<input type="hidden" name="id" value="-1"/>
+		<input type="hidden" name="pid" value="-1"/>
+		<input type="hidden" name="kmId" value="-1"/>
+		<input type="hidden" name="njId" value="-1"/>
+		<input type="hidden" name="bbId" value="-1"/>
+		<input type="hidden" name="dqId" value="-1"/>
+		<input type="hidden" name="xq" value="-1"/>
+    	<div class="form-body">
+    		<div class="form-group">
+           		<label class="control-label col-md-3">序号: </label>
+           		<div class="col-md-4">
+                	<div class="input-icon right">
+                    	<i class="fa"></i>
+                     	<input type="number" name="xh" class="form-control" validate="{required:true,min:1}"/>
+                    </div>
+                </div>
+       		</div>
+       		<div class="form-group">
+           		<label class="control-label col-md-3">编目: </label>
+           		<div class="col-md-4">
+                	<div class="input-icon right">
+                    	<i class="fa"></i>
+                     	<input type="text" name="bm" class="form-control" readonly="readonly"/>
+                    </div>
+                </div>
+       		</div>
+       		<div class="form-group">
+           		<label class="control-label col-md-3">章节名: </label>
+           		<div class="col-md-4">
+                	<div class="input-icon right">
+                    	<i class="fa"></i>
+                     	<input type="text" name="name" class="form-control" validate="{required:true}"/>
+                    </div>
+                </div>
+       		</div>
+   		</div>
+	</form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn dark btn-outline" data-dismiss="modal">关闭</button>
+    <button type="submit" class="btn green save">保存</button>
+</div>

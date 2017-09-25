@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+        
+        <mvc:annotation-driven/>
+        
+        <aop:aspectj-autoproxy proxy-target-class="true" />
+        <bean class="com.unimas.tlm.service.jfrw.aspect.RwAspect" />
+        
+        <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">  
+            <property name="proxyTargetClass" value="true" />   
+   </bean>
+    <bean  
+        class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">  
+        <property name="securityManager" ref="securityManager"></property>  
+    </bean>
+        
+        <!-- <mvc:resources location="/lib/" mapping="/assets/**" cache-period="86400" order="0"/>
+        <mvc:resources location="/common/" mapping="/common/**" cache-period="86400"/>
+        <mvc:resources location="/module/" mapping="/module/**" cache-period="86400"/> -->
+        <!-- <mvc:default-servlet-handler default-servlet-name="default" /> -->
+        <mvc:resources mapping="/assets/**" location="/assets/" cache-period="-1" order="0"/>
+        
+		<bean id="multipartResolver"  class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		    <property name="maxUploadSize" value="102400000"></property>
+		    <property name="defaultEncoding" value="utf-8"></property>
+        	<property name="maxInMemorySize" value="40960"></property>  
+		</bean>
+        
+	    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+	        <property name="messageConverters">
+	            <list>
+	            	<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+	                <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+	                    <property name="supportedMediaTypes">
+	                        <list>
+	                            <value>text/html; charset=UTF-8</value>
+	                            <value>application/json;charset=UTF-8</value>
+	                        </list>
+	                    </property>
+	                </bean>
+	                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+	                    <property name="supportedMediaTypes">
+	                        <list>
+	                            <value>text/html; charset=UTF-8</value>
+	                            <value>application/json;charset=UTF-8</value>
+	                        </list>
+	                    </property>
+	                </bean>
+	            </list>
+	        </property>
+	    </bean>
+	    
+	    <!-- <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver" >
+		   定义异常处理页面用来获取异常信息的变量名，默认名为exception
+		   <property name="exceptionAttribute" value="ex"></property>
+		   <property name="defaultErrorView" value="errors/500"/>
+		   <property name="exceptionMappings">
+		        <props>
+		            <prop key="java.lang.Throwable">errors/500</prop>
+		            <prop key="org.apache.shiro.authz.UnauthorizedException">unauthorized</prop>
+		        </props>
+		    </property>
+		</bean> -->
+		
+		<bean class="com.unimas.tlm.exception.resolver.LasCascadeExceptionResolver" >
+			<property name="filterUrl" value="/services/v1/api/"/>
+		</bean>
+        
+        <!-- 配置视图解析器 如何把handler 方法返回值解析为实际的物理视图 -->
+        <bean id="tilesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		    <property name="viewClass">
+		      <value>org.springframework.web.servlet.view.tiles3.TilesView</value>
+		    </property>
+		  </bean>
+		
+		  <bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+		    <property name="definitions">
+		      <list>
+		        <value>classpath:tiles-defs.xml</value>
+		      </list>
+		    </property>
+		  </bean>
+		
+		  <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		    <property name="prefix" value="/WEB-INF/views/"></property>
+		    <property name="suffix" value=".jsp"></property>
+		  </bean>
+        
+        <!-- 配置自动扫描的包 -->
+        <context:component-scan base-package="com.unimas.tlm.controller"></context:component-scan>
+        <context:component-scan base-package="com.unimas.tlm.service"></context:component-scan>
+        
+</beans>
