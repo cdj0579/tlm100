@@ -62,10 +62,10 @@ public class MbxxDao extends JdbcDao<MbxxBean> {
 			save(conn, mbxx);
 			for(Map<String, Object> map : mbfList) {
 				MbxxmbfBean mbf = new MbxxmbfBean();
-				mbf.setId((int)map.get("id"));
-				mbf.setKmId((int)map.get("kmId"));
-				mbf.setMbfs((int)map.get("mbfs"));
-				mbf.setMf((int)map.get("mf"));
+				mbf.setId((Integer)map.get("id"));
+				mbf.setKmId((Integer)map.get("kmId"));
+				mbf.setMbfs((Integer)map.get("mbfs"));
+				mbf.setMf((Integer)map.get("mf"));
 				mbf.setMbxxId(mbxx.getId());
 				save(conn, mbf);
 			}

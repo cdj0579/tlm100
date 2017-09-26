@@ -93,7 +93,7 @@ public class UserService {
 				throw new Exception("输入的旧密码不正确！");
 			}
 			Account acc = new Account();
-			acc.setId((int)map.get("id"));
+			acc.setId((Integer)map.get("id"));
 			acc.setPassword(MD5.getMD5(newPassword));
 			new JdbcDao<Account>().save(conn, acc);
 		} catch(Exception e){
