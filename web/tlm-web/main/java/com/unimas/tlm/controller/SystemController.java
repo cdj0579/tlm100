@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.unimas.tlm.bean.datamodal.AjaxDataModal;
 import com.unimas.tlm.exception.UIException;
+import com.unimas.tlm.service.IndexService;
 import com.unimas.tlm.service.MenuManage.PageView;
 import com.unimas.tlm.service.dic.DicService;
 import com.unimas.tlm.service.user.UserService;
@@ -34,7 +36,8 @@ import com.unimas.web.utils.PageUtils;
  */
 @Controller
 public class SystemController {
-	
+	@Autowired
+	IndexService indexService;
 	/**
      * 访问主页面的请求
      *
@@ -44,6 +47,10 @@ public class SystemController {
     public String index(Model model,HttpServletRequest request) {
     	PageUtils.setPageView(request, PageView.HOME);
     	ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+    	Map<String, Object> map = null;
+    	map = indexService.getIndexNumInfo(user.getUserNo());    	
+    	System.out.println("lusl======================"+map);
+    	request.setAttribute("map", map);
     	if("teacher".equals(user.getRole())){
     		return "teacher/index";
     	} else {

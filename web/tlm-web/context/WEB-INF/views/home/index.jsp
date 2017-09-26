@@ -7,7 +7,7 @@
                                             <i class="widget-thumb-icon bg-green icon-diamond"></i>
                                             <div class="widget-thumb-body">
                                                 <span class="widget-thumb-subtitle">数量</span>
-                                                <span class="widget-thumb-body-stat" data-counter="counterup" data-value="5,071">1225</span>
+                                                <span class="widget-thumb-body-stat" data-counter="counterup" data-value="${map['zsdNum']}">0</span>
                                             </div>
                                         </div>
                                     </div>
@@ -19,7 +19,7 @@
                                             <i class="widget-thumb-icon bg-red icon-layers"></i>
                                             <div class="widget-thumb-body">
                                                 <span class="widget-thumb-subtitle">数量</span>
-                                                <span class="widget-thumb-body-stat" data-counter="counterup" data-value="1,356">341</span>
+                                                <span class="widget-thumb-body-stat" data-counter="counterup" data-value="${map['ztNum'] }">0</span>
                                             </div>
                                         </div>
                                     </div>
@@ -31,7 +31,7 @@
                                             <i class="widget-thumb-icon bg-purple icon-briefcase"></i>
                                             <div class="widget-thumb-body">
                                                 <span class="widget-thumb-subtitle">数量</span>
-                                                <span class="widget-thumb-body-stat" data-counter="counterup" data-value="87">23</span>
+                                                <span class="widget-thumb-body-stat" data-counter="counterup" data-value="${map['jaNum'] }">0</span>
                                             </div>
                                         </div>
                                     </div>
@@ -43,7 +43,7 @@
                                             <i class="widget-thumb-icon bg-blue icon-user"></i>
                                             <div class="widget-thumb-body">
                                                 <span class="widget-thumb-subtitle">数量</span>
-                                                <span class="widget-thumb-body-stat" data-counter="counterup" data-value="102">48</span>
+                                                <span class="widget-thumb-body-stat" data-counter="counterup" data-value="${map['userNum'] }">0</span>
                                             </div>
                                         </div>
                                     </div>
