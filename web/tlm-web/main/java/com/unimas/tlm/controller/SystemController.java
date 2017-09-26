@@ -49,7 +49,6 @@ public class SystemController {
     	ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
     	Map<String, Object> map = null;
     	map = indexService.getIndexNumInfo(user.getUserNo());    	
-    	System.out.println("lusl======================"+map);
     	request.setAttribute("map", map);
     	if("teacher".equals(user.getRole())){
     		return "teacher/index";
