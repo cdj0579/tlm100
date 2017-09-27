@@ -220,4 +220,15 @@ public class SystemController {
     	return  "user/gxphb";
     }
     
+    @RequestMapping(value="system/indexChart",method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxDataModal indexChart(HttpServletRequest request){
+    	String type = PageUtils.getParam(request, "type", null);
+    	AjaxDataModal dm = new AjaxDataModal(true);
+    	Map<String ,Object> data = indexService.getIndexChartInfo(type); 
+    	dm.putAll(data);
+    	return dm;
+    }
+    
+    
 }

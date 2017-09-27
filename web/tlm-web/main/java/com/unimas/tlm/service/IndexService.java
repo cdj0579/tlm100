@@ -3,7 +3,9 @@ package com.unimas.tlm.service;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -57,6 +59,49 @@ public class IndexService {
 		}
 		return result ;
 	}
+	
+	public Map<String ,Object> getIndexChartInfo(String type){
+		Map<String, Object> result  = new HashMap<String, Object>();
+		List<String> listX = new ArrayList<String>();
+    	List<Long> listY = new ArrayList<Long>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		StringBuffer sql=new StringBuffer();
+		if("t".equals(type)){
+			sql.append("select `name`, hyd as count from teacher_info order by hyd DESC limit 10; ");
+		}else if("zsd".equals(type)){
+			sql.append("select b.name , a.count from ( ")
+			   .append("select count(*) as count ,cid from user_collections  where type='zsd' ")
+			   .append("GROUP BY cid ORDER BY count DESC limit 10 ) a LEFT JOIN zsd_content b ON b.id = a.cid ");
+		}
+	
+		try {
+			conn = DBFactory.getConn();
+			stmt = conn.prepareStatement(sql.toString());
+			rs = stmt.executeQuery();
+			while (rs.next()){
+				listX.add(rs.getString(1));
+				listY.add(rs.getLong(2));
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+		} finally {
+			DBFactory.close(conn, stmt, rs);
+		}
+		int size = listX.size(); 
+		if(size < 10){
+			for(int i=size ;i<=10; i++){
+				listX.add("");
+				listY.add(0L);
+			}
+		}
+		result.put("x", listX);
+		result.put("y", listY);
+		return result ;
+	}
+	
+	
 	
 	public static void main(String[] args) {
 		IndexService i= new IndexService();

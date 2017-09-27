@@ -62,7 +62,7 @@
                                                                             </span>
                                             </div>
                                             <div class="actions">
-                                                <a href="#" class="btn btn-circle green btn-outline btn-sm">
+                                                <a href="javascript:void(0);" name="refer_teacher"  class="btn btn-circle green btn-outline btn-sm">
                                                     <i class="fa fa-repeat"></i>刷新</a>
                                             </div>
                                         
@@ -85,7 +85,7 @@
                                                                             </span>
                                             </div>
                                              <div class="actions">
-                                                <a href="#" class="btn btn-circle green btn-outline btn-sm">
+                                                <a href="javascript:void(0);" name="refer_zsd" class="btn btn-circle green btn-outline btn-sm">
                                                     <i class="fa fa-repeat"></i>刷新</a>
                                             </div>
                                         </div>

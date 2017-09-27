@@ -17,7 +17,7 @@ define(['assets/common/config'], function(config) {
 	
 	require(['app','layout','demo']);
 	require(['domready!', 'echarts/echarts'], function (doc){
-
+		
 	    // DEMOS
 	    require(
 	        [
@@ -26,58 +26,89 @@ define(['assets/common/config'], function(config) {
 	        ],
 	        function(ec) {
 	        	var myChart = ec.init(document.getElementById('chart_1'));
-	            myChart.setOption({
-	                tooltip: {
-	                    trigger: 'axis'
-	                },
-	                color: ["#67B7DC"],
-	                calculable: false,
-	                xAxis: [{
-	                    type: 'category',
-	                    data: ['胡鑫盛', '吴琴琴', '黄玉龙', '杨扬', '黄瑞芳', '孙传宝', '胡名流', '许公飞', '吴芳', '钱山']
-	                }],
-	                yAxis: [{
-	                    type: 'value',
-	                    splitArea: {
-	                        show: true
-	                    }
-	                }],
-	                series: [{
-	                    name: '访问量',
-	                    type: 'bar',
-	                    data: [23, 18, 32, 56, 31, 26, 25, 35, 44, 27]
-	                }]
-	            });
+	        	function teacherChartfun(dataX,dataY){
+	        		myChart.setOption({
+		                tooltip: {
+		                    trigger: 'axis'
+		                },
+		                color: ["#67B7DC"],
+		                calculable: false,
+		                xAxis: [{
+		                    type: 'category',
+		                    axisLabel: {
+		                    	interval: 0,
+		                    	rotate: 20
+		                    	
+		                    },
+		                    data: dataX
+		                }],
+		                yAxis: [{
+		                    type: 'value',
+		                    splitArea: {
+		                        show: true
+		                    }
+		                }],
+		                series: [{
+		                    name: '访问量',
+		                    type: 'bar',
+		                    data: dataY
+		                }]
+		            });
+	        	}
 	            var myChart2 = ec.init(document.getElementById('chart_2'));
-	            myChart2.setOption({
-	                tooltip: {
-	                    trigger: 'axis'
-	                },
-	                color: ["#67B7DC"],
-	                calculable: false,
-	                xAxis: [{
-	                    type: 'category',
-	                    axisLabel: {
-	                    	interval: 0,
-	                    	rotate: 20,
-	                    	textStyle: {
-	                    		color: "#000"
-	                    	}
-	                    },
-	                    data: ['三角形', '方程', '抛物线', '有理数', '二次根式', '中位线', '圆', '函数', '弦切角', '多边形']
-	                }],
-	                yAxis: [{
-	                    type: 'value',
-	                    splitArea: {
-	                        show: true
-	                    }
-	                }],
-	                series: [{
-	                    name: '使用次数',
-	                    type: 'bar',
-	                    data: [23, 26, 25, 35, 18, 32, 56, 31, 44, 27]
-	                }]
-	            });
+				function zsdChartfun(dataX,dataY){
+		            myChart2.setOption({
+		                tooltip: {
+		                    trigger: 'axis'
+		                },
+		                color: ["#67B7DC"],
+		                calculable: false,
+		                xAxis: [{
+		                    type: 'category',
+		                    axisLabel: {
+		                    	interval: 0,
+		                    	rotate: 20,
+		                    	textStyle: {
+		                    		color: "#000"
+		                    	}
+		                    },
+		                    data: dataX
+		                }],
+		                yAxis: [{
+		                    type: 'value',
+		                    splitArea: {
+		                        show: true
+		                    }
+		                }],
+		                series: [{
+		                    name: '使用次数',
+		                    type: 'bar',
+		                    data: dataY
+		                }]
+		            });
+	        	}
+	        	
+				function getDataFun(type){
+					$.post(basePath+"system/indexChart",{"type":type},function(data,status){
+	        			if(data.success == true || data.success == "true"){
+		  					if(type=="t"){
+		  						teacherChartfun(data.x,data.y)
+		  					}else if(type == "zsd"){
+		  						zsdChartfun(data.x,data.y)
+		  					}
+					    }
+	        		});
+				}
+				getDataFun("t");
+				getDataFun("zsd");
+				
+        		$("[name='refer_teacher']").click(function(){
+					getDataFun("t");
+				});
+				
+				$("[name='refer_zsd']").click(function(){
+					getDataFun("zsd");
+				});
 	        }
 	    );
 	});
