@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.unimas.tlm.bean.datamodal.AjaxDataModal;
+import com.unimas.tlm.bean.datamodal.DataTableDM;
+import com.unimas.tlm.bean.jfrw.RwBean;
+import com.unimas.tlm.bean.user.TeacherInfo;
 import com.unimas.tlm.exception.UIException;
 import com.unimas.tlm.service.IndexService;
 import com.unimas.tlm.service.MenuManage.PageView;
@@ -220,6 +223,32 @@ public class SystemController {
     	return  "user/gxphb";
     }
     
+    @RequestMapping(value="system/gxphb")
+    @ResponseBody
+    public AjaxDataModal teacherGxphb(HttpServletRequest request){
+    	String type = PageUtils.getParam(request, "type", null);
+    	try {
+			DataTableDM dm = new DataTableDM(0, true);
+			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+			String userNo =  user.getUserNo();
+			List<Map<String ,Object>> list = indexService.getTeacherGxphb(userNo,type);
+			dm.putDatas(list);
+			return dm;
+		} catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("查询任务列表失败！", e);
+			}
+			return uiex.toDM();
+		}
+    }
+    /**
+     * 管理员首页柱状图数据获取
+     * @param request
+     * @return
+     */
     @RequestMapping(value="system/indexChart",method = RequestMethod.POST)
     @ResponseBody
     public AjaxDataModal indexChart(HttpServletRequest request){

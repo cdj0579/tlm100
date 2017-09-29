@@ -102,10 +102,52 @@ public class IndexService {
 	}
 	
 	
+	public List< Map<String ,Object>> getTeacherGxphb(String user_no,String type){
+		List< Map<String ,Object>> result  = new ArrayList<Map<String,Object>>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String tableName = null;
+		if("zsd".equals(type)){
+			tableName = "zsd_content";
+		}else if("ja".equals(type)){
+			tableName = "ja_list";
+		}else if("xt".equals(type)){
+			tableName = "xt_main";
+		}else if("zt".equals(type)){
+			tableName = "zt_content";
+		}
+		StringBuffer sql=new StringBuffer();
+		sql.append("select num, jf ,b.`name` from")
+		   .append(" (select count(*) as num ,cid, SUM(jf) as jf from user_collections  where type=")
+		   .append("? GROUP BY cid) a  , ") .append(tableName)
+		  .append(" b where a.cid = b.id and user_no = ? ORDER BY jf desc limit 100; ");
+		try {
+			conn = DBFactory.getConn();
+			stmt = conn.prepareStatement(sql.toString());
+			stmt.setString(1, type);
+			stmt.setString(2, user_no);
+			rs = stmt.executeQuery();
+			while (rs.next()){
+				Map<String ,Object> map = new HashMap<String, Object>();
+				map.put("num", rs.getString("num"));
+				map.put("jf", rs.getString("jf"));
+				String str = rs.getString(3);
+				map.put("name", str);
+				result.add(map);
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+		} finally {
+			DBFactory.close(conn, stmt, rs);
+		}		
+		return result ;
+	}
+	
 	
 	public static void main(String[] args) {
 		IndexService i= new IndexService();
-		System.out.println(i.getIndexNumInfo("admin"));
+		System.out.println(i.getTeacherGxphb("zsd" , "T660375285"));
 	}
 	
 }
