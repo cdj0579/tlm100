@@ -215,6 +215,7 @@ public class SystemController {
     	request.setAttribute("userno", user.getUserNo());
     	request.setAttribute("loginName", user.getLoginName());
     	request.setAttribute("realName", user.getRealName());
+    	request.setAttribute("txImg", user.getTxImg());
 		PageUtils.setPageView(request, PageView.USER);
     	return  "user/info";
     }

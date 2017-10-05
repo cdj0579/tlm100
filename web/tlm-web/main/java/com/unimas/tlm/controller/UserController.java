@@ -218,11 +218,11 @@ public class UserController {
     		
     		BASE64Encoder base64Encoder = new BASE64Encoder();
     		Map<String, Object> map = new HashMap<String, Object>();;
-			byte[] tx = info.getTx();
-    		if(tx != null){
-				map.put("txImg", new String(tx));
+//			byte[] tx = info.getTx();
+//    		if(tx != null){
+//				map.put("txImg", new String(tx));
 	    		info.setTx(null);
-			}
+//			}
     		byte[] jszgz = info.getJszgz();
 			if(jszgz != null){
 				map.put("jszgz", "data:image/jpeg;base64,"+base64Encoder.encode(jszgz));

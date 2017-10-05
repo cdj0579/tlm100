@@ -123,6 +123,7 @@ public class AuthRealm extends AuthorizingRealm {
 					userId = teacher.getId();
 					if(teacher.getTx()!=null){
 						txImg = new String(teacher.getTx());
+						teacher.setTx(null);
 					}
 					info = teacher;
 				} else {

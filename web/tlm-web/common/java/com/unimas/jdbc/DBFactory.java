@@ -63,7 +63,7 @@ public class DBFactory {
 	private static void initDbConfig() {
 		try {
 			if(dbConf == null || dbConf.isEmpty()){
-				dbConf = PropertyUtils.readProperties(DBFactory.class.getClassLoader().getResource("db.properties").getPath());
+				dbConf = PropertyUtils.readProperties(DBFactory.class.getClassLoader().getResource("db.properties").toURI().getPath());
 			}
 		} catch (Exception e) {
 			logger.error("加载数据库连接信息失败！", e);

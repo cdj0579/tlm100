@@ -1,6 +1,7 @@
 package com.unimas.tlm.service.user;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -295,7 +296,12 @@ public class UserService {
     public String dealTxImage(String base64Code,int x1,int y1,int x2,int y2){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssS");
         String dateStr = sdf.format(new Date());
-        String path = "E:/cj_program/user_image/" + dateStr + "/";
+        String path ="/";
+		try {
+			path = this.getClass().getResource("/").toURI().getPath().toString() ;
+		} catch (URISyntaxException e1) {
+		}
+		path =  path + dateStr + "/";
         File f = new File(path);
         if(!f.exists()){
             f.mkdirs();

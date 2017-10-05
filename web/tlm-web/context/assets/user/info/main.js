@@ -77,9 +77,9 @@ define(['assets/common/config'], function(config) {
 				$("#sex option[value='"+ data.info.sex +"']").attr("selected", true); 
 				$("#skdz").val( data.info.skdz)
 				$("#kmId option[value='"+ data.info.kmId +"']").attr("selected", true);   
-				if( data.file.txImg){
-					$(".img-position>img").attr("src", data.file.txImg);
-				}
+//				if( data.file.txImg){
+//					$(".img-position>img").attr("src", data.file.txImg);
+//				}
 				setUploadImg("upload_jszgz",data.file.jszgz);
 				setUploadImg("upload_djzs",data.file.djzs);
 				setUploadImg("upload_ryzs",data.file.ryzs);

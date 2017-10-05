@@ -10,7 +10,13 @@
               		 	<hr style="width:98%" />
               		 	<div class="col-md-6">
 	              		 	<div class="img-position  center-block">
-	           		 			<img src="/assets/global/img/user_tx.jpg">
+	           		 			<c:if test="${not empty txImg}">
+	                             	<img alt="" class="img-circle" src= "${ txImg}" />
+	                           	</c:if>
+	                           	<c:if test="${empty txImg}">
+	                             	<img src="/assets/global/img/user_tx.jpg">
+	                           	</c:if>
+	           		 			
 	           		 		</div>
 	           		 		<label class="btn btn-default btn-xs center-block"  style="line-height:30px;width:100px;cursor:pointer;" for="upload-file">更新头像</label>
      						<input name="upload-file" id="upload-file" type="file" >
