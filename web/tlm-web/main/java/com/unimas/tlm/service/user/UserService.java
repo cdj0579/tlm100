@@ -1,10 +1,16 @@
 package com.unimas.tlm.service.user;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.springframework.stereotype.Service;
@@ -17,6 +23,7 @@ import com.unimas.tlm.bean.user.Account;
 import com.unimas.tlm.bean.user.StudentInfo;
 import com.unimas.tlm.bean.user.TeacherInfo;
 import com.unimas.tlm.dao.JdbcDao;
+import com.unimas.tlm.utils.ImageUtil;
 import com.unimas.web.auth.AuthRealm.ShiroUser;
 
 @Service
@@ -259,6 +266,17 @@ public class UserService {
 		}
 		return null;
 	}
+	@SuppressWarnings("unchecked")
+	public TeacherInfo getTeacherByUserNo( String userNo) throws Exception {
+		TeacherInfo info = new TeacherInfo();
+		info.setUserNo(userNo);
+		List<TeacherInfo> list = (List<TeacherInfo>)new JdbcDao<TeacherInfo>().query(info);
+		if(list != null && list.size() > 0){
+			return list.get(0);
+		}
+		return null;
+	}
+
 
 	@SuppressWarnings("unchecked")
 	public StudentInfo getStudentByUserNo(Connection conn, String userNo) throws Exception {
@@ -270,5 +288,139 @@ public class UserService {
 		}
 		return null;
 	}
-
+	
+	/**
+     * 上传头像图片处理
+     */
+    public String dealTxImage(String base64Code,int x1,int y1,int x2,int y2){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssS");
+        String dateStr = sdf.format(new Date());
+        String path = "E:/cj_program/user_image/" + dateStr + "/";
+        File f = new File(path);
+        if(!f.exists()){
+            f.mkdirs();
+        }
+        String fileName = UUID.randomUUID().toString().replaceAll("-", "")+".jpg";
+        String temp_fileName = path + "t_" + fileName;
+        String b_fileName = path + "b_" + fileName;
+        String result = "";
+        try{
+            //创建原始文件(先强制修改为jpg格式)
+            boolean isCreate = ImageUtil.base64ToImage(base64Code, path + fileName);
+            if(isCreate){
+                float scale = ImageUtil.getScaleCutImage(path + fileName);//比例
+                int width = (int) ((x2-x1)*scale);
+                int height = width;
+                int start_x = (int) (x1*scale);
+                int start_y = (int) (y1*scale);
+                //剪切图片
+                ImageUtil.cutImage(path + fileName, temp_fileName, start_x, start_y, width, height);
+                //剪切以后的图片压缩到固定大小的图片
+                ImageUtil.reduceImageByWidthHeight(temp_fileName, b_fileName, 100, 100);//100*100
+                result = ImageUtil.imageToBase64(b_fileName);
+               
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+        	 new File(path + fileName).delete();
+        	 new File(temp_fileName).delete();
+        	 new File(b_fileName).delete();
+        	 f.delete();
+        }
+        return result;
+    }
+    /**
+     * 保存裁剪过的头像图片
+     * @param id
+     * @param txImg
+     * @throws Exception
+     */
+    public void saveTxImg(int id, String txImg) throws Exception{
+		Connection conn = null;
+		try {
+			conn = DBFactory.getConn();
+			conn.setAutoCommit(false);
+			TeacherInfo info = new TeacherInfo();
+			info.setId(id);
+			info.setTx(txImg.getBytes());
+			new JdbcDao<TeacherInfo>().save(conn, info);
+			conn.commit();
+		} catch(Exception e){
+			if(conn != null){
+				try { conn.rollback(); } catch(Exception t){}
+			}
+			throw e;
+		} finally {
+			DBFactory.close(conn, null, null);
+		}
+	}
+    
+    public void saveTeacherInfo(int id, String name,int sex, String skdz,int kmId,byte[] jszgz,byte[] djzs,byte[] ryzs) throws Exception{
+		Connection conn = null;
+		try {
+			conn = DBFactory.getConn();
+			conn.setAutoCommit(false);
+			   
+		    TeacherInfo info = new TeacherInfo();
+		    info.setId(id);
+			info.setKmId(kmId);
+			info.setName(name);
+			info.setSkdz(skdz);
+			info.setJszgz(jszgz);
+			info.setDjzs(djzs);
+			info.setRyzs(ryzs);
+			new JdbcDao<TeacherInfo>().save(conn, info);
+			conn.commit();
+		} catch(Exception e){
+			if(conn != null){
+				try { conn.rollback(); } catch(Exception t){}
+			}
+			throw e;
+		} finally {
+			DBFactory.close(conn, null, null);
+		}
+	}
+ 
+    
+    
+    public List< Map<String ,Object>> getGxd_top10(String user_no){
+		List< Map<String ,Object>> result  = new ArrayList<Map<String,Object>>();
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		StringBuffer sql=new StringBuffer();
+		sql.append("select `name`, type from (")
+		   .append(" select a.jf, a.type, b.name , b.user_no FROM (select cid ,sum(jf) as jf,type from user_collections WHERE type='xt' GROUP BY  cid,type) a  LEFT JOIN xt_main b ON a.cid=b.id ")
+		   .append(" union all ") 
+		   .append(" select a.jf ,a.type, b.name , b.user_no FROM (select cid ,sum(jf) as jf,type from user_collections WHERE type='zsd' GROUP BY  cid,type) a  LEFT JOIN zsd_content b ON a.cid=b.id ")
+		   .append(" union all ") 
+		   .append(" select a.jf ,a.type, b.name , b.user_no FROM (select cid ,sum(jf) as jf,type from user_collections WHERE type='zt' GROUP BY  cid,type) a  LEFT JOIN zt_content b ON a.cid=b.id ")
+		   .append(" union all ") 
+		   .append(" select a.jf ,a.type, b.name , b.user_no FROM (select cid ,sum(jf) as jf,type from user_collections WHERE type='ja' GROUP BY  cid,type) a  LEFT JOIN ja_list b ON a.cid=b.id ")
+		   .append(" ) c where user_no = ? ORDER BY jf desc limit 10; ");
+		
+		
+		try {
+			conn = DBFactory.getConn();
+			stmt = conn.prepareStatement(sql.toString());
+			stmt.setString(1, user_no);
+			rs = stmt.executeQuery();
+			while (rs.next()){
+				Map<String ,Object> map = new HashMap<String, Object>();
+				map.put("type", rs.getString("type"));
+				String str = rs.getString(1);
+				map.put("name", str);
+				result.add(map);
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+		} finally {
+			DBFactory.close(conn, stmt, rs);
+		}		
+		
+		return result;
+		
+    }
+    
 }

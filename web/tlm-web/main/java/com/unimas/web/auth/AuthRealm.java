@@ -109,6 +109,7 @@ public class AuthRealm extends AuthorizingRealm {
         	String userNo = service.verify(conn, username, password);
         	String realName = null;
         	String role = null;
+        	String txImg = null;
         	int userId = -1;
         	Object info = null;
 			if("admin".equals(userNo)){
@@ -120,6 +121,9 @@ public class AuthRealm extends AuthorizingRealm {
 					role = "teacher";
 					realName = teacher.getName();
 					userId = teacher.getId();
+					if(teacher.getTx()!=null){
+						txImg = new String(teacher.getTx());
+					}
 					info = teacher;
 				} else {
 					StudentInfo student = service.getStudentByUserNo(conn, userNo);
@@ -134,6 +138,7 @@ public class AuthRealm extends AuthorizingRealm {
 			}
 			ShiroUser user = new ShiroUser(userId, userNo, username, realName, role);
 			user.setInfo(info);
+			user.setTxImg(txImg);
 			simpleAuthenticationInfo = new SimpleAuthenticationInfo(user, password, getName());
         } catch (AuthenticationException e) {
             LOGGER.error(e.getMessage(),e);
@@ -179,6 +184,7 @@ public class AuthRealm extends AuthorizingRealm {
         private String role;
         private String loginName;
         private String realName;
+        private String txImg;
         private Object info;
 
         public ShiroUser(int userId, String userNo, String loginName, String realName, String role) {
@@ -234,6 +240,14 @@ public class AuthRealm extends AuthorizingRealm {
         public String toString() {
             return loginName;
         }
+
+		public String getTxImg() {
+			return txImg;
+		}
+
+		public void setTxImg(String txImg) {
+			this.txImg = txImg;
+		}
 
     }
 

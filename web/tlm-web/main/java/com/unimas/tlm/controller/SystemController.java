@@ -69,7 +69,7 @@ public class SystemController {
     @RequestMapping(value = "/login",method = RequestMethod.GET)
     public String login(HttpServletRequest request) {
     	try {
-			List<Map<String, Object>> l = new DicService().get("km_dic", "id", "name", null, null, null);
+    		List<Map<String, Object>> l = new DicService().get("km_dic", "id", "name", null, null, null);
 			request.setAttribute("kmList", l);
 		} catch (Exception e) {}
         return "login";
@@ -207,7 +207,15 @@ public class SystemController {
      */
     @RequestMapping(value="user/info",method = RequestMethod.GET)
     public String userInfo(HttpServletRequest request) throws IOException {
-    	PageUtils.setPageView(request, PageView.USER);
+    	try {
+			List<Map<String, Object>> l = new DicService().get("km_dic", "id", "name", null, null, null);
+			request.setAttribute("kmList", l);
+		} catch (Exception e) {}
+		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+    	request.setAttribute("userno", user.getUserNo());
+    	request.setAttribute("loginName", user.getLoginName());
+    	request.setAttribute("realName", user.getRealName());
+		PageUtils.setPageView(request, PageView.USER);
     	return  "user/info";
     }
     

@@ -6,6 +6,7 @@ HashMap<String, Object> pageConfig = (HashMap<String, Object>)request.getAttribu
 String base = (String)pageConfig.get("basePath");
 List<Map<String, Object>> menus = new SystemService().getUserMenus(base);
 request.setAttribute("menus", menus);
+
 %>
 <div class="page-header navbar navbar-fixed-top">
     <!-- BEGIN HEADER INNER -->
@@ -130,7 +131,13 @@ request.setAttribute("menus", menus);
                     <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
                     <li class="dropdown dropdown-user">
                         <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                            <img alt="" class="img-circle" src="${page.basePath}assets/layouts/layout2/img/avatar.png" />
+                           <c:if test="${not empty user.txImg}">
+                             <img alt="" class="img-circle" src= "${ user.txImg}" />
+                           </c:if>
+                           <c:if test="${empty user.txImg}">
+                             <img alt="" class="img-circle" src= "${page.basePath}assets/layouts/layout2/img/avatar.png" />
+                           </c:if>
+                          
                             <span class="username username-hide-on-mobile"> ${user.realName } </span>
                             <i class="fa fa-angle-down"></i>
                         </a>
