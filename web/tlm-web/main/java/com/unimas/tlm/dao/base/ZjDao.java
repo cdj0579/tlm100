@@ -25,6 +25,39 @@ public class ZjDao extends JdbcDao<ZjBean> {
 		}
 	}
 	
+	private void saveBean(Connection conn, ZjBean bean) throws Exception {
+		ZjBean p = (ZjBean)super.save(conn, bean);
+		List<ZjBean> children = bean.getChildren();
+		if(children != null && !children.isEmpty()){
+			for(ZjBean b : children){
+				b.setPid(p.getId());
+				this.saveBean(conn, b);
+			}
+		}
+	}
+	
+	public void save(List<ZjBean> list) throws Exception {
+		if(list == null || list.isEmpty()) return;
+		Connection conn = null;
+		try {
+			conn = DBFactory.getConn();
+			conn.setAutoCommit(false);
+			for(ZjBean bean : list){
+				this.saveBean(conn, bean);
+			}
+			conn.commit();
+		} catch(Exception e){
+			if(conn != null){
+				try {
+					conn.rollback();
+				} catch (Exception e2) {}
+			}
+			throw e;
+		} finally {
+			DBFactory.close(conn, null, null);
+		}
+	}
+	
 	@Override
 	public List<?> query(JdbcBean b) throws Exception {
 		ZjBean bean = (ZjBean)b;

@@ -1,5 +1,10 @@
 package com.unimas.tlm.bean.base;
 
+import java.util.List;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+
+import com.google.common.collect.Lists;
 import com.unimas.jdbc.handler.annotation.Column;
 import com.unimas.jdbc.handler.annotation.Table;
 import com.unimas.jdbc.handler.entry.SelectSqlModal.LeftField;
@@ -29,6 +34,14 @@ public class ZjBean extends JdbcBean {
 	private String bm;
 	@Column(name="xh", nullNumberValue=-1)
 	private int xh = -1;
+	
+	@Column(ignore=true)
+	@JsonIgnore
+	private List<ZjBean> children;
+	@Column(ignore=true)
+	private ZjBean parent;
+	@Column(ignore=true)
+	private boolean configed = false;
 	
 	public int getNjId() {
 		return njId;
@@ -96,5 +109,28 @@ public class ZjBean extends JdbcBean {
 	public void setXh(int xh) {
 		this.xh = xh;
 	}
+	public List<ZjBean> getChildren() {
+		return children;
+	}
+	public void setChildren(List<ZjBean> children) {
+		this.children = children;
+	}
+	public void putChild(ZjBean child){
+		if(child != null && !child.configed){
+			if(this.children == null){
+				this.children = Lists.newArrayList();
+			}
+			this.children.add(child);
+			child.setParent(this);
+			this.configed = true;
+		}
+	}
+	public ZjBean getParent() {
+		return parent;
+	}
+	public void setParent(ZjBean parent) {
+		this.parent = parent;
+	}
+	
 
 }

@@ -10,6 +10,7 @@ if(basePath || basePath == ""){
 	            "RememberBaseInfo": "assets/base/cookie/rememberBaseInfo",
 	            "ZjTree": "assets/base/zj/zjTree",
 	            "editZj": "assets/base/zj/editZj",
+	            "copyZj": "assets/base/zj/copyZj",
 	            "editBb": "assets/base/zj/editBb"
 		},shim: {}
 	});
@@ -35,6 +36,7 @@ define(['assets/common/config'], function(config) {
 			} else {
 				ZjTree.init($tree, baseParams, function(treeNode){
 					currentNode = treeNode;
+					showBtns(currentNode);
 					reload();
 				}, function(treeNode){
 					currentNode = treeNode;
@@ -246,6 +248,21 @@ define(['assets/common/config'], function(config) {
 			});
 		});
 		
+		$('.btn.copy-zj').on("click", function(){
+			var data = getParams({});
+			copyZj(data, function(id){
+				reloadTree();
+			});
+		});
+		
+		var showBtns = function(node){
+			if(node.type == "bb" && (!node.children || node.children.length == 0)){
+				$('.btn.copy-zj').removeClass("hide");
+			} else {
+				$('.btn.copy-zj').addClass("hide");
+			}
+		};
+		
 		var deleteZj = function(id, name){
 			App.confirm({
 				title: '提示信息',
@@ -266,6 +283,28 @@ define(['assets/common/config'], function(config) {
 				width: "900",
 				required: ["editZj"],
 				remote: basePath+"assets/base/zj/editZj.html",
+				callback: function(modal, args){
+					if(currentNode.type != 'bb'){
+						data.pBm = currentNode.bm;
+					} else {
+						data.pBm = null;
+					}
+					if(!data.xh || data.xh <= 0){
+						data.xh = ZjTree.getChildMaxXh(currentNode)+1;
+						data.bm = data.pBm?(data.pBm+"."+data.xh):data.xh;
+					}
+					args[0].init(data, modal, cb);
+				}
+			});
+		};
+		
+		var copyZj = function(data, cb){
+			App.ajaxModal({
+				id: "edit",
+				scroll: true,
+				width: "900",
+				required: ["copyZj"],
+				remote: basePath+"assets/base/zj/copyZj.html",
 				callback: function(modal, args){
 					if(currentNode.type != 'bb'){
 						data.pBm = currentNode.bm;

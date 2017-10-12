@@ -1,0 +1,33 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+    <h4 class="modal-title" id="title">复制章节信息</h4>
+</div>
+<div class="modal-body">
+	<form action="#" class="form-horizontal " id="form_remark">
+    	<div class="form-body">
+    		<h3 class="win-title">复制其它地区的版本章节信息！</h3>
+    		<div class="form-group">
+           		<label class="control-label col-md-3">选择地区: </label>
+           		<div class="col-md-4">
+                	<div class="input-icon right">
+                    	<i class="fa"></i>
+                     	<select name="dqId" class="form-control" validate="{required:true}">
+				        </select>
+                    </div>
+                </div>
+       		</div>
+       		<div class="form-group">
+           		<label class="control-label col-md-3">选择版本: </label>
+           		<div class="col-md-6" style="border: 1px solid #eee;margin-left: 15px;">
+                	<div class="scroller" style="height: 450px;" data-always-visible="1" data-rail-visible1="0" data-handle-color="#337AB7">
+                		<div id="copy_zj_tree" class="ztree"></div>
+                	</div>
+                </div>
+       		</div>
+   		</div>
+	</form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn dark btn-outline" data-dismiss="modal">取消</button>
+    <button type="submit" class="btn green save">确定</button>
+</div>

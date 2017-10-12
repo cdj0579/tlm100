@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.unimas.jdbc.DBFactory;
 import com.unimas.jdbc.handler.ResultSetHandler;
 import com.unimas.tlm.bean.base.CstBean;
@@ -103,6 +105,32 @@ public class BaseService {
 		zj.setDqId(dqId);
 		zj.setXq(xq);
 		return (List<ZjBean>) new ZjDao().query(zj);
+	}
+	
+	
+	public void copyZj(String newDqId, int newBbId, String dqId, int bbId, int kmId, int njId, int xq) throws Exception{
+		List<ZjBean> zjList = queryZjList(bbId, dqId, kmId, njId, xq);
+		if(zjList == null) return;
+		List<ZjBean> treeList = Lists.newArrayList();
+		Map<Integer, ZjBean> idMaps = Maps.newHashMap();
+		for(int i=0;i<zjList.size();i++){
+			ZjBean bean = zjList.get(i);
+			int id = bean.getId();
+			idMaps.put(id, bean);
+			bean.setId(-1);
+			bean.setDqId(newDqId);
+			bean.setBbId(newBbId);
+		}
+		for(ZjBean bean : zjList){
+			int pid = bean.getPid();
+			ZjBean p = idMaps.get(pid);
+			if(p == null){
+				treeList.add(bean);
+			} else {
+				p.putChild(bean);
+			}
+		}
+		new ZjDao().save(treeList);
 	}
 	
 	public ZjBean saveZj(int id, String dqId, int bbId, int kmId, int njId, int xq, String name, String bm, int xh, int pid) throws Exception{

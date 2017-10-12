@@ -108,11 +108,15 @@
 		var self = this;
 		$.extend(params, this.baseParams, options);
 		App.getJSON(this.getUrl, params, function(result){
+			var datas = result[self.dataParam];
+			if($.isFunction(self.onLoad)){
+				datas = self.onLoad(datas);
+			}
 			$(self).html("");
 			if(self.allowClear == true && $(self).attr("multiple") != "multiple"){
 				renderOption($(self), "", "");
 			}
-			$.proxy(render, self)(result[self.dataParam]);
+			$.proxy(render, self)(datas);
 			if(!v){
 				$(self).val("");
 			} else {

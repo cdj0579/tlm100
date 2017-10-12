@@ -481,6 +481,30 @@ public class BaseController {
 		}
     }
     
+    @RequestMapping(value="zj/copy",method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxDataModal copyZj(HttpServletRequest request) {
+    	try {
+    		int newBbId = PageUtils.getIntParam(request, "newBbId");
+    		String newDqId = PageUtils.getParamAndCheckEmpty(request, "newDqId", "地区不能为空！");
+    		int bbId = PageUtils.getIntParam(request, "bbId");
+    		String dqId = PageUtils.getParamAndCheckEmpty(request, "dqId", "地区不能为空！");
+    		int kmId = PageUtils.getIntParamAndCheckEmpty(request, "kmId", "错误的学科ID！");
+			int njId = PageUtils.getIntParamAndCheckEmpty(request, "njId", "错误的年级ID！");
+			int xq = PageUtils.getIntParamAndCheckEmpty(request, "xq", "未选择正确的上下学期！");
+			service.copyZj(newDqId, newBbId, dqId, bbId, kmId, njId, xq);
+			return new AjaxDataModal(true);
+		}  catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("复制章节信息失败！", e);
+			}
+			return uiex.toDM();
+		}
+    }
+    
     @RequestMapping(value="zj/delete")
     @ResponseBody
     public AjaxDataModal deleteZj(HttpServletRequest request) {

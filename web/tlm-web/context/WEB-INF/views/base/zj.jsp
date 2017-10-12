@@ -78,8 +78,9 @@
 		       	</div>
 			</div>
 		   	<div class="col-md-8">
-		   		<div class="pull-left btn-group" style="padding-bottom: 15px;">
+		   		<div class="pull-left btn-groups" style="padding-bottom: 15px;">
 		   			<a class="btn green add"><i class="fa fa-plus"></i> 添加章节</a>
+		   			<a class="btn yellow copy-zj"><i class="fa fa-copy hide"></i> 复制其它地区章节 </a>
 		   		</div>
 		       	<table class="table table-striped table-hover"></table>
 		   	</div>
