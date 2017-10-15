@@ -23,8 +23,9 @@
        				<div class="col-md-6" id="searchInp">
              		</div>
              		<div class="col-md-6">
-                   		<div class="btn-groups">
-                   			<a class="btn green add"><i class="fa fa-plus"></i> 添加</a>
+                   		<div class="btn-groups pull-right">
+                   			<a class="btn green add"><i class="fa fa-plus"></i> 添加 </a>
+                   			<a class="btn yellow collect"><i class="fa fa-gg"></i> 收藏教案 </a>
                    		</div>
              		</div>
        			</div>

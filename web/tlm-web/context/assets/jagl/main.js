@@ -11,6 +11,7 @@ define(['assets/common/config'], function(config) {
 	require.config({
 		paths: {
 			"DirTree": "assets/jagl/dirTree",
+			"collectJa": "assets/jagl/collectJa",
 			"editDir": "assets/jagl/editDir"
 		},shim: {
 		}
@@ -98,6 +99,19 @@ define(['assets/common/config'], function(config) {
 		
 		$('.btn.add').on("click", function(){
 			location.href = basePath+"jagl/add?dirId="+(currentNode?currentNode.id:-1);
+		});
+		
+		$('.btn.collect').on("click", function(){
+			App.ajaxModal({
+				id: "collectJa",
+				scroll: true,
+				width: "900",
+				required: ["collectJa"],
+				remote: basePath+"assets/jagl/collectJa.html",
+				callback: function(modal, args){
+					args[0].init(modal, reload);
+				}
+			});
 		});
 		
 		var reload = function(){
