@@ -154,27 +154,8 @@ public class ZsdDao extends JdbcDao<ZsdBean> {
 				b.setCid(id);
 				b.setType(type);
 				b.setUserNo(userNo);
-				UserCollections tmp = (UserCollections)getById(conn, b);
-				if(tmp != null){
-					throw new Exception("知识已收藏！");
-				}
 				b.setJf(yyfs);
-				UserService us = new UserService();
-				TeacherInfo dTeacher = us.getTeacherByUserNo(conn, userNo);
-				int syfs = dTeacher.getJf()-yyfs;
-				if(syfs < 0){
-					throw new Exception("积分不够！");
-				}
-				TeacherInfo jfBean = new TeacherInfo();
-				jfBean.setId(dTeacher.getId());
-				jfBean.setJf(syfs);
-				save(conn, jfBean);
-				TeacherInfo sTeacher = us.getTeacherByUserNo(conn, sUserNo);
-				jfBean = new TeacherInfo();
-				jfBean.setId(sTeacher.getId());
-				jfBean.setJf(sTeacher.getJf()+yyfs);
-				save(conn, jfBean);
-				save(conn, b);
+				collect(conn, b, sUserNo);
 			}
 			conn.commit();
 		} catch(Exception e){
@@ -187,6 +168,36 @@ public class ZsdDao extends JdbcDao<ZsdBean> {
 		} finally {
 			DBFactory.close(conn, null, null);
 		}
+	}
+	
+	public static void collect(Connection conn, UserCollections uc, String sUserNo) throws Exception{
+		int yyfs = uc.getJf();
+		String userNo = uc.getUserNo();
+		UserCollections exsits = new UserCollections();
+		exsits.setCid(uc.getCid());
+		exsits.setType(uc.getType());
+		exsits.setUserNo(userNo);
+		JdbcDao<ZsdBean> dao = new JdbcDao<ZsdBean>();
+		UserCollections tmp = (UserCollections)dao.getById(conn, exsits);
+		if(tmp != null){
+			throw new Exception("知识已收藏！");
+		}
+		UserService us = new UserService();
+		TeacherInfo dTeacher = us.getTeacherByUserNo(conn, userNo);
+		int syfs = dTeacher.getJf()-yyfs;
+		if(syfs < 0){
+			throw new Exception("积分不够！");
+		}
+		TeacherInfo jfBean = new TeacherInfo();
+		jfBean.setId(dTeacher.getId());
+		jfBean.setJf(syfs);
+		dao.save(conn, jfBean);
+		TeacherInfo sTeacher = us.getTeacherByUserNo(conn, sUserNo);
+		jfBean = new TeacherInfo();
+		jfBean.setId(sTeacher.getId());
+		jfBean.setJf(sTeacher.getJf()+yyfs);
+		dao.save(conn, jfBean);
+		dao.save(conn, uc);
 	}
 	
 	public List<ZsdBean> getZsdByZj(int bbId, String dqId, int kmId, int njId, int xq, String onUserNo) throws Exception{

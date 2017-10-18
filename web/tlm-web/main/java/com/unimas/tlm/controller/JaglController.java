@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.SecurityUtils;
+import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.collect.Maps;
+import com.unimas.common.util.json.JSONUtils;
 import com.unimas.tlm.bean.datamodal.AjaxDataModal;
 import com.unimas.tlm.bean.datamodal.DataTableDM;
 import com.unimas.tlm.bean.ja.JaBean;
@@ -54,6 +56,32 @@ public class JaglController {
     public String templetes(HttpServletRequest request) {
     	PageUtils.setPageView(request, PageView.JAMB);
         return  "jagl/templetes/index";
+    }
+    
+    /**
+     * 教案预览页面
+     * @return
+     */
+    @RequestMapping(value="view/{id}",method = RequestMethod.GET)
+    public String view(@PathVariable int id, HttpServletRequest request) {
+    	try {
+			JaBean bean = service.getJaInfoById(id);
+			request.setAttribute("info", bean);
+		} catch (Exception e) {}
+        return  "jagl/view";
+    }
+    
+    /**
+     * 教案预览页面
+     * @return
+     */
+    @RequestMapping(value="templetes/view/{id}",method = RequestMethod.GET)
+    public String templeteView(@PathVariable int id, HttpServletRequest request) {
+    	try {
+    		JaTemplete bean = service.getJaTempleteInfoById(id);
+			request.setAttribute("info", bean);
+		} catch (Exception e) {}
+        return  "jagl/view";
     }
     
     /**
@@ -238,6 +266,54 @@ public class JaglController {
 			return uiex.toDM();
 		}
 	}
+    
+    @RequestMapping(value="otherUserJaList")
+	@ResponseBody
+	public AjaxDataModal getOtherUserJaList(HttpServletRequest request) {
+		try {
+			DataTableDM dm = new DataTableDM(0, true);
+			String name = PageUtils.getParam(request, "name", null);
+			String userName = PageUtils.getParam(request, "userName", null);
+			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+			List<JaBean> list = service.getOtherUserJaList(name, userName, user);
+			dm.putDatas(list);
+			return dm;
+		} catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("加载教案失败！", e);
+			}
+			return uiex.toDM();
+		}
+	}
+    
+    @RequestMapping(value="collect")
+   	@ResponseBody
+   	public AjaxDataModal collectJa(HttpServletRequest request) {
+   		try {
+   			String _datas = PageUtils.getParamAndCheckEmpty(request, "datas", "未选择要收藏的教案！");
+   			List<Map<String, Object>> list = null;
+   			try {
+   				list = JSONUtils.getObjFromString(_datas, new TypeReference<List<Map<String, Object>>>() {});
+   			} catch(Exception e){
+   				throw new UIException("提交的参数格式不正确！", e);
+   			}
+   			int dirId = PageUtils.getIntParam(request, "dirId");
+   			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+   			service.collectJa(list, dirId, user);
+   			return new AjaxDataModal(true);
+   		} catch (Exception e) {
+   			UIException uiex = null;
+   			if(e instanceof UIException){
+   				uiex = (UIException)e;
+   			} else {
+   				uiex = new UIException("收藏教案失败！", e);
+   			}
+   			return uiex.toDM();
+   		}
+   	}
     
     @RequestMapping(value="dir/tree")
 	@ResponseBody

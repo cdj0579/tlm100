@@ -16,6 +16,8 @@ public class UserCollections extends JdbcBean {
 	private String userNo;
 	@Column(nullNumberValue=-1)
 	private int jf = -1;
+	@Column(name="bz_id1",nullNumberValue=-1)
+	private int bzId1 = -1;
 	@Column(name="insert_time", toType=ToType.DateToString,insertValue=DefaultValue.Now)
 	private String insertTime;
 	@Column(name="modify_time", toType=ToType.DateToString,insertValue=DefaultValue.Now,updateValue=DefaultValue.Now)
@@ -44,6 +46,12 @@ public class UserCollections extends JdbcBean {
 	}
 	public void setJf(int jf) {
 		this.jf = jf;
+	}
+	public int getBzId1() {
+		return bzId1;
+	}
+	public void setBzId1(int bzId1) {
+		this.bzId1 = bzId1;
 	}
 	public String getInsertTime() {
 		return insertTime;

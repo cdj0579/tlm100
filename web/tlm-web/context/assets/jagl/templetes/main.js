@@ -75,7 +75,7 @@ define(['assets/common/config'], function(config) {
 	    	          { title: "操作", data: "id", render: function(data, type, full){
 	    	        	  return '<a href="javascript:;" class="btn red delete" data-id="'+data+'"> 删除 <i class="fa fa-remove"></i></a>'+
 	    	        	  '<a href="'+basePath+'jagl/templetes/edit/'+full.id+'" class="btn blue edit"> 编辑 <i class="fa fa-edit"></i></a>'+
-	    	        	  '<a href="javascript:;" class="btn yellow look"><i class="fa fa-search-plus"></i> 预览</a>';
+	    	        	  '<a href="'+basePath+'jagl/templetes/view/'+full.id+'" target="_blank" class="btn yellow look"><i class="fa fa-search-plus"></i> 预览</a>';
 	    	          }}
 	    	      ]
 		      } );

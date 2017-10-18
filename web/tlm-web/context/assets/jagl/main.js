@@ -70,13 +70,23 @@ define(['assets/common/config'], function(config) {
 				dom: "f<'table-scrollable't><'row'<'col-md-5 col-sm-5'i><'col-md-7 col-sm-7'p>>",
 				drawCallback: function(){ App.handleTooltips();  },
 	            columns: [
-	                  { title: "名称", data: "name"},
-	                  { title: "创建时间", data: "insertTime"},
-	                  { title: "更新时间", data: "modifyTime"},
-	    	          { title: "操作", data: "id", render: function(data, type, full){
-	    	        	  return '<a href="javascript:;" class="btn red delete" data-id="'+data+'"> 删除 <i class="fa fa-remove"></i></a>'+
-	    	        	  '<a href="'+basePath+'jagl/edit/'+full.id+'" class="btn blue edit"> 编辑 <i class="fa fa-edit"></i></a>'/*+
-	    	        	  '<a href="javascript:;" class="btn yellow look"><i class="fa fa-search-plus"></i> 预览</a>'*/;
+	                  { title: "名称", width: "40%", data: "name", render: function(data, type, full){
+	                	  var html = data;
+	                	  if(full.collected && (full.collected == "true" || full.collected == true)){
+	                		  html += '&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">收藏</span>';
+                	  	  }
+	                	  return html;
+	    	          }},
+	                  { title: "创建时间", width: "18%", data: "insertTime"},
+	                  { title: "更新时间", width: "18%", data: "modifyTime"},
+	    	          { title: "操作", width: "24%", data: "id", render: function(data, type, full){
+	    	        	  var html = '';
+	    	        	  if(!full.collected || (full.collected != "true" && full.collected != true)){
+	    	        		  html += '<a href="javascript:;" class="btn red delete" data-id="'+data+'"> 删除 <i class="fa fa-remove"></i></a>'+
+	    	        		  	'<a href="'+basePath+'jagl/edit/'+full.id+'" class="btn blue edit"> 编辑 <i class="fa fa-edit"></i></a>'
+	    	        	  }
+	    	        	  html += '<a href="'+basePath+'jagl/view/'+full.id+'" target="_blank" class="btn yellow look"><i class="fa fa-search-plus"></i> 预览</a>';
+	    	        	  return html;
 	    	          }}
 	    	      ]
 		      } );
@@ -109,7 +119,7 @@ define(['assets/common/config'], function(config) {
 				required: ["collectJa"],
 				remote: basePath+"assets/jagl/collectJa.html",
 				callback: function(modal, args){
-					args[0].init(modal, reload);
+					args[0].init(modal, currentNode?currentNode.id:-1, reload);
 				}
 			});
 		});

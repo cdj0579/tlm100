@@ -29,7 +29,7 @@
                    		</div>
              		</div>
        			</div>
-				<table class="table table-striped table-hover table-checkable order-column" id="ja_table"></table>
+				<table class="table table-striped table-hover order-column" id="ja_table"></table>
 		   	</div>
 		</div>
     </div>

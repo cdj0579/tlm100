@@ -47,10 +47,14 @@ public class JaTemplete extends JdbcBean {
 		this.name = name;
 	}
 	public String getContent() {
-		try {
-			return new String(content, "utf-8");
-		} catch (UnsupportedEncodingException e) {
-			return new String(content);
+		if(content != null){
+			try {
+				return new String(content, "utf-8");
+			} catch (UnsupportedEncodingException e) {
+				return new String(content);
+			}
+		} else {
+			return null;
 		}
 	}
 	public byte[] getContentBytes() {

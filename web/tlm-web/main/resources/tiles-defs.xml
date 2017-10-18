@@ -34,6 +34,9 @@
      <definition name="home" template="/WEB-INF/views/home.jsp">
      </definition>
      
+     <definition name="jagl/view" template="/WEB-INF/views/jagl/view.jsp">
+     </definition>
+     
      <definition name="user" extends="base.layout2">
         <put-attribute name="page-plugins-styles" value="/WEB-INF/views/user_styles.jsp" />
         <put-attribute name="body" value="/WEB-INF/views/user.jsp" />

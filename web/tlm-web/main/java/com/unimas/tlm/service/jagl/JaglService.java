@@ -2,17 +2,24 @@ package com.unimas.tlm.service.jagl;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.Lists;
+import com.unimas.common.util.StringUtils;
 import com.unimas.jdbc.DBFactory;
+import com.unimas.jdbc.handler.IHandler;
 import com.unimas.jdbc.handler.ResultSetHandler;
 import com.unimas.tlm.bean.ja.JaBean;
 import com.unimas.tlm.bean.ja.JaDirs;
 import com.unimas.tlm.bean.ja.JaTemplete;
+import com.unimas.tlm.bean.zs.UserCollections;
 import com.unimas.tlm.dao.JdbcDao;
+import com.unimas.tlm.dao.zs.ZsdDao;
 import com.unimas.web.auth.AuthRealm.ShiroUser;
 
 @Service
@@ -20,15 +27,123 @@ public class JaglService {
 	
 	private static final int MAX_CONUT = 100;
 	
-	@SuppressWarnings("unchecked")
 	public List<JaBean> getJaList(int dirId, ShiroUser user) throws Exception {
-		JaBean bean = new JaBean();
-		bean.setUserNo(user.getUserNo());
-		if(dirId > 0){
-			bean.setDirId(dirId);
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DBFactory.getConn();
+			stmt = conn.createStatement();
+			String userNo = user.getUserNo();
+			StringBuffer sql = new StringBuffer();
+			sql.append("select a.id,a.name,a.modify_time,a.insert_time,if(a.user_no='"+userNo+"', 0, 1) as isCollected ");
+			sql.append("from ja_list a left join user_collections b on (b.user_no='"+userNo+"' and b.type='ja' and b.cid = a.id) where (a.user_no='"+userNo+"' ");
+			if(dirId > 0){
+				sql.append("and a.dir_id="+dirId+"");
+			}
+			sql.append(") or (b.id is not null ");
+			if(dirId > 0){
+				sql.append("and b.bz_id1="+dirId+"");
+			}
+			sql.append(")");
+			rs = stmt.executeQuery(sql.toString());
+			return ResultSetHandler.custom(rs, new IHandler<List<JaBean>>() {
+				@Override
+				public List<JaBean> handler(ResultSet rs) throws Exception {
+					List<JaBean> list = null;
+					if(rs != null){
+						list = Lists.newArrayList();
+						ResultSetMetaData md = rs.getMetaData();
+						while (rs.next()){
+							JaBean bean = ResultSetHandler.rsToBean(rs, JaBean.class, md);
+							int isCollected = rs.getInt("isCollected");
+							bean.setCollected(isCollected==1);
+							list.add(bean);
+						}
+					}
+					return list;
+				}
+			});
+		} finally {
+			DBFactory.close(conn, stmt, rs);
 		}
-		List<JaBean> list = (List<JaBean>)new JdbcDao<JaBean>().query(bean);
-		return list;
+	}
+	
+	public List<JaBean> getOtherUserJaList(String name, String userName, ShiroUser user) throws Exception {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DBFactory.getConn();
+			stmt = conn.createStatement();
+			String userNo = user.getUserNo();
+			StringBuffer sql = new StringBuffer();
+			sql.append("select a.id,a.name,a.yyfs,a.user_no,a.modify_time,a.insert_time,if(a.id in (");
+			sql.append(" select cid from user_collections where user_no = '"+userNo+"' and type='ja'");
+			sql.append("), 1, 0) as isCollected,b.name as userName ");
+			sql.append("from ja_list a left join teacher_info b on (a.user_no = b.user_no)  where a.user_no <> '"+userNo+"' and a.is_share=1 ");
+			if(StringUtils.isNotEmpty(name)){
+				sql.append("and a.name like '%"+name+"%' ");
+			}
+			if(StringUtils.isNotEmpty(userName)){
+				sql.append("and b.name like '%"+userName+"%'");
+			}
+			rs = stmt.executeQuery(sql.toString());
+			return ResultSetHandler.custom(rs, new IHandler<List<JaBean>>() {
+				@Override
+				public List<JaBean> handler(ResultSet rs) throws Exception {
+					List<JaBean> list = null;
+					if(rs != null){
+						list = Lists.newArrayList();
+						ResultSetMetaData md = rs.getMetaData();
+						while (rs.next()){
+							JaBean bean = ResultSetHandler.rsToBean(rs, JaBean.class, md);
+							int isCollected = rs.getInt("isCollected");
+							bean.setCollected(isCollected==1);
+							bean.setUserName(rs.getString("userName"));
+							list.add(bean);
+						}
+					}
+					return list;
+				}
+			});
+		} finally {
+			DBFactory.close(conn, stmt, rs);
+		}
+	}
+	
+	public void collectJa(List<Map<String, Object>> list, int dirId, ShiroUser user) throws Exception {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DBFactory.getConn();
+			conn.setAutoCommit(false);
+			
+			for(Map<String, Object> map : list){
+				int id = (int)map.get("id");
+				int jf = (int)map.get("yyfs");
+				String userNo = (String)map.get("userNo");
+				UserCollections uc = new UserCollections();
+				uc.setBzId1(dirId);
+				uc.setCid(id);
+				uc.setUserNo(user.getUserNo());
+				uc.setJf(jf);
+				uc.setType("ja");
+				ZsdDao.collect(conn, uc, userNo);
+			}
+			
+			conn.commit();
+		} catch(Exception e){
+			try{
+				if(conn != null){
+					conn.rollback();
+				}
+			} catch(Exception e1){}
+			throw e;
+		} finally {
+			DBFactory.close(conn, stmt, rs);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")

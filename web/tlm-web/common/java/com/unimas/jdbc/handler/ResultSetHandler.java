@@ -223,7 +223,7 @@ public class ResultSetHandler extends BaseHandler {
 	
 	public static final <T> T rsToBean(ResultSet rs, Class<T> clazz, ResultSetMetaData md) throws Exception {
 		T t = clazz.newInstance();
-		List<Field> fields = getFieldsFromClass(clazz);
+		List<Field> fields = getColumnsFromClass(clazz);
 		md = md==null?rs.getMetaData():md;
 		for(Field field : fields){
 			String fieldName = getFieldName(field);
