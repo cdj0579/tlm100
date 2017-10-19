@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="assets/global/plugins/font-opensans/Open-Sans.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/mui/css/mui.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+		
+		<link href="assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+        
+        <link href="assets/login/css/login-2.min.css" rel="stylesheet" type="text/css" />
+        
+        <link href="assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+        <link href="assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+        
+
+		<link href="assets/common/theme/default/css/style.css" rel="stylesheet" id="style_default" type="text/css" />
+		<style type="text/css">
+			.col-xs-2, .col-sm-2, .col-md-2,
+			.col-xs-3, .col-sm-3, .col-md-3 {
+				padding-left: 0px;
+				padding-right: 0px;
+			}
+			
+			.form-horizontal .form-group {
+			    margin-left: 0;
+			    margin-right: 0;
+			    margin-bottom: 0;
+			}
+			.control-label {
+				text-align: right;
+			    margin-bottom: 0;
+			    padding-top: 7px;
+			    padding-right: 15px;
+			}
+			p{
+				margin: 0 0 10px;
+				text-indent: 10%;
+			}
+			div.tab-content {
+				padding: 0 15px;
+				margin: 20px 0;
+			}
+			.table-bordered, .table-bordered>tbody>tr>td,
+			 .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>td, 
+			 .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, 
+			 .table-bordered>thead>tr>th{
+				border-color: #000;
+			}
+		</style>
+	</head>
+	<body > 
+		<header class="mui-bar  mui-bar-nav" style="padding-right: 15px;">
+			<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span>
+			</button>
+			<h1 class="mui-title">深入分析结果</h1>
+		</header>
+		<section style="margin-top: 55px;">
+			<ul class="nav nav-tabs" id="myTab">
+			  	<li class="active"><a href="#sx" data-toggle="tab"> 数学</a></li>
+			  	<li><a href="#yw" data-toggle="tab">语文</a></li>
+			  	<li><a href="#yy" data-toggle="tab">英语</a></li>
+			  	<li><a href="#kx" data-toggle="tab">科学</a></li>
+			  	<li><a href="#sh" data-toggle="tab">社会</a></li>
+			</ul>
+			<div>
+				<p> 中考满分：<span name='zf'>120 </span>分</p>
+			  	<p> 目标分数：<span name='bh_right'>100</span>分/<span name='zf'>120 </span>分</p>
+			  	<p> 分数现状：<span name='bh_right'>75</span>分/<span name='zf'>120 </span>分</p>
+			  	<p> 提分项目：</p>
+			</div>
+			<div class="tab-content" >
+			  	<div class="tab-pane active" id="sx">
+			  		
+			  		<table class="table table-bordered">
+			  			<tbody>
+			  				<tr><td>.数学.表格..</td><td>.数学.表格2..</td></tr>
+			  			</tbody>
+			  		</table>
+			  	</div>
+			  	<div class="tab-pane" id="yw">语文.表格..</div>
+			  	<div class="tab-pane" id="yy">.英语.表格..</div>
+			  	<div class="tab-pane" id="kx">.科学.表格..</div>
+			  	<div class="tab-pane" id="sh">.社会.表格..</div>
+			</div>
+			<div>
+				<p> 温馨提示您与目标的差距：</p>
+				<p>	数学：<span name='low_sx'>120 </span>分</p>
+				<p> 语文：<span name='low_yw'>120 </span>分</p>
+				<p> 英语：<span name='low_yy'>120 </span>分</p>
+				<p> 科学：<span name='low_kx'>120 </span>分</p>
+				<p> 社会：<span name='low_sh'>120 </span>分</p>
+			</div>
+
+		</section>
+		<script src="assets/common/require.js" data-main="assets/user/user_profile" type="text/javascript"></script>
+	</body>
+</html>

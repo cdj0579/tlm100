@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="assets/global/plugins/font-opensans/Open-Sans.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/mui/css/mui.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+		
+		<link href="assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+        
+        <link href="assets/login/css/login-2.min.css" rel="stylesheet" type="text/css" />
+        
+        <link href="assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+        <link href="assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+        
+
+		<link href="assets/common/theme/default/css/style.css" rel="stylesheet" id="style_default" type="text/css" />
+		<style type="text/css">
+			
+			.tab-pane > div   {
+				background-color: #fff;
+				width:100%;
+				height:500px;
+			}
+		</style>
+	</head>
+	<body > 
+		<header class="mui-bar  mui-bar-nav" style="padding-right: 15px;">
+			<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span>
+			</button>
+			<h1 class="mui-title">历史成绩轨迹</h1>
+		</header>
+		<section style="margin-top: 55px;">
+			<ul class="nav nav-tabs" id="myTab">
+			  	<li class="active"><a href="#zf" data-toggle="tab">总分</a></li>
+			  	<li><a href="#sx" data-toggle="tab">数学</a></li>
+			  	<li><a href="#yw" data-toggle="tab">语文</a></li>
+			  	<li><a href="#yy" data-toggle="tab">英语</a></li>
+			  	<li><a href="#kx" data-toggle="tab">科学</a></li>
+			  	<li><a href="#sh" data-toggle="tab">社会</a></li>
+			</ul>
+			
+			<div class="tab-content" >
+				<div class="tab-pane active" id="zf">
+			  		<div id="zf_chart" ></div>
+			  	</div>
+			  	<div class="tab-pane " id="sx">
+			  		<div id="sx_chart" ></div>
+			  	</div>
+			  	<div class="tab-pane" id="yw">
+			  		<div id="yw_chart" ></div>
+			  	</div>
+			  	<div class="tab-pane" id="yy">
+			  		<div id="yy_chart" ></div>
+			  	</div>
+			  	<div class="tab-pane" id="kx">
+			  		<div id="kx_chart" ></div>
+			  	</div>
+			  	<div class="tab-pane" id="sh">
+			  		<div id="sh_chart" ></div>
+			  	</div>
+			</div>
+			
+
+		</section>
+		<script src="assets/common/require.js" data-main="assets/user/czgj" type="text/javascript"></script>
+	</body>
+</html>

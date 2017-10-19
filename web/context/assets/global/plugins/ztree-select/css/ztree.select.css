@@ -1,0 +1,111 @@
+.ztree-select {
+  width: 220px \0;
+  /*IE9 and below*/
+}
+.ztree-select-hidden {
+    position: absolute !important;
+    width: 1px !important;
+}
+.ztree-select > .dropdown-toggle {
+  width: 100%;
+  padding-right: 25px;
+}
+.has-error .ztree-select .dropdown-toggle,
+.error .ztree-select .dropdown-toggle {
+  border-color: #b94a48;
+}
+.has-success .ztree-select .dropdown-toggle,
+.success .ztree-select .dropdown-toggle {
+  border-color: #27a4b0;
+}
+.input-icon.right>.form-control.ztree-select {
+    padding: 0px;
+}
+.ztree-select.fit-width {
+  width: auto !important;
+}
+.ztree-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+  width: 220px;
+}
+.ztree-select .dropdown-toggle:focus {
+  outline: thin dotted #333333 !important;
+  outline: 5px auto -webkit-focus-ring-color !important;
+  outline-offset: -2px;
+}
+.ztree-select.form-control {
+  margin-bottom: 0;
+  padding: 0;
+  border: none;
+}
+.ztree-select.form-control:not([class*="col-"]) {
+  width: 100%;
+}
+.ztree-select.form-control.input-group-btn {
+  z-index: auto;
+}
+.ztree-select.btn-group:not(.input-group-btn),
+.ztree-select.btn-group[class*="col-"] {
+  float: none;
+  display: inline-block;
+  margin-right: 0;
+}
+.ztree-select.btn-group.dropdown-menu-left,
+.ztree-select.btn-group[class*="col-"].dropdown-menu-left,
+.row .ztree-select.btn-group[class*="col-"].dropdown-menu-right {
+  float: left;
+}
+.form-inline .ztree-select.btn-group,
+.form-horizontal .ztree-select.btn-group,
+.form-group .ztree-select.btn-group {
+  margin-bottom: 0;
+}
+.form-group-lg .ztree-select.btn-group.form-control,
+.form-group-sm .ztree-select.btn-group.form-control {
+  padding: 0;
+}
+.form-inline .ztree-select.btn-group .form-control {
+  width: 100%;
+}
+.ztree-select.btn-group.disabled,
+.ztree-select.btn-group > .disabled {
+  cursor: not-allowed;
+}
+.ztree-select.btn-group.disabled:focus,
+.ztree-select.btn-group > .disabled:focus {
+  outline: none !important;
+}
+.ztree-select.btn-group .dropdown-toggle .display-option {
+  display: inline-block;
+  overflow: hidden;
+  width: 100%;
+  text-align: left;
+}
+.ztree-select.btn-group .dropdown-toggle .caret {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  margin-top: -2px;
+  vertical-align: middle;
+}
+.ztree-select.btn-group[class*="col-"] .dropdown-toggle {
+  width: 100%;
+}
+.ztree-select.btn-group .dropdown-menu {
+  min-width: 100%;
+  z-index: 1035;
+  margin-top: 1px;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.ztree-select .dropdown-menu .ztree-container {
+	position: static;
+	float: none;
+	border: 0;
+	margin: 0;
+	border-radius: 0;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	overflow-y: auto;
+	padding: 10px;
+}

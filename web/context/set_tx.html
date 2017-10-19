@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		
+		<link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/mui/css/mui.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/jquery.photoClip/css/default.css" rel="stylesheet" type="text/css" />
+		<style type="text/css">
+			 .tx_div {
+			 	border-top: 1px solid #232F44;
+			 	border-bottom: 1px solid #232F44;
+			 	margin-bottom: 15px;
+			 	height:375px ;
+			 	width:100%;
+			 }
+			 #setImg_div,#selectImg_div, section {
+			 	height:100% ;
+			 	width:100%;
+			 }
+		</style>
+	</head>
+	<body>
+		<div id="setImg_div">
+			<header class="mui-bar  mui-bar-nav" style="padding-right: 15px;">
+				<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>
+				</button>
+				<h1 class="mui-title">设置个人头像</h1>
+			</header>
+			<section style="margin-top: 45px;">
+				<div id="view" class="tx_div"> 
+				
+				</div>
+				<div style="width: 90%;margin: 0 auto;">
+					<label for="txImg" class="btn btn-block btn-default">选择图像</label>
+					<input id="txImg" type="file" class="hidden" name="tx_files">
+				</div>
+			</section>
+		</div>
+		<div id="selectImg_div" style="display: none;">
+			<header class="mui-bar  mui-bar-nav" style="padding-right: 15px;">
+				<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>
+				</button>
+				<button id='setting' class=" mui-pull-right mui-btn-link">使用</button>
+			</header>
+			<section style="margin-top: 45px;">
+				<div class="tx_div " id="selectArea"> 
+					
+				</div>
+			</section>
+		</div>
+		<!--[if lt IE 9]>
+			<script src="../assets/global/plugins/respond.min.js"></script>
+			<script src="../assets/global/plugins/excanvas.min.js"></script> 
+		<![endif]-->
+		<!--<script src="assets/common/require.js" data-main="assets/user/set_tx" type="text/javascript"></script>-->
+		
+		<script src="assets/jquery.photoClip/js/jquery-2.1.1.min.js" ></script>
+		<script src="assets/jquery.photoClip/js/iscroll-zoom.js" ></script>
+		<script src="assets/jquery.photoClip/js/hammer.js" ></script>
+		<script src="assets/jquery.photoClip/js/jquery.photoClip.js" ></script>
+		<script type="text/javascript">
+				
+				$("#setImg_div .mui-icon").click(function(){
+					history.back();
+				});
+				
+				$("#selectImg_div .mui-icon").click(function(){
+					$("#setImg_div").show();
+					$("#selectImg_div").hide();
+				});
+				
+				$("#txImg").change(function(){
+					$("#setImg_div").hide();
+					var _area = $("#selectImg_div").show();
+				});
+				
+				$("#selectArea").photoClip({
+					width: 200,
+					height: 200,
+					file: "#txImg",
+					view: "#view",
+					ok: "#setting",
+					loadStart: function() {
+						console.log("照片读取中");
+					},
+					loadComplete: function() {
+						console.log("照片读取完成");
+					},
+					clipFinish: function(dataURL) {
+						console.log(dataURL);
+						$("#setImg_div").show();
+						$("#selectImg_div").hide();
+						//并保持提交 
+					}
+				});
+		</script>
+	</body>
+</html>

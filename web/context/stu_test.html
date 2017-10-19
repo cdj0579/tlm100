@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+   <link href="assets/global/plugins/font-opensans/Open-Sans.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/mui/css/mui.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+		
+		<link href="assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+        
+        <link href="assets/login/css/login-2.min.css" rel="stylesheet" type="text/css" />
+        
+        <link href="assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+        <link href="assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+        
+
+		<link href="assets/common/theme/default/css/style.css" rel="stylesheet" id="style_default" type="text/css" />
+		<style type="text/css">
+			.form-horizontal .form-group {
+			    margin-left: 0;
+			    margin-right: 0;
+			    margin-bottom: 0;
+			}
+			.control-label {
+				text-align: right;
+			    margin-bottom: 0;
+			    padding-top: 7px;
+			}
+			.wt_answer{
+				position:relative;
+				margin-top: 20px;
+			}
+			.wt_answer>.row {
+				padding: 5px 0;
+			}
+			.checkbox-inline, .radio-inline{
+				padding-left: 0;
+			}
+			.wt_footer {
+				position:relative;
+				margin-top: 20px;
+				padding:0 15px;
+			}
+			.checkbox input[type=checkbox], 
+			.checkbox-inline input[type=checkbox],
+			.radio input[type=radio], 
+			.radio-inline input[type=radio] {
+				position:relative;
+				margin-left:0px
+			}
+		</style>
+	</head>
+	<body> 
+		<header class="mui-bar  mui-bar-nav" style="padding-right: 15px;">
+			<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span>
+			</button>
+			<h1 class="mui-title">测试内容</h1>
+		</header>
+		<div class="container-fluid " style="margin-top: 55px;">
+		 	<div class="pull-right ">
+		 		计时：<span id="time">00:00</span>
+		 	</div>
+		 	<div class="clearfix"></div>
+		 	
+		 	<div id="wt_1">
+		 		<div class="row">
+		 			<div class="col-xs-8 col-md-8">
+		 				<span>问题1：</span> <p class="text-justify " style="text-indent:25px;"> 发打发斯蒂芬阿斯发打发斯蒂芬阿斯发打发斯蒂芬阿斯发打发斯蒂芬阿斯发打发斯蒂芬阿斯 打发打发斯蒂芬阿斯蒂芬撒旦法撒旦</p>
+		 			</div>
+		 			<div style="margin-top: 40px;" class="col-xs-4 col-md-4 ">
+		 				
+		 					<button type="button" class="btn-sm btn-info btn-block uppercase" data-toggle="button">不&nbsp;&nbsp;&nbsp;&nbsp;会 </button>
+		 					
+		 					<button type="button" class="btn-sm btn-info btn-block uppercase" data-toggle="button">不确定 </button>
+		 			</div>
+		 		</div>
+		 		<div class="wt_answer">
+			 		<div class="row ">
+			 			<div class="col-xs-6 col-md-6">
+			 				<label class="radio-inline">
+					            <input type="radio" value="A" name="answer1">A: 
+					        </label>
+						</div>
+			 			<div class="col-xs-6 col-md-6">
+			 				<label class="radio-inline">
+					                <input type="radio" value="B" name="answer1">B: 
+					        </label></div>
+			 		</div>
+			 		<div class="row ">
+			 			<div class="col-xs-6 col-md-6">
+			 				<label class="radio-inline">
+					                <input type="radio" value="C" name="answer1">C: 
+					        </label>
+			 			</div>
+			 			<div class="col-xs-6 col-md-6">
+			 				<label class="radio-inline">
+					                <input type="radio" value="D" name="answer1">D:
+					        </label>	
+			 			</div>
+			 		</div>
+			 	</div>
+		 	</div>
+		 	
+		 	<div id="wt_2" class="hidden">
+		 		<div class="row">
+		 			<div class="col-xs-8 col-md-8">
+		 				<span>问题2：</span> <p class="text-justify " style="text-indent:25px;"> 发打发斯蒂芬阿斯发打发斯蒂芬阿斯发打发斯蒂芬阿斯发打发斯蒂芬阿斯发打发斯蒂芬阿斯 打发打发斯蒂芬阿斯蒂芬撒旦法撒旦</p>
+		 			</div>
+		 			<div style="margin-top: 40px;" class="col-xs-4 col-md-4 ">
+		 				
+		 					<button type="button" class="btn-sm btn-info btn-block uppercase" data-toggle="button">不&nbsp;&nbsp;&nbsp;&nbsp;会 </button>
+		 					
+		 					<button type="button" class="btn-sm btn-info btn-block uppercase" data-toggle="button">不确定 </button>
+		 			</div>
+		 		</div>
+		 		<div class="wt_answer">
+			 		<div class="row ">
+			 			<div class="col-xs-6 col-md-6">
+			 				<label class="radio-inline">
+					            <input type="radio" value="A" name="answer1">A: 
+					        </label>
+						</div>
+			 			<div class="col-xs-6 col-md-6">
+			 				<label class="radio-inline">
+					                <input type="radio" value="B" name="answer1">B: 
+					        </label></div>
+			 		</div>
+			 		<div class="row ">
+			 			<div class="col-xs-6 col-md-6">
+			 				<label class="radio-inline">
+					                <input type="radio" value="C" name="answer1">C: 
+					        </label>
+			 			</div>
+			 			<div class="col-xs-6 col-md-6">
+			 				<label class="radio-inline">
+					                <input type="radio" value="D" name="answer1">D:
+					        </label>	
+			 			</div>
+			 		</div>
+			 	</div>
+		 	</div>
+		 	
+		 	<div id="wt_3" class="hidden">
+		 		<div class="row">
+		 			<div class="col-xs-8 col-md-8">
+		 				<span>问题3：</span> <p class="text-justify " style="text-indent:25px;"> 发打发斯蒂芬阿斯发打发斯蒂芬阿斯发打发斯蒂芬阿斯发打发斯蒂芬阿斯发打发斯蒂芬阿斯 打发打发斯蒂芬阿斯蒂芬撒旦法撒旦</p>
+		 			</div>
+		 			<div style="margin-top: 40px;" class="col-xs-4 col-md-4 ">
+		 				
+		 					<button type="button" class="btn-sm btn-info btn-block uppercase" data-toggle="button">不&nbsp;&nbsp;&nbsp;&nbsp;会 </button>
+		 					
+		 					<button type="button" class="btn-sm btn-info btn-block uppercase" data-toggle="button">不确定 </button>
+		 			</div>
+		 		</div>
+		 		<div class="wt_answer">
+			 		<div class="row ">
+			 			<div class="col-xs-6 col-md-6">
+			 				<label class="radio-inline">
+					            <input type="radio" value="A" name="answer1">A: 
+					        </label>
+						</div>
+			 			<div class="col-xs-6 col-md-6">
+			 				<label class="radio-inline">
+					                <input type="radio" value="B" name="answer1">B: 
+					        </label></div>
+			 		</div>
+			 		<div class="row ">
+			 			<div class="col-xs-6 col-md-6">
+			 				<label class="radio-inline">
+					                <input type="radio" value="C" name="answer1">C: 
+					        </label>
+			 			</div>
+			 			<div class="col-xs-6 col-md-6">
+			 				<label class="radio-inline">
+					                <input type="radio" value="D" name="answer1">D:
+					        </label>	
+			 			</div>
+			 		</div>
+			 	</div>
+		 	</div>
+		</div>
+		<footer class="wt_footer">
+         	<button type="button" name="prev"  class="hidden col-xs-4 col-md-4 btn-sm btn-info pull-left uppercase">上一题</button>
+            <button type="button" name="next" class="col-xs-4 col-md-4 btn-sm btn-info pull-right uppercase">下一题</button>
+		</footer>
+		<script src="assets/common/require.js" data-main="assets/user/stu_test" type="text/javascript"></script>
+</head>
+<body>
+	
+</body>
+</html>

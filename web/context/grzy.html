@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="assets/global/plugins/font-opensans/Open-Sans.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/mui/css/mui.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+		
+		<link href="assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+        
+        <link href="assets/login/css/login-2.min.css" rel="stylesheet" type="text/css" />
+        
+        <link href="assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+        <link href="assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+        
+
+		<link href="assets/common/theme/default/css/style.css" rel="stylesheet" id="style_default" type="text/css" />
+		<style type="text/css">
+			.headImg {
+				position: relative;
+				width: 104px;
+				height: 104px;
+				margin: 5px auto;
+				border:1px solid #379082;
+				border-radius: 52px !important;
+				overflow: hidden;
+			}
+			#imgHead{
+				width: 100px;
+				height: 100px;
+				margin: auto;
+			}
+			
+			a{
+				padding-right: 15%;
+				display: block;
+				text-align: right;
+			}
+			
+		</style>
+	</head>
+	<body > 
+		<header class="mui-bar  mui-bar-nav" style="padding-right: 15px;">
+			<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span>
+			</button>
+			<h1 class="mui-title">个人主页</h1>
+		</header>
+		<section style="margin-top: 55px;">
+			<div class="headImg">
+				<img id="imgHead" src='assets/global/img/user_tx.jpg' />
+			</div>
+			<div align="center">
+				<span>用户名：lusl</span>
+			</div>
+			<div style="margin-top: 50px;"> 
+				<table class="table table-hover">
+				  	<tbody>
+				  	  	<tr>
+					      	<td><a href="./set_pwd.html">修改密码</a></td>
+				    	</tr>
+				    	<tr>
+					      	<td><a  href="./user_profile.html">完善个人信息</a></td>
+					    </tr>
+					    <tr>
+					      	<td><a  href="./test_result.html">查看测试结果</a></td>
+					    </tr>
+					    <tr>
+					      	<td><a  href="./srfx_result.html"> 查看分析结果</a></td>
+					    </tr>
+					    <tr>
+					      	<td><a  href="./stu_test.html">再做一次测试</a></td>
+					    </tr>
+					    <tr>
+					      	<td><a  href="">查看历史成绩轨迹图</a></td>
+					    </tr>
+				  </tbody>
+				</table>
+			</div>
+		</section>
+		<script src="assets/common/require.js" data-main="assets/user/grzy" type="text/javascript"></script>
+	</body>
+</html>

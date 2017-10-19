@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="assets/global/plugins/mui/css/mui.min.css" rel="stylesheet" type="text/css" />
+
+		<style>
+			ul {
+				font-size: 14px;
+				color: #8f8f94;
+			}
+			.mui-btn {
+				padding: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">个人信息</h1>
+		</header>
+		<div class="mui-content">
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label>学生姓名</label>
+					<input id='xs_name' type="text" class="mui-input-clear mui-input" placeholder="请输入学生姓名"/>
+				</div>
+				<div class="mui-input-row">
+					<label>家长姓名</label>
+					<input id='jz_name' type="text" class="mui-input-clear mui-input" placeholder="请输入家长姓名"/>
+				</div>
+				<div class="mui-input-row">
+					<label>手机号码</label>
+					<input id='phone' type="text" class="mui-input-clear mui-input" placeholder="请输入手机号码"/>
+				</div>
+				<div class="mui-input-row">
+					<label>所在学校</label>
+					<input id='school' type="text" class="mui-input-clear mui-input" placeholder="请输入学校"/>
+				</div>
+				<div class="mui-input-row">
+					<label>所在年级</label>
+					<input id='nj' name='nj' type="text" class="mui-input-clear mui-input" placeholder="请输入年级"/>
+				</div>
+				<div class="mui-input-row">
+					<p style="padding:0 10px;text-indent:25px;color: red;">注：假如你正在过初一暑假，则应选择初一；初二、初三也一样</p>
+				</div>
+				<div class="mui-input-row">
+					<label>考试成绩</label>
+					<input id='kscj' type="text" class="mui-input-clear mui-input" placeholder="请输入最近次考试成绩"/>
+				</div>
+			</form>
+			<div class="mui-content-padded">
+				<button id='reg' class="mui-btn mui-btn-block mui-btn-primary">保存</button>
+			</div>
+		</div>
+		<script src="assets/global/plugins/mui/js/mui.min.js"></script>
+		<script>
+			(function(_mui, doc) {
+				_mui.init();
+				
+			}(mui, document));
+		</script>
+	</body>
+
+</html>
