@@ -18,11 +18,11 @@ define(['assets/common/config'], function(config) {
 		});
 		
 		$("button[name='pk']").click(function(){
-			alert("pk");
+			window.location.href = basePath + "pk_result.html";
 		})
 		
 		$("button[name='srfx']").click(function(){
-			alert("分析");
+			window.location.href = basePath + "srfx_set.html";
 		})
 	});
 	

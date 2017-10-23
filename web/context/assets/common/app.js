@@ -1405,7 +1405,7 @@ define(["bootstrap-toastr"], function(toastr){
 	   });
 	   App.init(); // init metronic core componets
 	});
-	App.remoteUrlPre = "http://127.0.0.1:8080/" ;
+	App.remoteUrlPre = "http://127.0.0.1:8080/app/" ;
 	window.App = App;
 	return App;
 });
