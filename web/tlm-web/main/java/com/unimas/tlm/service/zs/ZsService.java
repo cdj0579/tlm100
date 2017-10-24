@@ -139,6 +139,12 @@ public class ZsService {
 			map.put("name", b.getName());
 			map.put("content", b.getContent());
 			map.put("answer", b.getAnswer());
+		} else if("zt".equals(type)){
+			ZtContentBean b = new ZtContentBean();
+			b.setId(id);
+			b = (ZtContentBean)dao.getById(b);
+			map.put("name", b.getName());
+			map.put("content", b.getContent());
 		}
 		return map;
 	}

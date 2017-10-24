@@ -666,6 +666,29 @@ public class ZsglController {
 		}
 	}
     
+    @RequestMapping(value="zt/otherUserContents")
+   	@ResponseBody
+   	public AjaxDataModal getOtherUserContents(HttpServletRequest request) {
+   		try {
+   			DataTableDM dm = new DataTableDM(0, true);
+   			int kmId = PageUtils.getIntParamAndCheckEmpty(request, "kmId", "错误的科目！");
+   			int njId = PageUtils.getIntParamAndCheckEmpty(request, "njId", "错误的年级！");
+   			int xq = PageUtils.getIntParamAndCheckEmpty(request, "xq", "未选择正确的上下学期！");
+   			int qzqm = PageUtils.getIntParamAndCheckEmpty(request, "qzqm", "未选择期中期末！");
+   			List<ZtBean> list = service.queryZt(kmId, njId, xq, qzqm);
+   			dm.putDatas(list);
+   			return dm;
+   		} catch (Exception e) {
+   			UIException uiex = null;
+   			if(e instanceof UIException){
+   				uiex = (UIException)e;
+   			} else {
+   				uiex = new UIException("加载专题失败！", e);
+   			}
+   			return uiex.toDM();
+   		}
+   	}
+    
     @RequestMapping(value="zt/content/list")
 	@ResponseBody
 	@RequiresRoles("teacher")

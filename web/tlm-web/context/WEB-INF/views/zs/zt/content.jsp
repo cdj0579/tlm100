@@ -8,6 +8,7 @@
 	<div class="portlet-title">
 		<div class="caption">
           	<a class="btn green add"><i class="fa fa-plus"></i> 添加内容</a>
+          	<a class="btn yellow collect"><i class="fa fa-gg"></i> 收藏专题内容 </a>
 		</div>
 		<div class="actions col-md-8">
            	<form action="#" class="form-horizontal " id="form_remark">

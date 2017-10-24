@@ -11,13 +11,15 @@ define(['assets/common/config'], function(config) {
 	require.config({
 		paths: {
 			"RememberBaseInfo": "assets/base/cookie/rememberBaseInfo",
-			"editContent": "assets/zs/zt/js/editContent"
+			"editContent": "assets/zs/zt/js/editContent",
+			"collectContent": "assets/zs/zt/js/collectContent",
+			"Viewer": "assets/zs/reviewContent"
 		},shim: {
 		}
 	});
 	
 	require(['app','layout','demo']);
-	require(['domready!', 'app', 'RememberBaseInfo', 'datatables.bt', "select3"], function (doc, App, RememberBaseInfo){
+	require(['domready!', 'app', 'RememberBaseInfo', 'Viewer', 'datatables.bt', "select3"], function (doc, App, RememberBaseInfo, Viewer){
 		var $table = $('table');
 		var $form = $('form');
 		var $search = $('#searchInp');
@@ -52,10 +54,16 @@ define(['assets/common/config'], function(config) {
 				dom: "f<'table-scrollable't><'row'<'col-md-5 col-sm-5'i><'col-md-7 col-sm-7'p>>",
 				drawCallback: function(){ App.handleTooltips();  },
 	            columns: [
-	                  { title: "专题", data: "zt", render: function(data, type, full){
+	                  { title: "所属专题", data: "zt", render: function(data, type, full){
 	                	  return data.name;
 	                  }},
-	                  { title: "内容简介", data: "name"},
+	                  { title: "内容简介", data: "name", render: function(data, type, full){
+	                	  var html = data;
+	                	  if(full.collected && (full.collected == "true" || full.collected == true)){
+	                		  html += '&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">收藏</span>';
+                	  	  }
+	                	  return html;
+	    	          }},
 	                  { title: "是否原创", data: "isOriginal", render: function(data, type, full){
 	                	  if(data == 1){
 	                		  return "原创";
@@ -72,8 +80,13 @@ define(['assets/common/config'], function(config) {
 	                	  }
 	                  }},
 	    	          { title: "操作", data: "id", render: function(data, type, full){
-	    	        	  return '<a href="javascript:;" class="btn red delete"> 删除 <i class="fa fa-remove"></i></a>'+
-	    	        	  '<a href="javascript:;" class="btn blue edit"> 编辑 <i class="fa fa-edit"></i></a>';
+	    	        	  var html = '';
+	    	        	  if(!full.collected || (full.collected != "true" && full.collected != true)){
+	    	        		  html += '<a href="javascript:;" class="btn red delete"> 删除 <i class="fa fa-remove"></i></a>'+
+	    	        		  	'<a href="javascript:;" class="btn blue edit"> 编辑 <i class="fa fa-edit"></i></a>';
+	    	        	  }
+	    	        	  html += '<a href="javascript:void(0);" class="btn yellow review"><i class="fa fa-search-plus"></i> 预览</a>';
+	    	        	  return html;
 	    	          }}
 	    	      ]
 		      } );
@@ -100,6 +113,11 @@ define(['assets/common/config'], function(config) {
 					},
 					cancerFn: function(){}
 				});
+			});
+			$tableWrapper.on('click', '.btn.review', function(){
+				var $tr = $(this).closest("tr");
+				var data = dt.api().row($tr).data();
+				Viewer.view(data.id, "zt");
 			});
 		};
 		
@@ -191,6 +209,19 @@ define(['assets/common/config'], function(config) {
 			} else {
 				App.getAlert().error("请先选择[科目],[年级],[学期],[期中期末]!", "提示");
 			}
+		});
+		
+		$('.btn.collect').on("click", function(){
+			App.ajaxModal({
+				id: "collectJa",
+				scroll: true,
+				width: "1100",
+				required: ["collectContent"],
+				remote: basePath+"assets/zs/zt/collectContent.html",
+				callback: function(modal, args){
+					args[0].init(modal, baseParams, reload);
+				}
+			});
 		});
 	});
 	
