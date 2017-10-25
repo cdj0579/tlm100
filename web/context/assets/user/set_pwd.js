@@ -63,8 +63,17 @@ define(['assets/common/config'], function(config) {
 	        });
 			var mySubmit=function(){
 				$('.setPwd-form .form-group').removeClass('has-error');
-				if ($('.setPwd-form').validate().form()) {
-	             	$('.setPwd-form').attr("action", App.remoteUrlPre+"setPwd").submit(); //form validation success, call ajax form submit
+				var form =  $('.setPwd-form');
+				if (form.validate().form()) {
+					form.ajaxSubmit({
+	            		url: App.remoteUrlPre + "updatePwd",
+	            		type: "POST",
+	            		dataType: "json",
+	            		success: function(result){
+	            			form[0].reset();
+	            			App.handlerAjaxJson(result,"修改密码成功！");
+	            		}
+	            	});
 	             }
 	             return false;
 			}

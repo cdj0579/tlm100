@@ -245,8 +245,20 @@ define(['assets/common/config'], function(config) {
 	            }
 	        });
 	      	var registerSubmit = function(){
-	      		if ($('.register-form').validate().form()) {
-					$('.register-form').attr("action",App.remoteUrlPre+"register").submit();
+	      		var form = $('.register-form');
+	      		if (form.validate().form()) {
+	      			form.ajaxSubmit({
+	            		url: App.remoteUrlPre + "register",
+	            		type: "POST",
+	            		dataType: "json",
+	            		success: function(result){
+	            			App.handlerAjaxJson(result,function(){
+	            				form[0].reset();
+	            				location.href="./index.html";
+	            			});
+	            		}
+	            	});
+					//$('.register-form').attr("action",App.remoteUrlPre+"register").submit();
 	            }
 				return false;
 	      	}
@@ -261,13 +273,17 @@ define(['assets/common/config'], function(config) {
 	        });
 	        
 	        $('#register-btn').click(function() {
-	            $('.login-form').hide();
+	            var loginForm = $('.login-form')
+	            loginForm.hide();
+	            loginForm[0].reset();
 	            $('.register-form').show();
 	        });
 
 	        $('#register-back-btn').click(function() {
 	            $('.login-form').show();
-	            $('.register-form').hide();
+	            var regForm = $('.register-form');
+	            regForm.hide();
+	            regForm[0].reset();
 	        });
 	    }
 	    
