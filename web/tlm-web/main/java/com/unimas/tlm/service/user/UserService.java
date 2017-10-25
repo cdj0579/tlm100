@@ -24,6 +24,7 @@ import com.unimas.tlm.bean.user.Account;
 import com.unimas.tlm.bean.user.StudentInfo;
 import com.unimas.tlm.bean.user.TeacherInfo;
 import com.unimas.tlm.dao.JdbcDao;
+import com.unimas.tlm.exception.UIException;
 import com.unimas.tlm.utils.ImageUtil;
 import com.unimas.web.auth.AuthRealm.ShiroUser;
 
@@ -147,6 +148,33 @@ public class UserService {
 		return true;
 	}
 	
+	/**
+	 * 判断注册用户名是否已存在 
+	 * @param conn 数据库连接信息
+	 * @param username 用户名
+	 * @return   true：存在；false：不存在
+	 * @throws Exception
+	 */
+	private boolean checkExistsUserName(Connection conn, String username) throws UIException{
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = "select count(*) from account where username=?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, username);
+			rs = stmt.executeQuery();
+			int count = ResultSetHandler.toInt(rs);
+			if(count > 0){
+				return true;
+			}
+		}catch (Exception e) {
+			throw new UIException("服务器异常！");
+		} finally {
+			DBFactory.close(null, stmt, rs);
+		}
+		return false;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<StudentInfo> queryStudents(String key) throws Exception{
 		return (List<StudentInfo>)new JdbcDao<StudentInfo>().query(new StudentInfo());
@@ -188,6 +216,9 @@ public class UserService {
 		Connection conn = null;
 		try {
 			conn = DBFactory.getConn();
+			if(checkExistsUserName(conn,username)){
+				throw new UIException("用户名已被使用！");
+			}
 			conn.setAutoCommit(false);
 			String userNo = saveAccount(conn, username, password, "student");
 			StudentInfo info = new StudentInfo();
@@ -195,8 +226,10 @@ public class UserService {
 			new JdbcDao<StudentInfo>().save(conn, info);
 			conn.commit();
 		} catch(Exception e){
-			if(conn != null){
-				try { conn.rollback(); } catch(Exception t){}
+			if(!(e instanceof UIException)){
+				if(conn != null){
+					try { conn.rollback(); } catch(Exception t){}
+				}
 			}
 			throw e;
 		} finally {

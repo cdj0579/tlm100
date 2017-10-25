@@ -116,8 +116,8 @@ public class AuthRealm extends AuthorizingRealm {
 				role = "admin";
 				realName = "管理员";
 			} else {
-				TeacherInfo teacher = service.getTeacherByUserNo(conn, userNo);
-				if(teacher != null){
+				if(userNo.startsWith("T")){
+					TeacherInfo teacher = service.getTeacherByUserNo(conn, userNo);
 					role = "teacher";
 					realName = teacher.getName();
 					userId = teacher.getId();
@@ -126,7 +126,7 @@ public class AuthRealm extends AuthorizingRealm {
 						teacher.setTx(null);
 					}
 					info = teacher;
-				} else {
+				} else if(userNo.startsWith("S")) {
 					StudentInfo student = service.getStudentByUserNo(conn, userNo);
 					info = student;
 					role = "student";
@@ -135,6 +135,10 @@ public class AuthRealm extends AuthorizingRealm {
 					String parentName = student.getParentName();
 					realName = StringUtils.isNotEmpty(studentName)?studentName:
 						(StringUtils.isNotEmpty(parentName)?parentName:username);
+					if(student.getTx()!=null){
+						txImg = new String(student.getTx());
+						student.setTx(null);
+					}
 				}
 			}
 			ShiroUser user = new ShiroUser(userId, userNo, username, realName, role);

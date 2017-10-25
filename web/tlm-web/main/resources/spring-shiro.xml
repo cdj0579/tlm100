@@ -78,15 +78,25 @@
                 /assets/** = anon
                 /errors/** = anon
                 /user/teacher/register = anon
-                /user/student/register = anon
+                /app/register = anon
                 <!-- 登录相关 -->
                 /login = authc
+                /app/login = appAuthc
                 <!-- 登出相关 -->
                 /logout = logout
+                /app/logout = applogout
                 <!-- 其它请求需要登录访问，locked是用于处理页面锁定 -->
                 /** = ajaxUser,locked  
             </value>  
         </property>  
+    </bean>
+    <bean id="applogout" class="org.apache.shiro.web.filter.authc.LogoutFilter">
+        <property name="redirectUrl" value="/App/login.html" />
+    </bean>  
+    <bean id="appAuthc"
+        class="com.unimas.web.auth.MyFormAuthenticationFilter">
+        <property name="loginUrl" value="/app/login" />
+        <property name="successUrl" value="/App/index.html" />
     </bean> 
     <bean id="myAuthcFilter"
            class="com.unimas.web.auth.MyFormAuthenticationFilter"/>
