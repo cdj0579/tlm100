@@ -238,7 +238,7 @@ public class UserService {
 	}
 	
 	public void saveStudentInfo(String studentName, String parentName, String contact, int mbxxId, 
-			int njId, ShiroUser user) throws Exception {
+			int njId, ShiroUser user,int zhcj) throws Exception {
 		StudentInfo info = new StudentInfo();
 		info.setId(user.getUserId());
 		info.setStudentName(studentName);
@@ -246,7 +246,9 @@ public class UserService {
 		info.setContact(contact);
 		info.setMbxxId(mbxxId);
 		info.setNjId(njId);
+		info.setZhcj(zhcj);
 		new JdbcDao<StudentInfo>().save(info);
+		user.setInfo(info);
 	}
 	
 	public static void main(String[] args) throws Exception {

@@ -1,5 +1,8 @@
 package com.unimas.tlm.controller.app;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.SecurityUtils;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.unimas.tlm.bean.datamodal.AjaxDataModal;
 import com.unimas.tlm.exception.UIException;
 import com.unimas.tlm.service.AppService;
+import com.unimas.tlm.service.dic.DicService;
 import com.unimas.tlm.service.user.UserService;
 import com.unimas.web.auth.AuthRealm.ShiroUser;
 import com.unimas.web.utils.PageUtils;
@@ -122,6 +126,56 @@ public class AppSystemController {
 			appService.saveStuTxImg(user.getUserId(),txImg);
 			user.setTxImg(txImg);
             return dm;
+		} catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			}else{
+				uiex = new UIException("服务器异常！");
+			}
+			return uiex.toJson();
+		}
+    }
+	
+	@RequestMapping(value = "/saveStuInfo",method = RequestMethod.POST)
+	@ResponseBody
+    public Object saveStuInfo(HttpServletRequest request) {
+		try {
+			String xs_name = PageUtils.getParam(request, "xs_name", null);
+			String jz_name = PageUtils.getParam(request, "jz_name", null);
+			String phone = PageUtils.getParam(request, "phone", null);
+			int school = PageUtils.getIntParam(request, "school");
+			int nj = PageUtils.getIntParam(request, "nj");
+			int zhcj = PageUtils.getIntParam(request, "zhcj");
+
+			AjaxDataModal dm = new AjaxDataModal(true);
+			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+			service.saveStudentInfo(xs_name, jz_name, phone, school, nj, user,zhcj);
+            return dm;
+		} catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			}else{
+				uiex = new UIException("服务器异常！");
+			}
+			return uiex.toJson();
+		}
+    }
+	
+	@RequestMapping(value = "/getStuInfo",method = RequestMethod.POST)
+	@ResponseBody
+    public Object getStuInfo(HttpServletRequest request) {
+		try {
+			AjaxDataModal dm = new AjaxDataModal(true);
+			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+            dm.put("info", user.getInfo());
+            DicService ds = new DicService();
+            List<Map<String, Object>> nj_list = ds.get("nj_dic", "id", "name", null, null, null);
+   			dm.put("nj_list", nj_list);
+   			List<Map<String, Object>> school_list = ds.get("mbxx", "id", "name", null, null, null);
+   			dm.put("school_list", school_list);
+			return dm;
 		} catch (Exception e) {
 			UIException uiex = null;
 			if(e instanceof UIException){

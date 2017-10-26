@@ -37,6 +37,8 @@ public class StudentInfo extends JdbcBean implements java.io.Serializable {
 	private int hyd = -1;
 	@Column(name="tx") //头像图片的base64字符串
 	private byte[] tx;
+	@Column(name="zhcj", nullNumberValue=-1)
+	private int zhcj = -1;
 	
 	public String getUserNo() {
 		return userNo;
@@ -103,6 +105,12 @@ public class StudentInfo extends JdbcBean implements java.io.Serializable {
 	}
 	public void setTx(byte[] tx) {
 		this.tx = tx;
+	}
+	public int getZhcj() {
+		return zhcj;
+	}
+	public void setZhcj(int zhcj) {
+		this.zhcj = zhcj;
 	}
 
 }
