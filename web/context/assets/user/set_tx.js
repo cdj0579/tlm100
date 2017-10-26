@@ -11,13 +11,14 @@ define(['assets/common/config'], function(config) {
 			"hammer":"assets/jquery.photoClip/js/hammer",
 			"iscroll-zoom":"assets/jquery.photoClip/js/iscroll-zoom"
 		},shim: {
-			"iscroll-zoom":['jquery'],
-			"hammer":['jquery','iscroll-zoom'],			
-			"photoClip":['jquery','iscroll-zoom','hammer']
+			"iscroll-zoom":{
+				exports: 'IScroll'
+			},
+			"photoClip":['app']
 		}
 	});
 	
-	require(['domready!', 'jquery','iscroll-zoom', 'hammer','photoClip'], function (doc){
+	require(['domready!', 'app','photoClip'], function (doc,App){
 		
 		$(".mui-icon").click(function(){
 			history.back();
@@ -28,25 +29,35 @@ define(['assets/common/config'], function(config) {
 			$("#selectImg_div").show();
 			
 		});
-		
-		/*$("#selectArea").photoClip({
+		$.ajaxSetup({
+		   beforeSend: function(xhr){
+			   if(this.showBlockUI != false){
+				   App.blockUI({ message: "正在保持中..." });
+			   }
+		   }
+		});
+		$("#selectArea").photoClip({
 			width: 200,
 			height: 200,
 			file: "#txImg",
 			view: "#view",
 			ok: "#setting",
 			loadStart: function() {
-				console.log("照片读取中");
+				//console.log("照片读取中");
 			},
 			loadComplete: function() {
-				console.log("照片读取完成");
+				//console.log("照片读取完成");
 			},
 			clipFinish: function(dataURL) {
-				console.log(dataURL);
-				$("#setImg_div").show();
-				$("#selectImg_div").hide();
+				//并保持提交 
+				App.post(App.remoteUrlPre+"saveStuHeadImg", {"headImg":dataURL},function(result){
+					$("#setImg_div").show();
+					$("#selectImg_div").hide();
+					var alert = App.getAlert({positionClass:"toast-top-center"});
+					alert.success("保存头像图片成功！", "提示");
+		     	});
 			}
-		});*/
+		});
 		
 	});
 	

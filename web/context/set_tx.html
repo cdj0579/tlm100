@@ -7,6 +7,7 @@
 		
 		<link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="assets/global/plugins/mui/css/mui.min.css" rel="stylesheet" type="text/css" />
+		<link href="assets/global/css/components.min.css" rel="stylesheet" type="text/css" />
 		<link href="assets/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css" />
 		<link href="assets/jquery.photoClip/css/default.css" rel="stylesheet" type="text/css" />
 		<style type="text/css">
@@ -58,50 +59,6 @@
 			<script src="../assets/global/plugins/respond.min.js"></script>
 			<script src="../assets/global/plugins/excanvas.min.js"></script> 
 		<![endif]-->
-		<!-- <script src="assets/common/require.js" data-main="assets/user/set_tx" type="text/javascript"></script>
-		 -->
-		<script src="assets/jquery.photoClip/js/jquery-2.1.1.min.js" ></script>
-		<script src="assets/jquery.photoClip/js/iscroll-zoom.js" ></script>
-		<script src="assets/jquery.photoClip/js/hammer.js" ></script>
-		<script src="assets/jquery.photoClip/js/jquery.photoClip.js" ></script>
-		<script type="text/javascript">
-				
-				$("#setImg_div .mui-icon").click(function(){
-					history.back();
-				});
-				
-				$("#selectImg_div .mui-icon").click(function(){
-					$("#setImg_div").show();
-					$("#selectImg_div").hide();
-				});
-				
-				$("#txImg").change(function(){
-					$("#setImg_div").hide();
-					var _area = $("#selectImg_div").show();
-				});
-				
-				$("#selectArea").photoClip({
-					width: 200,
-					height: 200,
-					file: "#txImg",
-					view: "#view",
-					ok: "#setting",
-					loadStart: function() {
-						console.log("照片读取中");
-					},
-					loadComplete: function() {
-						console.log("照片读取完成");
-					},
-					clipFinish: function(dataURL) {
-						console.log(dataURL);
-						$("#setImg_div").show();
-						$("#selectImg_div").hide();
-						//并保持提交 
-						$.post("http://127.0.0.1:8080/app/saveStuHeadImg", {"headImg":dataURL},function(result){
-				     		  
-				     	},"json");
-					}
-				});
-		</script>
+		<script src="assets/common/require.js" data-main="assets/user/set_tx" type="text/javascript"></script>
 	</body>
 </html>
