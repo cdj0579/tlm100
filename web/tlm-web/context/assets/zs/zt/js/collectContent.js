@@ -1,4 +1,4 @@
-define(['datatables.bt', "select3"], function(a, b, RememberBaseInfo){
+define(['datatables.bt', "select3", 'Viewer'], function(a, b, Viewer){
 	var modal = null;
 	var onSelected = null;
 	var $table = null;
@@ -12,6 +12,7 @@ define(['datatables.bt', "select3"], function(a, b, RememberBaseInfo){
 				url: basePath+"zs/zt/otherUserContents",
 	            type: "POST",
         		data: function(data){
+        			$.extend(data, baseParams);
         			data.name = $form.find('input[name="name"]').val();
         			data.contentName = $form.find('input[name="contentName"]').val();
         			data.userName = $form.find('input[name="userName"]').val();
@@ -105,7 +106,7 @@ define(['datatables.bt', "select3"], function(a, b, RememberBaseInfo){
 							userNo: this.userNo
 						});
 					});
-					App.post(basePath+"zs/ztContent/collect", $.extend({}, baseParam, {
+					App.post(basePath+"zs/zt/content/collect", $.extend({}, baseParams, {
 							datas: window.JSON.stringify(rows)
 						}),function(result){
 						if($.isFunction(onSelected)){

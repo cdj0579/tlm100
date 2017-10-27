@@ -22,6 +22,23 @@ public class ZtContentBean extends JdbcBean {
 	
 	@Column(ignore=true)
 	private ZtBean zt;
+	@Column(ignore=true)
+	private boolean isCollected;
+	@Column(ignore=true)
+	private String userName;
+
+	public boolean isCollected() {
+		return isCollected;
+	}
+	public void setCollected(boolean isCollected) {
+		this.isCollected = isCollected;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 	
 	public String getName() {
 		return name;

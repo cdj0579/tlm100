@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import com.unimas.common.util.StringUtils;
 import com.unimas.jdbc.DBFactory;
 import com.unimas.jdbc.handler.IHandler;
 import com.unimas.jdbc.handler.ResultSetHandler;
+import com.unimas.tlm.bean.zs.UserCollections;
 import com.unimas.tlm.bean.zs.XtBean;
 import com.unimas.tlm.bean.zs.XtZsdRef;
 import com.unimas.tlm.bean.zs.ZsdBean;
@@ -331,14 +333,51 @@ public class ZsService {
 		new JdbcDao<ZtContentBean>().delete(id, ZtContentBean.class);
 	}
 	
+	
+	public void collectZtContent(List<Map<String, Object>> list, final ShiroUser user) throws Exception{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DBFactory.getConn();
+			conn.setAutoCommit(false);
+			
+			for(Map<String, Object> map : list){
+				int id = (int)map.get("id");
+				int jf = (int)map.get("yyfs");
+				String userNo = (String)map.get("userNo");
+				UserCollections uc = new UserCollections();
+				uc.setCid(id);
+				uc.setUserNo(user.getUserNo());
+				uc.setJf(jf);
+				uc.setType("zt");
+				ZsdDao.collect(conn, uc, userNo);
+			}
+			
+			conn.commit();
+		} catch(Exception e){
+			try{
+				if(conn != null){
+					conn.rollback();
+				}
+			} catch(Exception e1){}
+			throw e;
+		} finally {
+			DBFactory.close(conn, stmt, rs);
+		}
+	}
+	
 	public List<ZtContentBean> queryZtContentOnUser(final int kmId, final int njId, int xq, final int qzqm, final ShiroUser user) throws Exception{
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
 			conn = DBFactory.getConn();
-			String sql = "select a.*,b.name as pName from zt_content as a left join zt_main as b on(a.pid = b.id) "
-					+ "where a.user_no=? and b.km_id=? and b.nj_id=? and b.xq=? and b.qzqm=?";
+			String userNo = user.getUserNo();
+			String sql = "select a.id,a.name,a.yyfs,a.user_no,a.is_share,a.is_original,"
+					+ "if(a.user_no='"+userNo+"', 0, 1) as isCollected,c.name as pName "
+							+ "from zt_content as a left join user_collections b on (b.user_no='"+userNo+"' and b.type='zt' and b.cid = a.id) left join zt_main as c on(a.pid = c.id) "
+					+ "where (a.user_no=? or b.id is not null) and c.km_id=? and c.nj_id=? and c.xq=? and c.qzqm=?";
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, user.getUserNo());
 			stmt.setInt(2, kmId);
@@ -346,6 +385,38 @@ public class ZsService {
 			stmt.setInt(4, xq);
 			stmt.setInt(5, qzqm);
 			rs = stmt.executeQuery();
+			return toZtContent(rs, kmId, njId, xq, qzqm);
+		} finally {
+			DBFactory.close(conn, stmt, rs);
+		}
+	}
+	
+	public List<ZtContentBean> getOtherUserContents(final int kmId, final int njId, final int xq, final int qzqm, 
+			String contentName, String userName, String name, final ShiroUser user) throws Exception{
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DBFactory.getConn();
+			stmt = conn.createStatement();
+			String userNo = user.getUserNo();
+			StringBuffer sql = new StringBuffer();
+			sql.append("select a.id,a.name,a.yyfs,a.user_no,a.is_share,a.is_original,if(a.id in (");
+			sql.append(" select cid from user_collections where user_no = '"+userNo+"' and type='zt'");
+			sql.append("), 1, 0) as isCollected,b.name as userName,c.name as pName ");
+			sql.append("from zt_content a left join teacher_info b on (a.user_no = b.user_no)");
+			sql.append("left join zt_main c on (a.pid = c.id)");
+			sql.append(" where a.user_no <> '"+userNo+"' and a.is_share=1 and c.km_id="+kmId+" and c.nj_id="+njId+" and c.xq="+xq+" and c.qzqm="+qzqm+" ");
+			if(StringUtils.isNotEmpty(contentName)){
+				sql.append("and a.name like '%"+contentName+"%' ");
+			}
+			if(StringUtils.isNotEmpty(userName)){
+				sql.append("and b.name like '%"+userName+"%'");
+			}
+			if(StringUtils.isNotEmpty(name)){
+				sql.append("and c.name like '%"+name+"%'");
+			}
+			rs = stmt.executeQuery(sql.toString());
 			return toZtContent(rs, kmId, njId, xq, qzqm);
 		} finally {
 			DBFactory.close(conn, stmt, rs);
@@ -383,6 +454,13 @@ public class ZsService {
 						list = Lists.newArrayList();
 					}
 					ZtContentBean bean = ResultSetHandler.rsToBean(rs, ZtContentBean.class, md);
+					if(ResultSetHandler.hasColumn("isCollected", md)){
+						int isCollected = rs.getInt("isCollected");
+						bean.setCollected(isCollected==1);
+					}
+					if(ResultSetHandler.hasColumn("userName", md)){
+						bean.setUserName(rs.getString("userName"));
+					}
 					ZtBean zt = new ZtBean();
 					zt.setId(bean.getPid());
 					zt.setName(rs.getString("pName"));

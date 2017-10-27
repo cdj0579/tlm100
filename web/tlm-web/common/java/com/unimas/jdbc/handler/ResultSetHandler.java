@@ -205,7 +205,7 @@ public class ResultSetHandler extends BaseHandler {
 
 	}*/
 	
-	private static boolean hasColumn(String fieldName, ResultSetMetaData md) {
+	public static boolean hasColumn(String fieldName, ResultSetMetaData md) {
 		boolean has = false;
 		try {
 			for (int i = 1; i <= md.getColumnCount(); i++) {

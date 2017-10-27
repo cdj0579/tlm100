@@ -212,16 +212,23 @@ define(['assets/common/config'], function(config) {
 		});
 		
 		$('.btn.collect').on("click", function(){
-			App.ajaxModal({
-				id: "collectJa",
-				scroll: true,
-				width: "1100",
-				required: ["collectContent"],
-				remote: basePath+"assets/zs/zt/collectContent.html",
-				callback: function(modal, args){
-					args[0].init(modal, baseParams, reload);
+			if(baseParams.kmId && baseParams.kmId > 0 
+					&& baseParams.njId && baseParams.njId > 0
+					&& baseParams.qzqm && baseParams.qzqm > 0
+					&& baseParams.xq && baseParams.xq > 0){
+					App.ajaxModal({
+						id: "collectJa",
+						scroll: true,
+						width: "1100",
+						required: ["collectContent"],
+						remote: basePath+"assets/zs/zt/collectContent.html",
+						callback: function(modal, args){
+							args[0].init(modal, baseParams, reload);
+						}
+					});
+				} else {
+					App.getAlert().error("请先选择[科目],[年级],[学期],[期中期末]!", "提示");
 				}
-			});
 		});
 	});
 	

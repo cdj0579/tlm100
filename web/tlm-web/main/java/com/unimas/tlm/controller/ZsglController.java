@@ -675,7 +675,11 @@ public class ZsglController {
    			int njId = PageUtils.getIntParamAndCheckEmpty(request, "njId", "错误的年级！");
    			int xq = PageUtils.getIntParamAndCheckEmpty(request, "xq", "未选择正确的上下学期！");
    			int qzqm = PageUtils.getIntParamAndCheckEmpty(request, "qzqm", "未选择期中期末！");
-   			List<ZtBean> list = service.queryZt(kmId, njId, xq, qzqm);
+   			String contentName = PageUtils.getParam(request, "contentName", null);
+   			String userName = PageUtils.getParam(request, "userName", null);
+   			String name = PageUtils.getParam(request, "name", null);
+   			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+   			List<ZtContentBean> list = service.getOtherUserContents(kmId, njId, xq, qzqm, contentName, userName, name, user);
    			dm.putDatas(list);
    			return dm;
    		} catch (Exception e) {
@@ -683,7 +687,32 @@ public class ZsglController {
    			if(e instanceof UIException){
    				uiex = (UIException)e;
    			} else {
-   				uiex = new UIException("加载专题失败！", e);
+   				uiex = new UIException("加载专题内容失败！", e);
+   			}
+   			return uiex.toDM();
+   		}
+   	}
+    
+    @RequestMapping(value="zt/content/collect")
+   	@ResponseBody
+   	public AjaxDataModal collectZtContent(HttpServletRequest request) {
+   		try {
+   			String _datas = PageUtils.getParamAndCheckEmpty(request, "datas", "未选择要收藏的专题内容！");
+   			List<Map<String, Object>> list = null;
+   			try {
+   				list = JSONUtils.getObjFromString(_datas, new TypeReference<List<Map<String, Object>>>() {});
+   			} catch(Exception e){
+   				throw new UIException("提交的参数格式不正确！", e);
+   			}
+   			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+   			service.collectZtContent(list, user);
+   			return new AjaxDataModal(true);
+   		} catch (Exception e) {
+   			UIException uiex = null;
+   			if(e instanceof UIException){
+   				uiex = (UIException)e;
+   			} else {
+   				uiex = new UIException("收藏专题内容失败！", e);
    			}
    			return uiex.toDM();
    		}
