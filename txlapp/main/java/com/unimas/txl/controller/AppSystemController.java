@@ -48,7 +48,7 @@ public class AppSystemController {
     }
     
     @RequestMapping(value="/")
-    public String index(Model model,HttpServletRequest request) {
+    public String indexRoot(Model model,HttpServletRequest request) {
     	return "app/index";
     }
     
