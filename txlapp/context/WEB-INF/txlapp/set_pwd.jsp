@@ -1,23 +1,28 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.unimas.web.utils.*" %>
 <!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
-		<link href="../../assets/global/plugins/font-opensans/Open-Sans.css" rel="stylesheet" type="text/css" />
-		<link href="../../assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-		<link href="../../assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
-		<link href="../../assets/global/plugins/mui/css/mui.min.css" rel="stylesheet" type="text/css" />
-		<link href="../../assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		<link href="../../assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+		<%PageUtils.initBasePath(request); %>
+        <script>
+			var basePath = "${basePath }";
+		</script>
+		<link href="${basePath }assets/global/plugins/font-opensans/Open-Sans.css" rel="stylesheet" type="text/css" />
+		<link href="${basePath }assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+		<link href="${basePath }assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+		<link href="${basePath }assets/global/plugins/mui/css/mui.min.css" rel="stylesheet" type="text/css" />
+		<link href="${basePath }assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="${basePath }assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
 		
-		<link href="../../assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+		<link href="${basePath }assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
         
-        <link href="../../assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
-        <link href="../../assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
-        <link href="../../assets/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css" />
+        <link href="${basePath }assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+        <link href="${basePath }assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+        <link href="${basePath }assets/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css" />
 		<style type="text/css">
 			.setPwd-form {
 				padding: 0 15px;
@@ -51,6 +56,6 @@
 			</form>
 			
 		</section>
-		<script src="../../assets/common/require.js" data-main="../../assets/txlapp/user/set_pwd" type="text/javascript"></script>
+		<script src="${basePath }assets/common/require.js" data-main="${basePath }assets/txlapp/user/set_pwd" type="text/javascript"></script>
 	</body>
 </html>

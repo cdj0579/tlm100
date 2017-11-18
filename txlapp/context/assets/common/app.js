@@ -1410,7 +1410,7 @@ define(["bootstrap-toastr"], function(toastr){
 	   });
 	   App.init(); // init metronic core componets
 	});
-	App.remoteUrlPre ="/app/";
+	App.remoteUrlPre =basePath+"app/";
 	window.App = App;
 	return App;
 });

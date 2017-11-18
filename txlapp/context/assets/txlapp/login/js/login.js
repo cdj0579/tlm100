@@ -1,4 +1,4 @@
-var basePath = "../../";
+//var basePath = "../../";
 require.config({
 	baseUrl: basePath
 });

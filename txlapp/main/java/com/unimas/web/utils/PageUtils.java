@@ -141,7 +141,9 @@ public class PageUtils {
 			return getContextPath(req);
 		/*}*/
 	}
-	
+	public static void initBasePath(HttpServletRequest req){
+		req.setAttribute("basePath", getBasePath(req));
+	}
 	public static void initPageConfig(HttpServletRequest req, String title, String theme, String layout
 			,Boolean showPageToolbar, String footerMsg){
 		HashMap<String, Object> pageConfig = new HashMap<String, Object>();

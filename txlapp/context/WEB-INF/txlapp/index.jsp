@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.unimas.web.utils.*" %>
 
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
@@ -14,16 +16,19 @@
         <meta content="" name="description" />
         <meta content="" name="author" />
         <!-- BEGIN GLOBAL MANDATORY STYLES -->
-         
-        <link href="../../assets/common/favicon.ico" type="image/x-icon" rel="icon" />
-		<link href="../../assets/global/plugins/font-opensans/Open-Sans.css" rel="stylesheet" type="text/css" />
-		<link href="../../assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-		<link href="../../assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
-		<link href="../../assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="../../assets/global/plugins/mui/css/mui.min.css" rel="stylesheet" type="text/css" />
-        <link href="../../assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
-       	<link href="../../assets/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css" />
-		<link href="../../assets/txlapp/index/css/index.css" rel="stylesheet" type="text/css" />
+        <%PageUtils.initBasePath(request); %>
+        <script>
+			var basePath = "${basePath }";
+		</script>
+        <link href="${basePath }assets/common/favicon.ico" type="image/x-icon" rel="icon" />
+		<link href="${basePath }assets/global/plugins/font-opensans/Open-Sans.css" rel="stylesheet" type="text/css" />
+		<link href="${basePath }assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+		<link href="${basePath }assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+		<link href="${basePath }assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="${basePath }assets/global/plugins/mui/css/mui.min.css" rel="stylesheet" type="text/css" />
+        <link href="${basePath }assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+       	<link href="${basePath }assets/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css" />
+		<link href="${basePath }assets/txlapp/index/css/index.css" rel="stylesheet" type="text/css" />
 		<style type="text/css">
 			.col-xs-4, .col-sm-4 ,.col-md-4{
 				padding:0 3px;
@@ -105,11 +110,11 @@
 			<a  data-toggle="dropdown" data-hover="dropdown" data-close-others="true"><span class="mui-icon mui-icon-bars"></span></a>
 			<ul class="dropdown-menu dropdown-menu-default">
                 <li>
-                    <a href="/app/setPwd"><i class="icon-key"></i> 密码修改 </a>
+                    <a href="${basePath }/app/setPwd"><i class="icon-key"></i> 密码修改 </a>
                 </li>
                 <li class="divider"> </li>
                 <li>
-                    <a href="/app/logout"><i class="icon-logout"></i> 退出 </a>
+                    <a href="${basePath }/app/logout"><i class="icon-logout"></i> 退出 </a>
                 </li>
              </ul>
              </div>
@@ -194,6 +199,6 @@
 			<script src="../assets/global/plugins/respond.min.js"></script>
 			<script src="../assets/global/plugins/excanvas.min.js"></script> 
 		<![endif]-->
-		<script src="../../assets/common/require.js" data-main="../../assets/txlapp/index/js/index" type="text/javascript"></script>
+		<script src="${basePath }assets/common/require.js" data-main="${basePath }assets/txlapp/index/js/index" type="text/javascript"></script>
 	</body>
 </html>
