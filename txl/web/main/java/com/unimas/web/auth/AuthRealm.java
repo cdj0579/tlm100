@@ -150,6 +150,7 @@ public class AuthRealm extends AuthorizingRealm {
 
         //return simpleAuthenticationInfo;
         ShiroUser user = new ShiroUser(1, "231dw311", username, "胡鑫盛", "admin");
+        user.setJigouId(1);
         return new SimpleAuthenticationInfo(user, password, getName());
     }
 
@@ -180,6 +181,7 @@ public class AuthRealm extends AuthorizingRealm {
     public static class ShiroUser implements Serializable {
         public static final long serialVersionUID = -4235825356126500405L;
         private int userId;
+        private int jigouId;
         private String userNo;
         private String role;
         private String loginName;
@@ -224,6 +226,12 @@ public class AuthRealm extends AuthorizingRealm {
 		}
 		public void setRole(String role) {
 			this.role = role;
+		}
+		public int getJigouId() {
+			return jigouId;
+		}
+		public void setJigouId(int jigouId) {
+			this.jigouId = jigouId;
 		}
 		public Object getInfo() {
 			return info;

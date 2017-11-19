@@ -1,0 +1,120 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+    <h4 class="modal-title" id="title">编辑分配规则</h4>
+</div>
+<div class="modal-body">
+	<form action="#" class="form-horizontal " id="form_remark">
+		<input type="hidden" name="id" value="-1"/>
+    	<div class="form-body">
+    		<div class='form-group'>
+                <label class="control-label col-md-3">分配更新周期<span class="required">*</span></label>
+                <div class="col-md-4">
+                	<div class="input-icon right">
+                     <i class="fa"></i>
+                     <input type="number" name="zhouqi" class="form-control" validate="{required:true,max: 30, min: 1}"/>
+                    </div>
+                </div>
+            </div>
+            <div class='form-group'>
+                <label class="control-label col-md-3">分配单数<span class="required">*</span></label>
+                <div class="col-md-4">
+                	<div class="input-icon right">
+                     <i class="fa"></i>
+                     <input type="number" name="danliang" class="form-control" validate="{required:true,max: 1000, min: 1}"/>
+                    </div>
+                </div>
+            </div>
+       		<div class="form-group">
+           		<label class="control-label col-md-3">所在学校</label>
+           		<div class="col-md-4">
+                	<div class="input-icon right">
+                    	<i class="fa"></i>
+                     	<select name="xxId" class="form-control">
+                     	</select>
+                    </div>
+                </div>
+       		</div>
+       		<div class="form-group">
+           		<label class="control-label col-md-3">所在年级 </label>
+           		<div class="col-md-4">
+                	<div class="input-icon right">
+                    	<i class="fa"></i>
+                     	<select name="nj" class="form-control">
+                     		<option value="-1"></option>
+                     		<option value="1">1年级</option>
+       						<option value="2">2年级</option>
+       						<option value="3">3年级</option>
+       						<option value="4">4年级</option>
+       						<option value="5">5年级</option>
+       						<option value="6">6年级</option>
+       						<option value="7">7年级</option>
+       						<option value="8">8年级</option>
+       						<option value="9">9年级</option>
+                     	</select>
+                    </div>
+                </div>
+       		</div>
+       		<div class="form-group">
+           		<label class="control-label col-md-3">所在班级 </label>
+           		<div class="col-md-4">
+                	<div class="input-icon right">
+                    	<i class="fa"></i>
+                     	<select name="bj" class="form-control">
+                     		<option value="-1"></option>
+                     		<option value="1">1班</option>
+       						<option value="2">2班</option>
+       						<option value="3">3班</option>
+       						<option value="4">4班</option>
+       						<option value="5">5班</option>
+       						<option value="6">6班</option>
+       						<option value="7">7班</option>
+       						<option value="8">8班</option>
+       						<option value="9">9班</option>
+       						<option value="10">10班</option>
+       						<option value="11">11班</option>
+       						<option value="12">12班</option>
+       						<option value="13">13班</option>
+       						<option value="14">14班</option>
+       						<option value="15">15班</option>
+       						<option value="16">16班</option>
+       						<option value="17">17班</option>
+       						<option value="18">18班</option>
+       						<option value="19">19班</option>
+       						<option value="20">20班</option>
+                     	</select>
+                    </div>
+                </div>
+       		</div>
+       		<div class="form-group">
+                <label class="col-md-3 control-label">分配方式</label>
+                <div class="col-md-9">
+                	<input type="checkbox" name="fenpei" value="true" data-size="normal" data-on-text="指定地区" data-off-text="指定使用者">
+                </div>
+            </div>
+       		<div class="form-group">
+           		<label class="control-label col-md-3">选择地区<span class="required">*</span></label>
+           		<div class="col-md-4">
+                	<div class="input-icon right">
+                    	<i class="fa"></i>
+                     	<select name="dqId" class="form-control" validate="{required:true}">
+                     	</select>
+                    </div>
+                </div>
+       		</div>
+       		<div class="form-group hide">
+           		<label class="control-label col-md-3">选择使用者</label>
+           		<div class="col-md-4">
+                	<div class="input-icon right">
+                    	<i class="fa"></i>
+                     	<select name="dqId" class="form-control">
+                     	</select>
+                    </div>
+                </div>
+       		</div>
+   		</div>
+	</form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn dark btn-outline" data-dismiss="modal">关闭</button>
+    <button type="submit" class="btn green save">保存</button>
+</div>

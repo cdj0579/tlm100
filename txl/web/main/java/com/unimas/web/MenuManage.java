@@ -28,9 +28,9 @@ public class MenuManage {
 		List<Map<String, Object>> menus = new ArrayList<Map<String, Object>>();
 		Subject subject = SecurityUtils.getSubject();
 		if(subject.hasRole("teacher")){
-			menus.add(getMenuItem(PageView.USER));
-			menus.add(getMenuItem(PageView.GXPHB));
-			menus.add(getDivider());
+//			menus.add(getMenuItem(PageView.USER));
+//			menus.add(getMenuItem(PageView.GXPHB));
+//			menus.add(getDivider());
 		}
 		menus.add(getModalMenuItem("system/updatePwd", "修改密码", "updatePwd", "icon-calendar", "assets/system/js/updatePwd"));
 		menus.add(getMenuItem(PageView.LOCK));
@@ -45,76 +45,21 @@ public class MenuManage {
 		//首页
 		menus.add(getMenuItem(PageView.HOME));
 		
+		menus.add(getMenuItem(PageView.LURUYUAN));
+		
+		menus.add(getMenuItem(PageView.SHIYONGZHE));
+		
+		menus.add(getMenuItem(PageView.FENPEIGUIZE));
+		
+		menus.add(getMenuItem(PageView.LIANXIREN));
+		
 		Subject subject = SecurityUtils.getSubject();
 		if(subject.hasRole("teacher")){
-			Map<String, Object> jagl = getMenuItem(PageView.JAGL);
-			List<Map<String, Object>> children = new ArrayList<Map<String, Object>>();
-			children.add(getMenuItem(PageView.WDJA));
-			children.add(getMenuItem(PageView.JAMB));
-			jagl.put("children", children);
-			menus.add(jagl);
-			
-			Map<String, Object> zstx = getMenuItem(PageView.ZSTX);
-			menus.add(zstx);
-			
-			Map<String, Object> zsgl = getMenuItem(PageView.ZSGL);
-			List<Map<String, Object>> children2 = new ArrayList<Map<String, Object>>();
-			zsgl.put("children", children2);
-			menus.add(zsgl);
-			Map<String, Object> xtgl = getMenuItem(PageView.XTGL);
-			//children = new ArrayList<Map<String, Object>>();
-			//children.add(getMenuItem(PageView.xxx));
-			//xtgl.put("children", children);
-			children2.add(xtgl);
-			
-			Map<String, Object> ztgl = getMenuItem(PageView.ZT_CONTENT);
-			//children = new ArrayList<Map<String, Object>>();
-			//children.add(getMenuItem(PageView.XXX));
-			//ztgl.put("children", children);
-			children2.add(ztgl);
-			
-			Map<String, Object> zsdgl = getMenuItem(PageView.ZSD_CONTENT);
-			//children = new ArrayList<Map<String, Object>>();
-			//children.add(getMenuItem(PageView.XXX));
-			//zsdgl.put("children", children);
-			children2.add(zsdgl);
 			
 		}
 		
 		if(subject.hasRole("admin")){
-			Map<String, Object> zsgl = getMenuItem(PageView.ZSGL);
-			List<Map<String, Object>> children = new ArrayList<Map<String, Object>>();
-			zsgl.put("children", children);
-			menus.add(zsgl);
-			children.add(getMenuItem(PageView.ZSTX));
-			children.add(getMenuItem(PageView.ZSD));
-			children.add(getMenuItem(PageView.ZT));
 			
-			Map<String, Object> jfrwgl = getMenuItem(PageView.JFRWGL);
-			children = new ArrayList<Map<String, Object>>();
-			jfrwgl.put("children", children);
-			menus.add(jfrwgl);
-			
-			children.add(getMenuItem(PageView.JFRW_FBRW));
-			children.add(getMenuItem(PageView.JFRW_VIEW));
-			children.add(getMenuItem(PageView.JFRW_SHRW));
-			//children.add(getMenuItem(PageView.JFRW_SET));
-			
-			Map<String, Object> base = getMenuItem(PageView.JCXXGL);
-			children = new ArrayList<Map<String, Object>>();
-			base.put("children", children);
-			menus.add(base);
-			children.add(getMenuItem(PageView.CSTK));
-			children.add(getMenuItem(PageView.MBXX));
-			children.add(getMenuItem(PageView.XKDW));
-			children.add(getMenuItem(PageView.ZJGL));
-			
-			Map<String, Object> yhgl = getMenuItem(PageView.YHGL);
-			children = new ArrayList<Map<String, Object>>();
-			yhgl.put("children", children);
-			menus.add(yhgl);
-			children.add(getMenuItem(PageView.JSGL));
-			children.add(getMenuItem(PageView.JZXSGL));
 		}
 		
 		return menus;
@@ -170,113 +115,22 @@ public class MenuManage {
 		 */
 		HOME("./", "首&nbsp;页", "fa fa-home", null, null),
 		/**
-		 * 教案管理
+		 * 录入员管理
 		 */
-		JAGL(null, "教案管理", "icon-briefcase", "在此页面中对教案进行管理", Lists.newArrayList(HOME)),
+		LURUYUAN("lrygl", "录入员", "fa fa-user-plus", null, Lists.newArrayList(HOME)),
 		/**
-		 * 创建教案
+		 * 使用者管理
 		 */
-		WDJA("jagl", "我的教案", "fa fa-list", "在此页面中对我的教案进行管理", Lists.newArrayList(HOME, JAGL)),
+		SHIYONGZHE("syzgl", "使用者", "fa fa-user", null, Lists.newArrayList(HOME)),
 		/**
-		 * 编辑教案
+		 * 分配规则管理
 		 */
-		BJJA("jagl/edit", "编辑教案", "fa fa-edit", "在此页面中对教案进行编辑", Lists.newArrayList(HOME, JAGL, WDJA)),
+		FENPEIGUIZE("fpgzgl", "分配规则", "fa fa-edit", null, Lists.newArrayList(HOME)),
 		/**
-		 * 我的模板
+		 
+		 * 联系人管理
 		 */
-		JAMB("jagl/templetes", "我的模板", "icon-wallet", "在此页面中对我的教案模板进行管理", Lists.newArrayList(HOME, JAGL)),
-		/**
-		 * 编辑教案
-		 */
-		BJJAMB("jagl/templetes/edit", "编辑教案模板", "fa fa-edit", "在此页面中对教案模板进行编辑", Lists.newArrayList(HOME, JAGL, JAMB)),
-		/**
-		 * 习题管理
-		 */
-		XTGL("zs/xt", "习题管理", "icon-note", "在此页面中对习题进行管理", Lists.newArrayList(HOME)),
-		/**
-		 * 积分任务
-		 */
-		JFRWGL(null, "积分任务", "icon-bulb", null, Lists.newArrayList(HOME)),
-		/**
-		 * 任务管理
-		 */
-		JFRW_VIEW("jfrw/view", "任务管理", "icon-bulb", null, Lists.newArrayList(HOME, JFRWGL)),
-		/**
-		 * 发布任务
-		 */
-		JFRW_FBRW("jfrw/fbrw", "发布任务", "icon-plus", null, Lists.newArrayList(HOME, JFRW_VIEW)),
-		/**
-		 * 审核任务
-		 */
-		JFRW_SHRW("jfrw/shrw", "审核任务", "icon-list", null, Lists.newArrayList(HOME, JFRWGL)),
-		/**
-		 * 积分规则
-		 */
-		JFRW_SET("jfrw/set", "积分规则", "icon-puzzle", null, Lists.newArrayList(HOME, JFRWGL)),
-		/**
-		 * 用户管理
-		 */
-		YHGL(null, "用户管理", "icon-user", null, Lists.newArrayList(HOME)),
-		/**
-		 * 教师管理
-		 */
-		JSGL("user/teacher", "教师管理", "", null, Lists.newArrayList(HOME, YHGL)),
-		/**
-		 * 家长学生管理
-		 */
-		JZXSGL("user/student", "家长学生管理", "", null, Lists.newArrayList(HOME, YHGL)),
-		/**
-		 * 知识管理
-		 */
-		ZSGL(null, "知识管理", "icon-diamond", null, Lists.newArrayList(HOME)),
-		/**
-		 * 知识体系
-		 */
-		ZSTX("zs/zstx", "知识体系", "fa fa-sitemap", null, Lists.newArrayList(HOME)),
-		/**
-		 * 知识管理
-		 */
-		ZSD("zs/zsd", "知识点", "icon-diamond", null, Lists.newArrayList(HOME, ZSGL)),
-		/**
-		 * 知识点内容
-		 */
-		ZSD_CONTENT("zs/zsd/content", "知识点内容", "icon-diamond",  "在此页面中对知识点内容进行管理", Lists.newArrayList(HOME, ZSGL)),
-		/**
-		 * 知识管理
-		 */
-		ZT("zs/zt", "专题", "icon-layers", null, Lists.newArrayList(HOME, ZSGL)),
-		/**
-		 * 专题内容
-		 */
-		ZT_CONTENT("zs/zt/content", "专题内容", "icon-layers", "在此页面中对专题内容进行管理", Lists.newArrayList(HOME, ZSGL)),
-		/**
-		 * 基础信息管理
-		 */
-		JCXXGL(null, "基础信息管理", "icon-settings", null, Lists.newArrayList(HOME)),
-		/**
-		 * 测试题库
-		 */
-		CSTK("base/cstk", "测试题库", "", null, Lists.newArrayList(HOME, JCXXGL)),
-		/**
-		 * 目标学校
-		 */
-		MBXX("base/mbxx", "目标学校", "", null, Lists.newArrayList(HOME, JCXXGL)),
-		/**
-		 * 学科档位
-		 */
-		XKDW("base/xkdw", "学科档位", "", null, Lists.newArrayList(HOME, JCXXGL)),
-		/**
-		 * 章节管理
-		 */
-		ZJGL("base/zj", "章节管理", "", null, Lists.newArrayList(HOME, JCXXGL)),
-		/**
-		 * 我的信息
-		 */
-		USER("user/info", "我的信息", "icon-user", null, Lists.newArrayList(HOME)),
-		/**
-		 * 贡献排行榜
-		 */
-		GXPHB("user/gxphb", "贡献排行榜", "icon-user", null, Lists.newArrayList(HOME)),
+		LIANXIREN("lxrgl", "联系人", "fa fa-file-text-o", null, Lists.newArrayList(HOME)),
 		/**
 		 * 锁定屏幕
 		 */

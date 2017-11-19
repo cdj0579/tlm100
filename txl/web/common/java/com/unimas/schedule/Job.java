@@ -11,7 +11,7 @@ import com.unimas.schedule.trigger.STrigger;
  */
 public class Job implements InterruptableJob {
 	
-	private static final Logger logger = Logger.getLogger("UMSLogger");
+	private static final Logger logger = Logger.getLogger(Job.class);
 	
 	/**
 	 * 任务对象标识
@@ -41,14 +41,14 @@ public class Job implements InterruptableJob {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
     	JobDetail jobDetail = jobExecutionContext.getJobDetail();
-    	logger.error("任务["+jobDetail.getKey()+"]开始: " + TimeUtils.getTime());
+    	logger.debug("任务["+jobDetail.getKey()+"]开始: " + TimeUtils.getTime());
     	System.out.println("任务["+jobDetail.getKey()+"]开始: " + TimeUtils.getTime());
     	JobDataMap jobDataMap = jobDetail.getJobDataMap();
         process = (SProcess) jobDataMap.get(PROCESS_TYPE);
         if (!process.getInterrupt()) {
         	process.start();
         }
-        logger.error("任务["+jobDetail.getKey()+"]结束: " + TimeUtils.getTime());
+        logger.debug("任务["+jobDetail.getKey()+"]结束: " + TimeUtils.getTime());
         System.out.println("任务["+jobDetail.getKey()+"]结束: " + TimeUtils.getTime());
         handlerLoopTrigger(jobDetail, jobExecutionContext.getScheduler(), process);
     }
