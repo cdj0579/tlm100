@@ -88,6 +88,7 @@ public class AuthRealm extends AuthorizingRealm {
             	realName = info.getName();
     			ShiroUser user = new ShiroUser(userId, userNo, username, realName, role);
     			user.setInfo(info);
+    			user.setJgId(info.getJigouId());
     			simpleAuthenticationInfo = new SimpleAuthenticationInfo(user, password, getName());
         	}
         } catch (AuthenticationException e) {
@@ -126,8 +127,16 @@ public class AuthRealm extends AuthorizingRealm {
         private String realName;
         private String txImg;
         private Object info;
+        private int jgId;
+        public int getJgId() {
+			return jgId;
+		}
 
-        public ShiroUser(int userId, String userNo, String loginName, String realName, String role) {
+		public void setJgId(int jgId) {
+			this.jgId = jgId;
+		}
+
+		public ShiroUser(int userId, String userNo, String loginName, String realName, String role) {
             this.loginName = loginName;
             this.realName = realName;
             this.userNo = userNo;

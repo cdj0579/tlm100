@@ -28,7 +28,9 @@
         <link href="${basePath }assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
        	<link href="${basePath }assets/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css" />
 		<style type="text/css">
-		
+		.toast-top-center,.toast-top-right,.toast-top-left {
+		  	top: 138px;
+		}
 		.form-horizontal .heading{
 		    display: block;
 		    font-size: 35px;

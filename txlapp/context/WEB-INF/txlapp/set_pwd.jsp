@@ -27,6 +27,9 @@
 			.setPwd-form {
 				padding: 0 15px;
 			}
+			.toast-top-center,.toast-top-right,.toast-top-left {
+			  	top: 138px;
+			}
 		</style>
 	</head>
 	<body>

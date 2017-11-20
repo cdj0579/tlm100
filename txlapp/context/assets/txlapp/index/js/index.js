@@ -98,7 +98,7 @@ define(['assets/common/config'], function(config) {
 		setEvent();
 		
 		function setRowEvent(){
-			$(".row:gt(0)").click(function(){
+			$("active>.row:gt(0)").click(function(){
 				var _$this = $(this);
 				_$this.parent().removeClass("active");
 				$returnBtn.show();

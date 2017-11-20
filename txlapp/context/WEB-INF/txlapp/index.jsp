@@ -30,6 +30,9 @@
        	<link href="${basePath }assets/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css" />
 		<link href="${basePath }assets/txlapp/index/css/index.css" rel="stylesheet" type="text/css" />
 		<style type="text/css">
+			.toast-top-center,.toast-top-right,.toast-top-left {
+			  	top: 138px;
+			}
 			.col-xs-4, .col-sm-4 ,.col-md-4{
 				padding:0 3px;
 			}
@@ -110,11 +113,11 @@
 			<a  data-toggle="dropdown" data-hover="dropdown" data-close-others="true"><span class="mui-icon mui-icon-bars"></span></a>
 			<ul class="dropdown-menu dropdown-menu-default">
                 <li>
-                    <a href="${basePath }/app/setPwd"><i class="icon-key"></i> 密码修改 </a>
+                    <a href="${basePath }app/setPwd"><i class="icon-key"></i> 密码修改 </a>
                 </li>
                 <li class="divider"> </li>
                 <li>
-                    <a href="${basePath }/app/logout"><i class="icon-logout"></i> 退出 </a>
+                    <a href="${basePath }app/logout"><i class="icon-logout"></i> 退出 </a>
                 </li>
              </ul>
              </div>

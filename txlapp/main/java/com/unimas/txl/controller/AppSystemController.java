@@ -107,7 +107,7 @@ public class AppSystemController {
     	try {
     		String fpId = PageUtils.getParam(request, "fpId","0");
     		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-    		Map<String, Object> data =indexService.queryOneFenPeiLianxiren(user.getUserId()+"", fpId);
+    		Map<String, Object> data =indexService.queryOneFenPeiLianxiren(user.getJgId(),user.getUserId()+"", fpId);
     		AjaxDataModal dm = new AjaxDataModal(true);
     		if( data == null){
     			dm.put("over" , true );
@@ -134,7 +134,7 @@ public class AppSystemController {
     	try {
     		String isGx = PageUtils.getParam(request, "isGx","gx");
     		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-    		List<Map<String, Object>> data =indexService.queryGzOrGxLianxiren(user.getUserId()+"", "gx".equals(isGx));
+    		List<Map<String, Object>> data =indexService.queryGzOrGxLianxiren(user.getJgId(),user.getUserId()+"", "gx".equals(isGx));
     		AjaxDataModal dm = new AjaxDataModal(true);
     		dm.put("rows",data);
 			return dm;
