@@ -59,8 +59,8 @@ define(['assets/common/config'], function(config) {
 		function telPhone(){
 			$(".txl>div.tp").click(function(){
 				var phone = $(this).prev("input").val(); 
-				console.info(phone);
-				location.href = 'tel://' + phone;
+//				console.info(phone);
+				location.href = 'tel:' + phone;
 			});
 		}
 		
@@ -74,7 +74,6 @@ define(['assets/common/config'], function(config) {
 				zwFlag = _thisName == "guanzhu";
 				
 				var tab = _$this.parent().siblings(".div_neirong");
-				console.info(tab);
 				var _name = tab.find("p[class='name']").text();
 				var _beizhu = "";
 				if(zwFlag){
@@ -98,7 +97,7 @@ define(['assets/common/config'], function(config) {
 		setEvent();
 		
 		function setRowEvent(){
-			$("active>.row:gt(0)").click(function(){
+			$(".active>.row:gt(0)").click(function(){
 				var _$this = $(this);
 				_$this.parent().removeClass("active");
 				$returnBtn.show();
@@ -110,7 +109,7 @@ define(['assets/common/config'], function(config) {
 				}
 				var rowId = _$this.find("input").val();
 				var datainfo =  tableStore[rowId];
-				console.info(datainfo);
+//				console.info(datainfo);
 				//getOneStuInfo("#card",params);
 				createCard(datainfo,"#card");
 				
@@ -164,7 +163,7 @@ define(['assets/common/config'], function(config) {
 			var _gzStr = tabId == "#txl" ?'关注':'修改备注信息'
 			var _gxStr = tabId != "#ygx" ?'共享':'修改共享信息'
 			var html = '<div class="div_ds"><div>'
-			  			+'<button name="guanzhu" class="btn btn-lg anniu">'+_gzStr+'</button>'
+			  			+(tabId != "#ygx"?'<button name="guanzhu" class="btn btn-lg anniu">'+_gzStr+'</button>':'')
 			  			+'<button name="gongxing" class="btn btn-lg anniu">'+_gxStr+'</button>'
 			  			+'</div>'
 			  			+'<div class="div_neirong">'
@@ -230,8 +229,11 @@ define(['assets/common/config'], function(config) {
 				var param ={};
 				param.beizhu = info_v;
 				param.type = zwFlag?"gz":"gx";
-				var lxrId = $("input[name='lxrId']").val();
-				param.lxrId = lxrId;
+				if(tabId == "#txl"){
+					param.lxrId =  $("#txl input[name='lxrId']").val();
+				}else{
+					param.lxrId =  $("#card input[name='lxrId']").val();
+				}
 				var url = App.remoteUrlPre + "saveBeizhu";
 				$.post(url, param, function(data, textStatus, jqXHR){
 		     		App.handlerAjaxJson(data, function(){

@@ -24,38 +24,63 @@ import com.unimas.txl.dao.JdbcDao;
 @Service
 public class AppIndexService {
 	
-	public void saveGuanZhuInfo(Connection conn, int id, int syzId, int lxrId,String datetime) throws Exception{
+	public void saveGuanZhuInfo(Connection conn, int id, int syzId, int lxrId,String datetime,int jgId) throws Exception{
 		GuanZhuInfo info = new GuanZhuInfo();
+		info.setJigouId(jgId);
 		info.setLxrId(lxrId);
 		info.setSyzId(syzId);
 		info.setDatetime(datetime);
 		new JdbcDao<GuanZhuInfo>().save(conn, info);
 	}
 	
-	public void saveGuanZhuInfo(int id,int syzId, int lxrId, String datetime) throws Exception{
+	
+	public void saveGuanZhuInfo(int id,int syzId, int lxrId, String datetime,int jgId) throws Exception{
 		Connection conn = null;
 		try {
 			conn = DBFactory.getConn();
-			saveGuanZhuInfo(conn,id, syzId, lxrId, datetime);
+			saveGuanZhuInfo(conn,id, syzId, lxrId, datetime,jgId);
+			delStutsRecord(conn, syzId, lxrId, "txl_lianxiren_fenpei");
 		} finally {
 			DBFactory.close(conn, null, null);
 		}
 	}
 	
-	public void saveQianYueInfo(Connection conn,int id, int syzId, int  lxrId,String beizhu,String datetime) throws Exception{
+	public void delStutsRecord(Connection conn,int syzId, int lxrId,String tableName){
+		StringBuffer sqlSb = new StringBuffer();
+		sqlSb.append("delete from ");
+		sqlSb.append(tableName);
+		sqlSb.append(" where lxr_id=? and  syz_id=?");
+		PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement(sqlSb.toString());
+			stmt.setInt(1, lxrId);
+			stmt.setInt(2, syzId);
+			stmt.execute();
+		}catch (Exception e) {
+		} finally {
+			DBFactory.close(null, stmt, null);
+		}
+	}
+	
+	public void saveQianYueInfo(Connection conn,int id, int syzId, int  lxrId,String beizhu,String datetime,int jgId) throws Exception{
 		QianYueInfo info = new QianYueInfo();
 		info.setId(id);
+		info.setJigouId(jgId);
 		info.setLxrId(lxrId);
 		info.setSyzId(syzId);
 		info.setBeizhu(beizhu);
 		info.setDatetime(datetime);
 		new JdbcDao<QianYueInfo>().save(conn, info);
 	}
-	public void saveQianYueInfo(int id,int syzId, int lxrId, String beizhu, String datetime) throws Exception{
+	public void saveQianYueInfo(int id,int syzId, int lxrId, String beizhu, String datetime,int jgId) throws Exception{
 		Connection conn = null;
 		try {
 			conn = DBFactory.getConn();
-			saveQianYueInfo(conn, id,syzId, lxrId,beizhu, datetime);
+			saveQianYueInfo(conn, id,syzId, lxrId,beizhu, datetime,jgId);
+			if(id == -1){
+				delStutsRecord(conn, syzId, lxrId, "txl_lianxiren_fenpei");
+				delStutsRecord(conn, syzId, lxrId, "txl_lianxiren_guanzhu");
+			}
 		} finally {
 			DBFactory.close(conn, null, null);
 		}
@@ -204,8 +229,8 @@ public class AppIndexService {
 	
 	public static void main(String[] args) throws Exception {
 		AppIndexService service = new AppIndexService();
-		service.saveQianYueInfo(-1 ,1,1,"签约备注",DateUtils.formatDateToHMS(new Date()));
-//		service.updateLianxirenBeizhu(1, DateUtils.formatDateToHMS(new Date()));
+		service.saveQianYueInfo(-1 ,1,1,"签约备注",DateUtils.formatDateToHMS(new Date()),1);
+//		service.updateLianxirenBeizhu(1, DateUtils.formatDateToHMS(new Date()),1);
 	
 		System.out.println(service.queryOneFenPeiLianxiren(1,"1", "0"));
 //		System.out.println(service.queryGzOrGxLianxiren("1", true));

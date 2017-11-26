@@ -13,6 +13,16 @@ public class FenPeiInfo extends LianXiRenInfo {
 	private int syzId = -1;
 	@Column(name="shijian")
 	private String datetime;
+	
+	@Column(name="jigou_id",nullNumberValue=-1)
+	private int jigouId = -1;
+	public int getJigouId() {
+		return jigouId;
+	}
+	public void setJigouId(int jigouId) {
+		this.jigouId = jigouId;
+	}
+	
 	public int getLxrId() {
 		return lxrId;
 	}

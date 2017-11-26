@@ -17,6 +17,15 @@ public class QianYueInfo extends JdbcBean {
 	@Column(name="shijian",datePattern="yyyy-MM-dd HH:mm:ss")
 	private String datetime;
 	
+	@Column(name="jigou_id",nullNumberValue=-1)
+	private int jigouId = -1;
+	public int getJigouId() {
+		return jigouId;
+	}
+	public void setJigouId(int jigouId) {
+		this.jigouId = jigouId;
+	}
+	
 	public int getLxrId() {
 		return lxrId;
 	}

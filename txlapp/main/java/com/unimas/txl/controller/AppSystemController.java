@@ -157,11 +157,12 @@ public class AppSystemController {
     		String beizhu = PageUtils.getParam(request, "beizhu","");
     		String type = PageUtils.getParam(request, "type","gz");
     		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+    		int jgId = user.getJgId();
     		if("gz".equals(type)){
     			indexService.updateLianxirenBeizhu(lxrId, beizhu);
     			int glId = indexService.isExistsInfo(lxrId, user.getUserId(), false);
     			if(glId == -1){
-    				indexService.saveGuanZhuInfo(-1,user.getUserId(), lxrId, DateUtils.formatDateToHMS(new Date()));
+    				indexService.saveGuanZhuInfo(-1,user.getUserId(), lxrId, DateUtils.formatDateToHMS(new Date()),jgId);
     			}
     		}else if("gx".equals(type)){
     			String time = null;
@@ -169,7 +170,7 @@ public class AppSystemController {
     			if(glId == -1){
     				time = DateUtils.formatDateToHMS(new Date());
     			}
-        		indexService.saveQianYueInfo(glId,user.getUserId(), lxrId,beizhu,time);
+        		indexService.saveQianYueInfo(glId,user.getUserId(), lxrId,beizhu,time,jgId);
     		}
     		AjaxDataModal dm = new AjaxDataModal(true);
 			return dm;
