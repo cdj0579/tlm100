@@ -11,13 +11,13 @@ public class SyzBean extends JdbcBean {
 	private int jigouId = -1;
 	@Column(name="user_no")
 	private String userNo;
-	@Column(ignore=true)
+	@Column(ignore=true, name="username")
 	@LeftField(name="username", joinTable="account", joinField="user_no", refField="userNo")
 	private String username;
 	private String name;
 	@Column(name="dq_id")
 	private String dqId;
-	@Column(ignore=true)
+	@Column(ignore=true, name="dq_name")
 	@LeftField(name="name", joinTable="xzqh", joinField="code", refField="dqId")
 	private String dqName;
 	@Column(name="is_del", nullNumberValue=-1)

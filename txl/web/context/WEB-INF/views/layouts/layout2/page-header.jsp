@@ -1,13 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%-- <%@ page import="java.util.*,com.unimas.tlm.service.SystemService" %>
+<%@ page import="java.util.*,com.unimas.web.MenuManage" %>
 <%
 HashMap<String, Object> pageConfig = (HashMap<String, Object>)request.getAttribute("page");
-String base = (String)pageConfig.get("basePath");
-List<Map<String, Object>> menus = new SystemService().getUserMenus(base);
+List<Map<String, Object>> menus = new MenuManage((String)pageConfig.get("basePath")).getUserMenus();
 request.setAttribute("menus", menus);
 
-%> --%>
+%>
 <div class="page-header navbar navbar-fixed-top">
     <!-- BEGIN HEADER INNER -->
     <div class="page-header-inner ">
@@ -141,7 +140,7 @@ request.setAttribute("menus", menus);
                             <span class="username username-hide-on-mobile"> ${user.realName } </span>
                             <!-- <i class="fa fa-angle-down"></i> -->
                         </a>
-                        <%-- <ul class="dropdown-menu dropdown-menu-default">
+                        <ul class="dropdown-menu dropdown-menu-default">
                         	<c:forEach var="item" items="${menus }">
                         		<c:choose>
 								    <c:when test="${item.isDivider}">
@@ -165,7 +164,7 @@ request.setAttribute("menus", menus);
 								    </c:otherwise>
 								</c:choose>
 		                    </c:forEach>
-                        </ul> --%>
+                        </ul>
                     </li>
                     <!-- END USER LOGIN DROPDOWN -->
                 </ul>

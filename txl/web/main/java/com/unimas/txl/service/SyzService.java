@@ -11,7 +11,15 @@ import com.unimas.web.auth.AuthRealm.ShiroUser;
 public class SyzService {
 	
 	public List<SyzBean> query(String dqId, String name, ShiroUser user) throws Exception {
-		return new SyzDao().query(user.getJigouId(), dqId, name);
+		return query(user.getJigouId(), dqId, name);
+	}
+	
+	public List<SyzBean> query(int jigouId, String dqId, String name) throws Exception {
+		return new SyzDao().query(jigouId, dqId, name);
+	}
+	
+	public List<SyzBean> query(int jigouId, List<Integer> ids) throws Exception {
+		return new SyzDao().query(jigouId, ids);
 	}
 	
 	public void add(String name, String dqId, String username, String password, ShiroUser user) throws Exception {

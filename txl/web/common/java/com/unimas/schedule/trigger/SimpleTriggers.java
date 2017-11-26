@@ -116,7 +116,7 @@ public class SimpleTriggers {
      * @return the new SimpleTrigger
      */
     public static SimpleTrigger repeatSecondlyForTotalCount(String flagName, int count, int seconds) throws SchedulerException {
-        if (count < 1)
+        if (count < 0)
             throw new IllegalArgumentException("Total count of firings must be at least one! Given count: " + count);
 
         return newTrigger()

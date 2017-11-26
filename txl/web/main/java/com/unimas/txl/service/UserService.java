@@ -14,6 +14,9 @@ import com.unimas.common.random.RandomNumber;
 import com.unimas.jdbc.DBFactory;
 import com.unimas.jdbc.handler.ResultSetHandler;
 import com.unimas.txl.bean.Account;
+import com.unimas.txl.bean.GuanliyuanBean;
+import com.unimas.txl.bean.LryBean;
+import com.unimas.txl.bean.SyzBean;
 import com.unimas.txl.dao.JdbcDao;
 import com.unimas.web.auth.AuthRealm.ShiroUser;
 
@@ -148,6 +151,8 @@ public class UserService {
 		} else if("teacher".equals(type)){
 			userNo = "T"+RandomNumber.getRandomNumber(9);
 		} else if("syz".equals(type)){
+			userNo = "C"+RandomNumber.getRandomNumber(9);
+		} else if("lry".equals(type)){
 			userNo = "Y"+RandomNumber.getRandomNumber(9);
 		} else {
 			throw new Exception("错误的用户类型["+type+"]！");
@@ -304,18 +309,43 @@ public class UserService {
 		System.out.println(MD5.getMD5("88888888"));
 	}
 	
-	/*@SuppressWarnings("unchecked")
-	public TeacherInfo getTeacherByUserNo(Connection conn, String userNo) throws Exception {
-		TeacherInfo info = new TeacherInfo();
+	public GuanliyuanBean getGuanliyuanByUserNo(Connection conn, String userNo) throws Exception {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = "SELECT a.id,a.jiaoshi_id,a.jigou_id,b.user_no,b.name FROM txl_guanliyuan as a LEFT JOIN teacher_info as b on (a.jiaoshi_id = b.id) where b.user_no=?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, userNo);
+			rs = stmt.executeQuery();
+			return ResultSetHandler.bean(rs, GuanliyuanBean.class);
+		} finally {
+			DBFactory.close(null, stmt, rs);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public SyzBean getShiyongzheByUserNo(Connection conn, String userNo) throws Exception {
+		SyzBean info = new SyzBean();
 		info.setUserNo(userNo);
-		List<TeacherInfo> list = (List<TeacherInfo>)new JdbcDao<TeacherInfo>().query(conn, info);
+		List<SyzBean> list = (List<SyzBean>)new JdbcDao<SyzBean>().query(conn, info);
+		if(list != null && list.size() > 0){
+			return list.get(0);
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public LryBean getLuruyuanByUserNo(Connection conn, String userNo) throws Exception {
+		LryBean info = new LryBean();
+		info.setUserNo(userNo);
+		List<LryBean> list = (List<LryBean>)new JdbcDao<LryBean>().query(conn, info);
 		if(list != null && list.size() > 0){
 			return list.get(0);
 		}
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	public StudentInfo getStudentByUserNo(Connection conn, String userNo) throws Exception {
 		StudentInfo info = new StudentInfo();
 		info.setUserNo(userNo);

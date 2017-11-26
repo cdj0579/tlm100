@@ -2,6 +2,7 @@ package com.unimas.common.date;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -35,6 +36,13 @@ public class TimeUtils {
 		String time=df.format(date);
 		return time;
 
+	}
+	
+	public static Date add(Date date, int dayCount){
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		c.add(Calendar.DAY_OF_MONTH, dayCount);
+		return c.getTime();
 	}
 	
 	public static String format(Date date) {

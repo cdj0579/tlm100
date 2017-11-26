@@ -7,7 +7,7 @@ import com.unimas.txl.bean.JdbcBean;
 @Table("txl_shiyongzhe_fenpei")
 public class FenpeiSyzBean extends JdbcBean {
 	
-	@Column(name="guize_id", nullNumberValue=-1)
+	@Column(isPk=true,name="guize_id", nullNumberValue=-1)
 	private int guizeId = -1;
 	@Column(name="syz_id", nullNumberValue=-1)
 	private int syzId = -1;

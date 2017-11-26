@@ -11,8 +11,12 @@ import com.unimas.web.auth.AuthRealm.ShiroUser;
 
 public class LxrService {
 	
-	@SuppressWarnings("unchecked")
 	public List<LxrBean> query(int xuexiaoId, String dqId, int nj, int bj, ShiroUser user) throws Exception {
+		return query(user.getJigouId(), xuexiaoId, dqId, nj, bj);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<LxrBean> query(int jigouId, int xuexiaoId, String dqId, int nj, int bj) throws Exception {
 		LxrBean bean = new LxrBean();
 		bean.setXuexiaoId(xuexiaoId);
 		if(StringUtils.isNotEmpty(dqId)){
@@ -21,8 +25,12 @@ public class LxrService {
 		bean.setNianji(nj);
 		bean.setBanji(bj);
 		bean.setIsDel(0);
-		bean.setJigouId(user.getJigouId());
+		bean.setJigouId(jigouId);
 		return (List<LxrBean>) new LxrDao().query(bean);
+	}
+	
+	public List<LxrBean> queryNofp(int jigouId, int xuexiaoId, String dqId, int nj, int bj) throws Exception {
+		return new LxrDao().queryNofp(jigouId, xuexiaoId, dqId, nj, bj);
 	}
 	
 	public void add(String name, int xb, int xuexiaoId, String dqId, int nj, int bj, String lianxiren

@@ -83,7 +83,6 @@ define(['assets/common/config'], function(config) {
 					xxId: data.xuexiaoId,
 					nj: data.nj,
 					bj: data.bj,
-					fenpei: data.dqId && data.dqId != "",
 					dqId: data.dqId
 				});
 			});

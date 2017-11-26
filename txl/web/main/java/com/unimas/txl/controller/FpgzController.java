@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.collect.Lists;
 import com.unimas.txl.bean.fenpei.FenpeiBean;
+import com.unimas.txl.bean.fenpei.FenpeiSyzBean;
 import com.unimas.txl.service.fenpei.FpgzService;
 import com.unimas.web.MenuManage.PageView;
 import com.unimas.web.auth.AuthRealm.ShiroUser;
@@ -89,6 +90,30 @@ public class FpgzController {
 		}
     }
     
+    @RequestMapping(value="syzlist")
+    @ResponseBody
+    public AjaxDataModal syzlist(HttpServletRequest request) {
+    	try {
+    		int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的分配规则ID！");
+    		List<FenpeiSyzBean> list = new FpgzService().getSyzList(id);
+    		AjaxDataModal dm = new AjaxDataModal(true);
+    		List<Integer> syzIds = Lists.newArrayList();
+    		for(FenpeiSyzBean b : list){
+    			syzIds.add(b.getSyzId());
+    		}
+    		dm.put("syzIds", syzIds);
+			return dm;
+		}  catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("修改分配规则失败！", e);
+			}
+			return uiex.toDM();
+		}
+    }
+    
     @RequestMapping(value="update",method = RequestMethod.POST)
     @ResponseBody
     public AjaxDataModal updateSyz(HttpServletRequest request) {
@@ -97,8 +122,11 @@ public class FpgzController {
     		String dqId = PageUtils.getParam(request, "dqId", null);
     		int zhouqi = PageUtils.getIntParamAndCheckEmpty(request, "zhouqi", "分配更新周期不能为空！");
     		int xxId = PageUtils.getIntParam(request, "xxId");
+    		if(xxId <= 0) xxId = -2;
     		int nj = PageUtils.getIntParam(request, "nj");
+    		if(nj <= 0) nj = -2;
     		int bj = PageUtils.getIntParam(request, "bj");
+    		if(bj <= 0) bj = -2;
     		int danliang = PageUtils.getIntParamAndCheckEmpty(request, "danliang", "分配单数不能为空！");
     		String _syzIds = PageUtils.getParam(request, "syzIds", null);
     		List<Integer> syzIds = null;

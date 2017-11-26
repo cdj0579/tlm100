@@ -8,8 +8,10 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unimas.common.util.StringUtils;
 import com.unimas.jdbc.DBFactory;
+import com.unimas.txl.bean.GuanliyuanBean;
+import com.unimas.txl.bean.LryBean;
+import com.unimas.txl.service.UserService;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -99,7 +101,7 @@ public class AuthRealm extends AuthorizingRealm {
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         String username = token.getUsername();
         String password = new String(token.getPassword());
-        /*Connection conn = null;
+        Connection conn = null;
         try {
         	conn = DBFactory.getConn();
         	UserService service = new UserService();
@@ -108,12 +110,23 @@ public class AuthRealm extends AuthorizingRealm {
         	String role = null;
         	String txImg = null;
         	int userId = -1;
+        	int jigouId = -1;
         	Object info = null;
-			if("admin".equals(userNo)){
+			if(userNo.startsWith("T")){
 				role = "admin";
-				realName = "管理员";
+				GuanliyuanBean bean = service.getGuanliyuanByUserNo(conn, userNo);
+				jigouId = bean.getJigouId();
+				realName = bean.getName();
+				info = bean;
+			} else if(userNo.startsWith("Y")){
+				role = "lry";
+				LryBean bean = service.getLuruyuanByUserNo(conn, userNo);
+				jigouId = bean.getJigouId();
+				realName = bean.getName();
+				info = bean;
 			} else {
-				TeacherInfo teacher = service.getTeacherByUserNo(conn, userNo);
+				throw new Exception("未授权的角色！");
+				/*GuanliyuanBean teacher = service.getTeacherByUserNo(conn, userNo);
 				if(teacher != null){
 					role = "teacher";
 					realName = teacher.getName();
@@ -132,11 +145,12 @@ public class AuthRealm extends AuthorizingRealm {
 					String parentName = student.getParentName();
 					realName = StringUtils.isNotEmpty(studentName)?studentName:
 						(StringUtils.isNotEmpty(parentName)?parentName:username);
-				}
+				}*/
 			}
 			ShiroUser user = new ShiroUser(userId, userNo, username, realName, role);
 			user.setInfo(info);
 			user.setTxImg(txImg);
+			user.setJigouId(jigouId);
 			simpleAuthenticationInfo = new SimpleAuthenticationInfo(user, password, getName());
         } catch (AuthenticationException e) {
             LOGGER.error(e.getMessage(),e);
@@ -146,13 +160,17 @@ public class AuthRealm extends AuthorizingRealm {
             throw new AuthenticationException(e);
         } finally {
 			DBFactory.close(conn, null, null);
-		}*/
-
-        //return simpleAuthenticationInfo;
-        ShiroUser user = new ShiroUser(1, "231dw311", username, "胡鑫盛", "admin");
-        user.setJigouId(1);
-        return new SimpleAuthenticationInfo(user, password, getName());
+		}
+        
+        return simpleAuthenticationInfo;
     }
+    
+    public static void main(String[] args) throws Exception {
+    	Connection conn = DBFactory.getConn();
+    	UserService service = new UserService();
+    	GuanliyuanBean bean = service.getGuanliyuanByUserNo(conn, "T358246463");
+    	System.out.println(bean.getName());
+	}
 
     /**
      * 设定Password校验的Hash算法与迭代次数.

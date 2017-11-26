@@ -30,10 +30,10 @@ public class MenuManage {
 		if(subject.hasRole("teacher")){
 //			menus.add(getMenuItem(PageView.USER));
 //			menus.add(getMenuItem(PageView.GXPHB));
-//			menus.add(getDivider());
 		}
-		menus.add(getModalMenuItem("system/updatePwd", "修改密码", "updatePwd", "icon-calendar", "assets/system/js/updatePwd"));
-		menus.add(getMenuItem(PageView.LOCK));
+		menus.add(getDivider());
+		/*menus.add(getModalMenuItem("system/updatePwd", "修改密码", "updatePwd", "icon-calendar", "assets/system/js/updatePwd"));
+		menus.add(getMenuItem(PageView.LOCK));*/
 		menus.add(getMenuItem(PageView.LOGOUT));
 		
 		return menus;
@@ -45,21 +45,19 @@ public class MenuManage {
 		//首页
 		menus.add(getMenuItem(PageView.HOME));
 		
-		menus.add(getMenuItem(PageView.LURUYUAN));
 		
-		menus.add(getMenuItem(PageView.SHIYONGZHE));
-		
-		menus.add(getMenuItem(PageView.FENPEIGUIZE));
-		
-		menus.add(getMenuItem(PageView.LIANXIREN));
 		
 		Subject subject = SecurityUtils.getSubject();
-		if(subject.hasRole("teacher")){
-			
+		if(subject.hasRole("lry")){
+			menus.add(getMenuItem(PageView.LIANXIREN));
 		}
 		
 		if(subject.hasRole("admin")){
+			menus.add(getMenuItem(PageView.LURUYUAN));
 			
+			menus.add(getMenuItem(PageView.SHIYONGZHE));
+			
+			menus.add(getMenuItem(PageView.FENPEIGUIZE));
 		}
 		
 		return menus;

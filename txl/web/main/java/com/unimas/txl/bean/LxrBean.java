@@ -14,12 +14,12 @@ public class LxrBean extends JdbcBean {
 	private int xingbie = -1;
 	@Column(name="xuexiao_id", nullNumberValue=-1)
 	private int xuexiaoId = -1;
-	@Column(ignore=true)
+	@Column(name="xuexiaoming", ignore=true)
 	@LeftField(name="xuexiaoming", joinTable="txl_xuexiao", joinField="id", refField="xuexiaoId")
 	private String xuexiao;
 	@Column(name="dq_id")
 	private String dqId;
-	@Column(ignore=true)
+	@Column(name="dq_name", ignore=true)
 	@LeftField(name="name", joinTable="xzqh", joinField="code", refField="dqId")
 	private String dqName;
 	@Column(nullNumberValue=-1)

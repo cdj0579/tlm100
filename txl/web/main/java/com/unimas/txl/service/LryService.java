@@ -25,7 +25,7 @@ public class LryService {
 			UserService us = new UserService();
 			if(us.checkUsername(conn, username)){
 				conn.setAutoCommit(false);
-				String userNo = us.saveAccount(conn, username, password, "syz");
+				String userNo = us.saveAccount(conn, username, password, "lry");
 				LryBean bean = new LryBean();
 				bean.setJigouId(user.getJigouId());
 				bean.setName(name);

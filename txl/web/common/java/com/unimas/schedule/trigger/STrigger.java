@@ -32,7 +32,11 @@ public class STrigger implements java.io.Serializable {
 		/**
 		 * 按月调度
 		 */
-		MONTH(4);
+		MONTH(4),
+		/**
+		 * 自定义调度
+		 */
+		CUSTOM(5);
 		private int value;
 		private Type(int value){this.value = value;}
 		public int value(){return this.value;}
@@ -54,7 +58,9 @@ public class STrigger implements java.io.Serializable {
 			return Type.WEEK;
 		} else if(type == Type.MONTH.value()) {
 			return Type.MONTH;
-		} else {
+		} else if(type == Type.CUSTOM.value()) { 
+			return Type.CUSTOM;
+		}else {
 			return null;
 		}
 	}
@@ -125,6 +131,8 @@ public class STrigger implements java.io.Serializable {
         	return CronTriggers.startEveryDayByPointedTime(jobKey, stringEveryWeekFormatToExpression(schedules[1], Integer.parseInt(schedules[0])));
         } else if (Type.MONTH.equals(type)) {
         	return CronTriggers.startEveryDayByPointedTime(jobKey, stringEveryMonthFormatToExpression(schedules[1], Integer.parseInt(schedules[0])));
+        } else if (Type.CUSTOM.equals(type)) {
+        	return CronTriggers.startEveryDayByPointedTime(jobKey, schedules[0]);
         } else {
         	throw new Exception("调度类型["+type+"]不存在！");
         }
