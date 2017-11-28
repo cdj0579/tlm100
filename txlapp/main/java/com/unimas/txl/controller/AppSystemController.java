@@ -1,6 +1,7 @@
 package com.unimas.txl.controller;
 
 
+import java.sql.Connection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.unimas.common.date.DateUtils;
+import com.unimas.jdbc.DBFactory;
 import com.unimas.txl.service.AppIndexService;
 import com.unimas.txl.service.user.UserService;
 import com.unimas.web.auth.AuthRealm.ShiroUser;
@@ -60,6 +62,13 @@ public class AppSystemController {
      */
     @RequestMapping(value = "/login",method = RequestMethod.GET)
     public String login(HttpServletRequest request) {
+    	/*System.out.println("lusl===GET= login===" );
+    	ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+    	System.out.println("lusl===GET= login===1 " );
+    	if(user != null){
+    		System.out.println("lusl===GET= login===" +user);
+     		return "app/index";
+     	}else*/
     	return "app/login";
     }
     
@@ -73,7 +82,25 @@ public class AppSystemController {
      */
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public String handleLogin(HttpServletRequest request,@RequestParam(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM) String userName,@RequestParam(FormAuthenticationFilter.DEFAULT_PASSWORD_PARAM) String password) {
-    	return "app/login";
+    	String result = "app/login";
+    	ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+     	if(user != null){
+     		Connection conn = null;
+	    	 try {
+	         	conn = DBFactory.getConn();
+		    	UserService service = new UserService();
+		    	String userNo = service.verify(conn, userName, password);
+		    	if(userNo.equals(user.getUserNo())){
+		    		result = "app/index";
+		    	}
+	         } catch (Exception e) {
+				e.printStackTrace();
+			}finally {
+	 			DBFactory.close(conn, null, null);
+	 		}
+    		
+    	} 
+    	return result ;
     }
 	
     @RequestMapping(value="setPwd",method = RequestMethod.GET)
