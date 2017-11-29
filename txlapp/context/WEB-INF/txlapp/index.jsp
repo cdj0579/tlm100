@@ -107,7 +107,7 @@
 			<button type="button" style="display: none;" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
 				<span class="mui-icon mui-icon-left-nav"></span>
 			</button>
-			<h1 class="mui-title">共享文件夹</h1>
+			<h1 class="mui-title">共享名片夹</h1>
 			<div class="mui-pull-right mui-btn-link">
 			<div class="dropdown"> 
 			<a  data-toggle="dropdown" data-hover="dropdown" data-close-others="true"><span class="mui-icon mui-icon-bars"></span></a>
