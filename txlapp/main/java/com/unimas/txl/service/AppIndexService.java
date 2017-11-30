@@ -165,10 +165,10 @@ public class AppIndexService {
 		ResultSet rs = null;
 		Map<String, Object> result = null;
 		StringBuffer sqlSb = new StringBuffer();
-		sqlSb.append(" select  T0.id as fpId ,T0.lxr_id as lxrId,T1.lianxiren as name,T1.xingbie as sex,T1.dq_id quyu,")
-			.append(" T2.xuexiaoming as xuexiao,CONCAT(T1.nianji,'年级（',T1.banji,'）班') banji,T1.phone ,T1.beizhu as gzbeizhu ")
+		sqlSb.append(" select  T0.id as fpId ,T0.lxr_id as lxrId,T1.lianxiren as name,T1.xingbie as sex,T3.name quyu,")
+			.append(" T2.xuexiaoming as xuexiao,CONCAT(T1.nianji,'年级（',IFNULL(T1.banji,'--'),'）班') banji,T1.phone ,T1.beizhu as gzbeizhu ")
 			.append(" from txl_lianxiren_fenpei T0 right join txl_lianxiren T1 on T1.id = T0.lxr_id  and T1.is_del=0 and T1.jigou_id=? ")
-			.append(" left join txl_xuexiao T2 on T2.id=T1.xuexiao_id where T0.syz_id=? and T0.id >? order by T0.id limit 1");
+			.append(" left join txl_xuexiao T2 on T2.id=T1.xuexiao_id left join xzqh T3 on T1.dq_id=T3.`code` where T0.syz_id=? and T0.id >? order by T0.id limit 1");
 		try {
 			conn = DBFactory.getConn();
 			stmt = conn.prepareStatement(sqlSb.toString());
@@ -201,18 +201,18 @@ public class AppIndexService {
 		ResultSet rs = null;
 		List<Map<String, Object>> result = null;
 		StringBuffer sqlSb = new StringBuffer();
-		sqlSb.append(" select T0.id as fpId ,T0.lxr_id as lxrId,T1.lianxiren as name,T1.xingbie as sex,T1.dq_id quyu, ");
+		sqlSb.append(" select T0.id as fpId ,T0.lxr_id as lxrId,T1.lianxiren as name,T1.xingbie as sex, T3.name quyu, ");
 		if(isGx){
 			sqlSb.append(" T0.beizhu as gxbeizhu , ");
 		}
-		sqlSb.append(" T2.xuexiaoming as xuexiao,CONCAT(T1.nianji,'年级（',T1.banji,'）班') banji,T1.phone ,T1.beizhu as gzbeizhu from");
+		sqlSb.append(" T2.xuexiaoming as xuexiao,CONCAT(T1.nianji,'年级（',IFNULL(T1.banji,'--'),'）班') banji,T1.phone ,T1.beizhu as gzbeizhu from");
 		if(isGx){
 			sqlSb.append(" txl_lianxiren_qianyue "); //共享关联表
 		}else {
 			sqlSb.append(" txl_lianxiren_guanzhu "); //关注关联表
 		}
 		sqlSb.append(" T0 right join txl_lianxiren T1 on T1.id = T0.lxr_id  and T1.is_del=0 and T1.jigou_id=? ")
-			.append(" left join txl_xuexiao T2 on T2.id=T1.xuexiao_id where T0.syz_id=? ");
+			.append(" left join txl_xuexiao T2 on T2.id=T1.xuexiao_id left join xzqh T3 on T1.dq_id=T3.`code` where T0.syz_id=? ");
 		
 		try {
 			conn = DBFactory.getConn();
