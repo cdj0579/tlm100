@@ -62,13 +62,11 @@ public class AppSystemController {
      */
     @RequestMapping(value = "/login",method = RequestMethod.GET)
     public String login(HttpServletRequest request) {
-    	/*System.out.println("lusl===GET= login===" );
-    	ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-    	System.out.println("lusl===GET= login===1 " );
-    	if(user != null){
-    		System.out.println("lusl===GET= login===" +user);
-     		return "app/index";
-     	}else*/
+    	System.out.println("lusl===GET=login===" );
+    	if(SecurityUtils.getSubject().isAuthenticated()){
+    		System.out.println("lusl===GET=logout===" );
+    		SecurityUtils.getSubject().logout();
+     	}
     	return "app/login";
     }
     
@@ -83,8 +81,8 @@ public class AppSystemController {
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public String handleLogin(HttpServletRequest request,@RequestParam(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM) String userName,@RequestParam(FormAuthenticationFilter.DEFAULT_PASSWORD_PARAM) String password) {
     	String result = "app/login";
-    	ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-     	if(user != null){
+    	/*ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipal().getPrimaryPrincipal();
+     	if( null != user){
      		Connection conn = null;
 	    	 try {
 	         	conn = DBFactory.getConn();
@@ -99,7 +97,7 @@ public class AppSystemController {
 	 			DBFactory.close(conn, null, null);
 	 		}
     		
-    	} 
+    	} */
     	return result ;
     }
 	

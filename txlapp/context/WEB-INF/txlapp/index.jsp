@@ -125,7 +125,7 @@
 		</header>
 		<nav style="margin-top: 45px;">
 			<ul class="nav nav-tabs " id="myTab">
-			  	<li class="active col-xs-4 col-sm-4 col-md-4"><a href="#txl" data-toggle="tab"><i class="fa fa-sort-desc"></i>通讯录</a></li>
+			  	<li class="active col-xs-4 col-sm-4 col-md-4"><a href="#txl" data-toggle="tab"><i class="fa fa-sort-desc"></i>名片夹</a></li>
 			  	<li class="col-xs-4 col-sm-4 col-md-4"><a href="#ygz" data-toggle="tab"><i class="fa"></i> 已关注</a></li>
 			  	<li class="col-xs-4 col-sm-4 col-md-4"><a href="#ygx" data-toggle="tab"><i class="fa"></i> 已共享</a></li>
 			</ul>
