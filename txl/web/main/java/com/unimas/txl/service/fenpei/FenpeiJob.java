@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 
 import com.google.common.collect.Lists;
 import com.unimas.common.date.TimeUtils;
-import com.unimas.common.file.PropertyUtils;
 import com.unimas.common.util.StringUtils;
 import com.unimas.jdbc.DBFactory;
 import com.unimas.schedule.Job;
@@ -70,15 +69,10 @@ public class FenpeiJob extends SProcess {
 	}
 	
 	public static void startAll() throws Exception {
-		Map<String, String> map = PropertyUtils.readProperties(FenpeiJob.class.getClassLoader().getResource("fenpei-zhouqi.properties").getFile());
+		Map<Integer, Integer> map = FpgzService.getAllZhouqi();
 		if(map != null){
-			for(String key : map.keySet()){
-				int jigouId = -1;
-				int zhouqi = -1;
-				try {
-					jigouId = Integer.parseInt(key);
-					zhouqi = Integer.parseInt(map.get(key));
-				} catch(Exception e){}
+			for(int jigouId : map.keySet()){
+				int zhouqi = map.get(jigouId);
 				if(jigouId > 0){
 					startJob(jigouId, zhouqi);
 					startGuanzhuMonitorJob(jigouId);
@@ -94,7 +88,9 @@ public class FenpeiJob extends SProcess {
 		
 		Thread.sleep(1000*127);
 		startJob(jigouId, 10);*/
-		startGuanzhuMonitorJob(1);
+		//startGuanzhuMonitorJob(1);
+		//startAll();
+		new FenpeiJob(1, 7).fenpei();
 	}
 	
 	public void fenpei(){
@@ -111,6 +107,18 @@ public class FenpeiJob extends SProcess {
 			}
 		} catch (Exception e) {
 			logger.error("分配任务执行失败！", e);
+		}
+	}
+	
+	private void fenpeiSyz(Connection conn, List<LxrBean> lxres, SyzBean b) throws Exception {
+		if(lxres == null || b == null) return;
+		int size = lxres.size();
+		if(size > 0){
+			int index = (int)(Math.random()*size);
+			LxrBean lxrBean = lxres.get(index);
+			logger.debug(b.getName() + " ----> "+lxrBean.getLianxiren()+"("+lxrBean.getId()+")");
+			service.saveLxrFenpeiInfo(conn, jigouId, lxrBean.getId(), b.getId());
+			lxres.remove(lxrBean);
 		}
 	}
 	
@@ -151,14 +159,20 @@ public class FenpeiJob extends SProcess {
 				if(lxres.size()/syzes.size() < danliang){ //不够分配，重新计算单量
 					danliang = lxres.size()/syzes.size();
 				}
-				for(SyzBean b : syzes){
-					for(int i=0;i<danliang;i++){
-						int size = lxres.size();
-						int index = (int)(Math.random()*size);
-						LxrBean lxrBean = lxres.get(index);
-						logger.debug(b.getName() + " ----> "+lxrBean.getLianxiren()+"("+lxrBean.getId()+")");
-						service.saveLxrFenpeiInfo(conn, jigouId, lxrBean.getId(), b.getId());
-						lxres.remove(lxrBean);
+				if(danliang > 0){
+					for(SyzBean b : syzes){
+						for(int i=0;i<danliang;i++){
+							fenpeiSyz(conn, lxres, b);
+						}
+					}
+					if(lxres.size() > 0){  //未分配完
+						for(SyzBean b : syzes){
+							fenpeiSyz(conn, lxres, b);
+						}
+					}
+				} else {
+					for(SyzBean b : syzes){
+						fenpeiSyz(conn, lxres, b);
 					}
 				}
 				
@@ -191,6 +205,7 @@ public class FenpeiJob extends SProcess {
 
 		public GuanzhuMonitorJob(int jigouId) throws Exception {
 			super("guanzhu-monitor-"+jigouId, new STrigger("0 5 * * * ?", Type.CUSTOM));
+			this.jigouId = jigouId;
 		}
 
 		@Override
@@ -211,14 +226,14 @@ public class FenpeiJob extends SProcess {
 
 		public StartJob(int jigouId, int zhouqi) throws Exception {
 			super(getStartJobKey(jigouId), new STrigger("d,00:30:00", Type.DAY));
-			//super(getStartJobKey(jigouId), new STrigger("11 * * * * ?", Type.CUSTOM));
+			//super(getStartJobKey(jigouId), new STrigger("25 23 * * * ?", Type.CUSTOM));
 			this.jigouId = jigouId;
 			this.zhouqi = zhouqi;
 		}
 
 		@Override
 		protected void run() {
-			System.out.println("定时调度："+ TimeUtils.getTime());
+			System.out.println("定时调度(周期["+zhouqi+"])："+ TimeUtils.getTime());
 			ScheduleManager schedule = ScheduleManager.getInstance();
 			try {
 				schedule.stopJob(jobKey);

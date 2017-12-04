@@ -44,9 +44,6 @@ define(['assets/common/config'], function(config) {
 				dom: "f<'table-scrollable't><'row'<'col-md-5 col-sm-5'i><'col-md-7 col-sm-7'p>>",
 				drawCallback: function(){ App.handleTooltips();  },
 	            columns: [
-	                  { title: "分配更新周期", data: "zhouqi", render: function(data, type, full){
-	    	        	  return data+'天';
-	    	          }},
 	    	          { title: "分配单数", data: "danliang", render: function(data, type, full){
 	    	        	  return data+'单/人';
 	    	          }},
@@ -123,10 +120,51 @@ define(['assets/common/config'], function(config) {
 			});
 		};
 		
+		var updateZhouqi = function(data){
+			App.ajaxModal({
+				id: "updateZhouqi",
+				scroll: true,
+				width: "600",
+				required: [],
+				remote: basePath+"assets/fpgzgl/updateZhouqi.html",
+				callback: function(modal, args){
+					var $form = modal.$element.find("form");
+					App.getJSON(basePath+"fpgzgl/getZhouqi", {}, function(result){
+						$form.loadForm({
+							zhouqi: result.zhouqi>0?result.zhouqi:7
+						});
+					});
+					
+					$form.validateB({
+			            submitHandler: function () {
+			            	$form.ajaxSubmit({
+			            		url: basePath+"fpgzgl/updateZhouqi",
+			            		type: "POST",
+			            		dataType: "json",
+			            		success: function(result){
+			            			App.handlerAjaxJson(result, function(){
+			            				modal.hide();
+			            			});
+			            		}
+			            	});
+			            }
+			        });
+					
+					modal.$element.find('.modal-footer .btn.save').on("click",function(){
+						$form.submit();
+					});
+				}
+			});
+		};
+		
 		$('.btn.search').on("click", reload);
 		
 		$('.btn.add').on("click", function(){
 			edit();
+		});
+		
+		$('.btn.setting').on("click", function(){
+			updateZhouqi();
 		});
 		
 		reload();

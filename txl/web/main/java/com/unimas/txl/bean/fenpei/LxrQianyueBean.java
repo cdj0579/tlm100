@@ -11,7 +11,7 @@ public class LxrQianyueBean extends JdbcBean {
 	
 	@Column(isPk=true,name="jigou_id", nullNumberValue=-1)
 	private int jigouId = -1;
-	@Column(name="lxr_id", nullNumberValue=-1)
+	@Column(isPk=true,name="lxr_id", nullNumberValue=-1)
 	private int lxrId = -1;
 	@Column(name="syz_id", nullNumberValue=-1)
 	private int syzId = -1;

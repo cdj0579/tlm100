@@ -43,7 +43,7 @@ public class SystemController {
     	if("teacher".equals(user.getRole())){
     		return "teacher/index";
     	} else {
-    		return "home/index";
+    		return "redirect:lxrgl";
     	}
     }
     
@@ -55,10 +55,10 @@ public class SystemController {
      */
     @RequestMapping(value = "/login",method = RequestMethod.GET)
     public String login(HttpServletRequest request) {
-    	/*try {
-    		List<Map<String, Object>> l = new DicService().get("km_dic", "id", "name", null, null, null);
-			request.setAttribute("kmList", l);
-		} catch (Exception e) {}*/
+    	if(SecurityUtils.getSubject().isAuthenticated()){
+    		SecurityUtils.getSubject().logout();
+    		//return "redirect:/";
+    	}
         return "login";
     }
     

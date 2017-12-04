@@ -12,7 +12,8 @@
     		</div>
     		<div class="col-md-4">
 	    		<div class="btn-groups">
-		            <a class="btn green add"><i class="fa fa-plus"></i> 添加</a>
+		            <a class="btn green add"><i class="fa fa-plus"></i> 添加分配规则</a>
+		            <!-- <a class="btn blue setting"><i class="fa fa-cog"></i> 设置分配周期</a> -->
 		        </div>
     		</div>
     	</div>

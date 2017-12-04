@@ -2,6 +2,7 @@ package com.unimas.txl.bean;
 
 import com.unimas.jdbc.handler.annotation.Column;
 import com.unimas.jdbc.handler.annotation.Table;
+import com.unimas.jdbc.handler.annotation.ToType;
 import com.unimas.jdbc.handler.entry.SelectSqlModal.LeftField;
 
 @Table("txl_lianxiren")
@@ -9,6 +10,8 @@ public class LxrBean extends JdbcBean {
 	
 	@Column(name="jigou_id", nullNumberValue=-1)
 	private int jigouId = -1;
+	@Column(name="lry_id", nullNumberValue=-1)
+	private int lryId = -1;
 	private String xingming;
 	@Column(nullNumberValue=-1)
 	private int xingbie = -1;
@@ -33,11 +36,42 @@ public class LxrBean extends JdbcBean {
 	private int cishu = 0;
 	private String beizhu;
 	
+	@Column(name="status", ignore=true)
+	private int status;
+	@Column(name="shiyongzhe", ignore=true)
+	private String shiyongzhe;
+	@Column(name="shijian", ignore=true, toType=ToType.DateToString)
+	private String shijian;
+	
 	public String getDqId() {
 		return dqId;
 	}
 	public void setDqId(String dqId) {
 		this.dqId = dqId;
+	}
+	public int getLryId() {
+		return lryId;
+	}
+	public void setLryId(int lryId) {
+		this.lryId = lryId;
+	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	public String getShijian() {
+		return shijian;
+	}
+	public void setShijian(String shijian) {
+		this.shijian = shijian;
+	}
+	public String getShiyongzhe() {
+		return shiyongzhe;
+	}
+	public void setShiyongzhe(String shiyongzhe) {
+		this.shiyongzhe = shiyongzhe;
 	}
 	public String getXingming() {
 		return xingming;

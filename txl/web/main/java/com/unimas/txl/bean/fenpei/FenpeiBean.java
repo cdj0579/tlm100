@@ -19,8 +19,6 @@ public class FenpeiBean extends JdbcBean {
 	@Column(ignore=true)
 	@LeftField(name="name", joinTable="xzqh", joinField="code", refField="dqId")
 	private String dqName;
-	@Column(nullNumberValue=-1)
-	private int zhouqi = -1;
 	@Column(name="xq_xuexiao", nullNumberValue=-1)
 	private int xuexiaoId = -1;
 	@Column(ignore=true)
@@ -43,12 +41,6 @@ public class FenpeiBean extends JdbcBean {
 	}
 	public void setDqId(String dqId) {
 		this.dqId = dqId;
-	}
-	public int getZhouqi() {
-		return zhouqi;
-	}
-	public void setZhouqi(int zhouqi) {
-		this.zhouqi = zhouqi;
 	}
 	public int getNj() {
 		return nj;

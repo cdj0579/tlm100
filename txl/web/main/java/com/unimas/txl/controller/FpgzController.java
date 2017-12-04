@@ -62,7 +62,6 @@ public class FpgzController {
     public AjaxDataModal addSyz(HttpServletRequest request) {
     	try {
     		String dqId = PageUtils.getParam(request, "dqId", null);
-    		int zhouqi = PageUtils.getIntParamAndCheckEmpty(request, "zhouqi", "分配更新周期不能为空！");
     		int xxId = PageUtils.getIntParam(request, "xxId");
     		int nj = PageUtils.getIntParam(request, "nj");
     		int bj = PageUtils.getIntParam(request, "bj");
@@ -77,7 +76,7 @@ public class FpgzController {
     			}
     		} catch(Exception e){}
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-			new FpgzService().add(dqId, zhouqi, xxId, nj, bj, danliang, syzIds, user);
+			new FpgzService().add(dqId, xxId, nj, bj, danliang, syzIds, user);
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;
@@ -114,13 +113,51 @@ public class FpgzController {
 		}
     }
     
+    @RequestMapping(value="getZhouqi")
+    @ResponseBody
+    public AjaxDataModal getZhouqi(HttpServletRequest request) {
+    	try {
+    		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+    		int zhouqi = new FpgzService().getZhouqi(user);
+    		AjaxDataModal dm = new AjaxDataModal(true);
+    		dm.put("zhouqi", zhouqi);
+			return dm;
+		}  catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("获取分配周期失败！", e);
+			}
+			return uiex.toDM();
+		}
+    }
+    
+    /*@RequestMapping(value="updateZhouqi")
+    @ResponseBody
+    public AjaxDataModal updateZhouqi(HttpServletRequest request) {
+    	try {
+    		int zhouqi = PageUtils.getIntParamAndCheckEmpty(request, "zhouqi", "错误的分配周期！");
+    		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+    		new FpgzService().updateZhouqi(zhouqi, user);
+			return new AjaxDataModal(true);
+		}  catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("修改分配周期失败！", e);
+			}
+			return uiex.toDM();
+		}
+    }*/
+    
     @RequestMapping(value="update",method = RequestMethod.POST)
     @ResponseBody
     public AjaxDataModal updateSyz(HttpServletRequest request) {
     	try {
     		int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的分配规则ID！");
     		String dqId = PageUtils.getParam(request, "dqId", null);
-    		int zhouqi = PageUtils.getIntParamAndCheckEmpty(request, "zhouqi", "分配更新周期不能为空！");
     		int xxId = PageUtils.getIntParam(request, "xxId");
     		if(xxId <= 0) xxId = -2;
     		int nj = PageUtils.getIntParam(request, "nj");
@@ -137,7 +174,8 @@ public class FpgzController {
     				syzIds.add(Integer.parseInt(sid));
     			}
     		} catch(Exception e){}
-    		new FpgzService().update(id, dqId, zhouqi, xxId, nj, bj, danliang, syzIds);
+    		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+    		new FpgzService().update(id, dqId, xxId, nj, bj, danliang, syzIds, user);
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;
@@ -155,7 +193,8 @@ public class FpgzController {
     public AjaxDataModal deleteSyz(HttpServletRequest request) {
     	try {
     		int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的分配规则ID！");
-    		new FpgzService().delete(id);
+    		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+    		new FpgzService().delete(id, user);
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;

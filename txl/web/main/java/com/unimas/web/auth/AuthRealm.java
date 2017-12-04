@@ -117,12 +117,14 @@ public class AuthRealm extends AuthorizingRealm {
 				GuanliyuanBean bean = service.getGuanliyuanByUserNo(conn, userNo);
 				jigouId = bean.getJigouId();
 				realName = bean.getName();
+				userId = bean.getId();
 				info = bean;
 			} else if(userNo.startsWith("Y")){
 				role = "lry";
 				LryBean bean = service.getLuruyuanByUserNo(conn, userNo);
 				jigouId = bean.getJigouId();
 				realName = bean.getName();
+				userId = bean.getId();
 				info = bean;
 			} else {
 				throw new Exception("未授权的角色！");

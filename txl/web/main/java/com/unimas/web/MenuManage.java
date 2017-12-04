@@ -43,14 +43,13 @@ public class MenuManage {
 		List<Map<String, Object>> menus = new ArrayList<Map<String, Object>>();
 		
 		//首页
-		menus.add(getMenuItem(PageView.HOME));
+		//menus.add(getMenuItem(PageView.HOME));
 		
 		
 		
 		Subject subject = SecurityUtils.getSubject();
-		if(subject.hasRole("lry")){
-			menus.add(getMenuItem(PageView.LIANXIREN));
-		}
+		
+		menus.add(getMenuItem(PageView.LIANXIREN));
 		
 		if(subject.hasRole("admin")){
 			menus.add(getMenuItem(PageView.LURUYUAN));
@@ -58,6 +57,10 @@ public class MenuManage {
 			menus.add(getMenuItem(PageView.SHIYONGZHE));
 			
 			menus.add(getMenuItem(PageView.FENPEIGUIZE));
+			
+			menus.add(getMenuItem(PageView.XUEXIAO));
+			
+			menus.add(getMenuItem(PageView.CONFIG));
 		}
 		
 		return menus;
@@ -111,7 +114,7 @@ public class MenuManage {
 		/**
 		 * 首页
 		 */
-		HOME("./", "首&nbsp;页", "fa fa-home", null, null),
+		HOME("", "首&nbsp;页", "fa fa-home", null, null),
 		/**
 		 * 录入员管理
 		 */
@@ -129,6 +132,14 @@ public class MenuManage {
 		 * 联系人管理
 		 */
 		LIANXIREN("lxrgl", "联系人", "fa fa-file-text-o", null, Lists.newArrayList(HOME)),
+		/**
+		 * 学校管理
+		 */
+		XUEXIAO("xxgl", "学校管理", "fa fa-building-o", null, Lists.newArrayList(HOME)),
+		/**
+		 * 系统配置
+		 */
+		CONFIG("config", "系统配置", "fa fa-cog", null, Lists.newArrayList(HOME)),
 		/**
 		 * 锁定屏幕
 		 */
