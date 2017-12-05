@@ -13,7 +13,7 @@ import com.unimas.txl.bean.LxrBean;
 
 public class LxrDao extends JdbcDao<LxrBean> {
 	
-	public List<LxrBean> queryNofp(int jigouId, int xuexiaoId, String dqId, int nj, int bj) throws Exception {
+	public List<LxrBean> queryNofp(int jigouId, String xuexiaoId, String dqId, String nj, String bj, int lryId) throws Exception {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -28,17 +28,20 @@ public class LxrDao extends JdbcDao<LxrBean> {
 			sql.append( "left join txl_lianxiren_qianyue as T5 on (T5.lxr_id = T0.id)");
 			sql.append( " where T0.is_del = 0 and T3.id is null and T4.id is null and T5.id is null ");
 			sql.append(" and T0.jigou_id = "+jigouId);
-			if(xuexiaoId > 0){
-				sql.append(" and T0.xuexiao_id = "+xuexiaoId);
+			if(StringUtils.isNotEmpty(xuexiaoId)){
+				sql.append(" and T0.xuexiao_id in ("+xuexiaoId+") ");
 			}
-			if(nj > 0){
-				sql.append(" and T0.nianji = "+nj);
+			if(StringUtils.isNotEmpty(nj)){
+				sql.append(" and T0.nianji in ("+nj+") ");
 			}
-			if(bj > 0){
-				sql.append(" and T0.banji = "+bj);
+			if(StringUtils.isNotEmpty(bj)){
+				sql.append(" and T0.banji in ("+bj+") ");
 			}
 			if(StringUtils.isNotEmpty(dqId)){
 				sql.append(" and T0.dq_id = '"+dqId+"'");
+			}
+			if(lryId > 0){
+				sql.append(" and T0.lry_id = "+lryId);
 			}
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(sql.toString());

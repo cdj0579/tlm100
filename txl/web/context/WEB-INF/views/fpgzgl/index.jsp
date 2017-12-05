@@ -3,6 +3,12 @@
 .portlet .actions .form-group {
 	margin-bottom: 0;
 }
+.form .form-section, .portlet-form .form-section {
+    font-weight: 400;
+    margin: 30px 0 10px;
+    padding: 0 0 5px 70px;
+    border-bottom: 1px solid #e7ecf1;
+}
 </style>
 <div class="portlet light ">
     <div class="portlet-body">

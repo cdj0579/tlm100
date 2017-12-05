@@ -35,7 +35,7 @@ define(['assets/common/config'], function(config) {
 					}
 	        	},
 				deferRender: false,
-				ordering: false,
+				ordering: true,
 				scrollY: "330px",
 				scrollCollapse: false,
 				paging: true,
@@ -43,21 +43,48 @@ define(['assets/common/config'], function(config) {
 				lengthChange: false,
 				dom: "f<'table-scrollable't><'row'<'col-md-5 col-sm-5'i><'col-md-7 col-sm-7'p>>",
 				drawCallback: function(){ App.handleTooltips();  },
+				columnDefs: [{
+					"targets": 0,
+				     "orderable": true
+				},{
+					"targets": [1,2,3,4,5,6],
+				     "orderable": false
+				}],
 	            columns: [
+	                  { title: "创建时间", data: "shijian"},
 	    	          { title: "分配单数", data: "danliang", render: function(data, type, full){
 	    	        	  return data+'单/人';
 	    	          }},
-	                  { title: "所属学校", data: "xuexiao"},
+	    	          { title: "所属地区", data: "lxrDqName"},
+	                  { title: "所属学校", data: "xuexiaoId", render: function(data, type, full){
+	    	        	  if(data){
+	    	        		  if(data.indexOf(",") != -1){
+	    	        			  return "多个";
+	    	        		  } else {
+	    	        			  return full.xuexiao;
+	    	        		  }
+	    	        	  } else {
+	    	        		  return "";
+	    	        	  }
+	    	          }},
 	                  { title: "所属年级", data: "nj", render: function(data, type, full){
-	    	        	  if(data && data > 0){
-	    	        		  return data+"年级";
+	    	        	  if(data){
+	    	        		  if(data.indexOf(",") != -1){
+	    	        			  return "多个";
+	    	        		  } else {
+	    	        			  return data+"年级";
+	    	        		  }
 	    	        	  } else {
 	    	        		  return "";
 	    	        	  }
 	    	          }},
 	                  { title: "所属班级", data: "bj", render: function(data, type, full){
-	    	        	  if(data && data > 0){
-	    	        		  return data+"班";
+	    	        	  if(data){
+	    	        		  if(data.indexOf(",") != -1){
+	    	        			  return "多个";
+	    	        		  } else {
+	    	        			  return data+"班";
+	    	        		  }
 	    	        	  } else {
 	    	        		  return "";
 	    	        	  }
@@ -77,10 +104,12 @@ define(['assets/common/config'], function(config) {
 					id: data.id,
 					zhouqi: data.zhouqi,
 					danliang: data.danliang,
-					xxId: data.xuexiaoId,
-					nj: data.nj,
-					bj: data.bj,
-					dqId: data.dqId
+					xxId: data.xuexiaoId?data.xuexiaoId.split(","):null,
+					nj: data.nj?data.nj.split(","):null,
+					bj: data.bj?data.bj.split(","):null,
+					dqId: data.dqId,
+					lxrDqId: data.lxrDqId,
+					lryId: data.lryId
 				});
 			});
 			$tableWrapper.on("click", ".btn.delete", function(){

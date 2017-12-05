@@ -2,6 +2,8 @@ package com.unimas.txl.bean.fenpei;
 
 import java.util.List;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import com.unimas.jdbc.handler.annotation.Column;
 import com.unimas.jdbc.handler.annotation.DefaultValue;
 import com.unimas.jdbc.handler.annotation.Table;
@@ -16,18 +18,22 @@ public class FenpeiBean extends JdbcBean {
 	private int jigouId = -1;
 	@Column(name="dq_id")
 	private String dqId;
+	@Column(name="lxr_dq_id")
+	private String lxrDqId;
 	@Column(ignore=true)
-	@LeftField(name="name", joinTable="xzqh", joinField="code", refField="dqId")
-	private String dqName;
-	@Column(name="xq_xuexiao", nullNumberValue=-1)
-	private int xuexiaoId = -1;
+	@LeftField(name="name", joinTable="xzqh", joinField="code", refField="lxrDqId")
+	private String lxrDqName;
+	@Column(name="xq_xuexiao")
+	private String xuexiaoId;
 	@Column(ignore=true)
 	@LeftField(name="xuexiaoming", joinTable="txl_xuexiao", joinField="id", refField="xuexiaoId")
 	private String xuexiao;
-	@Column(name="xq_nianji", nullNumberValue=-1)
-	private int nj = -1;
-	@Column(name="xq_banji", nullNumberValue=-1)
-	private int bj = -1;
+	@Column(name="xq_nianji")
+	private String nj;
+	@Column(name="xq_banji")
+	private String bj;
+	@Column(name="lry_id",nullNumberValue=-1)
+	private int lryId = -1;
 	@Column(nullNumberValue=-1)
 	private int danliang = -1;
 	@Column(toType=ToType.DateToString,insertValue=DefaultValue.Now)
@@ -42,17 +48,35 @@ public class FenpeiBean extends JdbcBean {
 	public void setDqId(String dqId) {
 		this.dqId = dqId;
 	}
-	public int getNj() {
+	public String getLxrDqId() {
+		return lxrDqId;
+	}
+	public void setLxrDqId(String lxrDqId) {
+		this.lxrDqId = lxrDqId;
+	}
+	public int getLryId() {
+		return lryId;
+	}
+	public void setLryId(int lryId) {
+		this.lryId = lryId;
+	}
+	public String getNj() {
 		return nj;
 	}
-	public void setNj(int nj) {
-		this.nj = nj;
+	public void setNj(int []  njIds) {
+		this.nj = joinInts(njIds);
 	}
-	public int getBj() {
+	public String getBj() {
 		return bj;
 	}
-	public void setBj(int bj) {
-		this.bj = bj;
+	public void setBj(int [] bjIds) {
+		this.bj = joinInts(bjIds);
+	}
+	public String getXuexiaoId() {
+		return xuexiaoId;
+	}
+	public void setXuexiaoId(int [] xxIds) {
+		this.xuexiaoId = joinInts(xxIds);
 	}
 	public int getDanliang() {
 		return danliang;
@@ -65,12 +89,6 @@ public class FenpeiBean extends JdbcBean {
 	}
 	public void setShijian(String shijian) {
 		this.shijian = shijian;
-	}
-	public int getXuexiaoId() {
-		return xuexiaoId;
-	}
-	public void setXuexiaoId(int xuexiaoId) {
-		this.xuexiaoId = xuexiaoId;
 	}
 	public String getXuexiao() {
 		return xuexiao;
@@ -90,11 +108,20 @@ public class FenpeiBean extends JdbcBean {
 	public void setRefs(List<FenpeiSyzBean> refs) {
 		this.refs = refs;
 	}
-	public String getDqName() {
-		return dqName;
+	public String getLxrDqName() {
+		return lxrDqName;
 	}
-	public void setDqName(String dqName) {
-		this.dqName = dqName;
+	public void setLxrDqName(String lxrDqName) {
+		this.lxrDqName = lxrDqName;
+	}
+	
+	public static String joinInts(int [] ids){
+		if(ids == null) return null;
+		List<String> l = Lists.newArrayList();
+		for(int id : ids){
+			l.add(String.valueOf(id));
+		}
+		return Joiner.on(",").join(l);
 	}
 
 }

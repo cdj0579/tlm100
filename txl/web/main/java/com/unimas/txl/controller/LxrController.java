@@ -85,10 +85,13 @@ public class LxrController {
     	try {
     		String name = PageUtils.getParam(request, "name", null);
     		int xb = PageUtils.getIntParam(request, "xb");
-    		int xuexiaoId = PageUtils.getIntParam(request, "xxId");
     		String dqId = PageUtils.getParam(request, "dqId", null);
+    		int xuexiaoId = PageUtils.getIntParam(request, "xxId");
+    		if(xuexiaoId <= 0) xuexiaoId = -2;
     		int nj = PageUtils.getIntParam(request, "nj");
+    		if(nj <= 0) nj = -2;
     		int bj = PageUtils.getIntParam(request, "bj");
+    		if(bj <= 0) bj = -2;
     		String lianxiren = PageUtils.getParamAndCheckEmpty(request, "lianxiren", "联系人姓名不能为空！");
 			String phone = PageUtils.getParamAndCheckEmpty(request, "phone", "联系人电话不能为空！");
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
@@ -112,10 +115,13 @@ public class LxrController {
     		int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的联系人ID！");
     		String name = PageUtils.getParam(request, "name", null);
     		int xb = PageUtils.getIntParam(request, "xb");
-    		int xuexiaoId = PageUtils.getIntParam(request, "xxId");
     		String dqId = PageUtils.getParam(request, "dqId", null);
+    		int xuexiaoId = PageUtils.getIntParam(request, "xxId");
+    		if(xuexiaoId <= 0) xuexiaoId = -2;
     		int nj = PageUtils.getIntParam(request, "nj");
+    		if(nj <= 0) nj = -2;
     		int bj = PageUtils.getIntParam(request, "bj");
+    		if(bj <= 0) bj = -2;
     		String lianxiren = PageUtils.getParamAndCheckEmpty(request, "lianxiren", "联系人姓名不能为空！");
 			String phone = PageUtils.getParamAndCheckEmpty(request, "phone", "联系人电话不能为空！");
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();

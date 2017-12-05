@@ -45,6 +45,7 @@ define(["validate.additional", "select3"], function(a, b){
 			
 			$form.find('select[name="dqId"]').select3({
 	    		placeholder: "请选择",
+	    		allowClear: true,
 	    		autoLoad: true,
 	    		value: _data.dqId || null,
 	    		tableName: "xzqh",
@@ -73,8 +74,7 @@ define(["validate.additional", "select3"], function(a, b){
 	    		allowClear: true
 	    	});
 			$form.find('select[name="xb"]').select2({
-	    		placeholder: "请选择",
-	    		allowClear: true
+	    		placeholder: "请选择"
 	    	});
 			
 			$form.loadForm(_data);

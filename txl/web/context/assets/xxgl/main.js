@@ -49,7 +49,7 @@ define(['assets/common/config'], function(config) {
 	            columns: [
 	                  { title: "所属地区", width: "15%", data: "dqName"},
 	                  { title: "学校名称", width: "25%", data: "name"},
-	                  { title: "学校名称", width: "45%", data: "beizhu"},
+	                  { title: "备注", width: "45%", data: "beizhu"},
 	    	          { title: "操作", width: "15%", data: "id", render: function(data, type, full){
 	    	        	  return '<a href="javascript:;" class="btn blue edit"> 编辑 <i class="fa fa-edit"></i></a>'+
 	    	        	  '<a href="javascript:;" class="btn red delete"> 删除 <i class="fa fa-remove"></i></a>';

@@ -1,19 +1,33 @@
 package com.unimas.txl.dao.fenpei;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
 
 import com.unimas.common.date.TimeUtils;
 import com.unimas.jdbc.DBFactory;
+import com.unimas.jdbc.handler.ResultSetHandler;
+import com.unimas.jdbc.handler.SelectHandler;
+import com.unimas.jdbc.handler.entry.SelectSqlModal;
 import com.unimas.txl.bean.fenpei.FenpeiBean;
 import com.unimas.txl.bean.fenpei.FenpeiSyzBean;
 import com.unimas.txl.dao.JdbcDao;
 
 public class FpgzDao extends JdbcDao<FenpeiBean> {
 	
-	private static final int GUANZHU_SHIJIAN = 3;
+	public List<FenpeiBean> query(FenpeiBean b) throws Exception{
+		Connection conn = null;
+		try {
+			conn = DBFactory.getConn();
+			SelectSqlModal<FenpeiBean> sm = SelectHandler.createSelectModal(conn, b);
+			sm.addOrder(FenpeiBean.class, "shijian", SelectSqlModal.Order.ASC);
+			return SelectHandler.executeSelect(conn, sm);
+		} finally {
+			DBFactory.close(conn, null, null);
+		}
+	}
 	
 	public void save(FenpeiBean bean) throws Exception {
 		Connection conn = null;
@@ -68,7 +82,20 @@ public class FpgzDao extends JdbcDao<FenpeiBean> {
 		Statement stmt = null;
 		try {
 			conn = DBFactory.getConn();
-			String sql = "delete from txl_lianxiren_guanzhu where jigou_id="+jigouId+" and shijian<='"+TimeUtils.format(TimeUtils.add(new Date(), -1*GUANZHU_SHIJIAN))+"'";
+			int gzsc = -1;
+			ResultSet rs = null;
+			try {
+				String sql = "select guanzhu_shichang from txl_config where jigou_id="+jigouId;
+				stmt = conn.createStatement();
+				rs = stmt.executeQuery(sql);
+				gzsc = ResultSetHandler.toInt(rs);
+				if(gzsc == -1){
+					gzsc = 3;
+				}
+			} finally {
+				DBFactory.close(null, stmt, rs);
+			}
+			String sql = "delete from txl_lianxiren_guanzhu where jigou_id="+jigouId+" and shijian<='"+TimeUtils.format(TimeUtils.add(new Date(), -1*gzsc))+"'";
 			stmt = conn.createStatement();
 			stmt.executeUpdate(sql);
 		} finally {

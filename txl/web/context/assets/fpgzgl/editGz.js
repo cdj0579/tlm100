@@ -154,6 +154,12 @@ define(["validate.additional", "select3"], function(a, b){
 		});
 	};
 	
+	var reloadXxSelect = function($el, dqId){
+		$el.reload(null, {
+			dqId: dqId
+		});
+	};
+	
 	return {
 		init: function(_data, _modal, _cb){
 			modal = _modal;
@@ -181,17 +187,40 @@ define(["validate.additional", "select3"], function(a, b){
 				typeField: "pid",
 				typeVelue: "330500"
 	    	});
-			$form.find('select[name="xxId"]').select3({
+			$form.find('select[name="lxrDqId"]').select3({
 	    		placeholder: "请选择",
 	    		autoLoad: true,
 	    		allowClear: true,
+	    		value: _data.lxrDqId || null,
+	    		tableName: "xzqh",
+	    		idField: "code",
+				nameField: "name",
+				typeField: "pid",
+				typeVelue: "330500"
+	    	}).on('select.select3', function(){
+	    		reloadXxSelect($xxSelect, $(this).val());
+	    	});
+			$form.find('select[name="lryId"]').select3({
+	    		placeholder: "请选择",
+	    		allowClear: true,
+	    		autoLoad: true,
+	    		value: _data.lryId || null,
+	    		getUrl: basePath+"lrygl/list",
+	    		idField: "id",
+				nameField: "name"
+	    	});
+			var $xxSelect = $form.find('select[name="xxId"]').select3({
+	    		placeholder: "请选择",
+	    		autoLoad: false,
+	    		allowClear: true,
 	    		value: _data.xxId || null,
-	    		tableName: "txl_xuexiao",
+	    		getUrl: basePath+"xxgl/list",
 	    		idField: "id",
 				nameField: "xuexiaoming"/*,
 				typeField: "pid",
 				typeVelue: "330500"*/
 	    	});
+			reloadXxSelect($xxSelect, _data.lxrDqId || null);
 			$form.find('select[name="nj"]').select2({
 	    		placeholder: "请选择",
 	    		allowClear: true
@@ -207,8 +236,8 @@ define(["validate.additional", "select3"], function(a, b){
 				$form.hideOrShowFormItem(["syztmp"], !checked);
 			});
 			$form.loadForm(_data);
-			if(_data.nj > 0)$form.find('select[name="nj"]').trigger('change');
-			if(_data.bj > 0)$form.find('select[name="bj"]').trigger('change');
+			if(_data.nj)$form.find('select[name="nj"]').trigger('change');
+			if(_data.bj)$form.find('select[name="bj"]').trigger('change');
 			if(_data.fenpeiDq == false) $enableSwitch.trigger('change');
 			
 			$form.find('.btn.select-syz').on("click", function(){

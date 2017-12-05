@@ -35,8 +35,8 @@ public class LxrService {
 		return (List<LxrBean>) new LxrDao().query(bean);
 	}
 	
-	public List<LxrBean> queryNofp(int jigouId, int xuexiaoId, String dqId, int nj, int bj) throws Exception {
-		return new LxrDao().queryNofp(jigouId, xuexiaoId, dqId, nj, bj);
+	public List<LxrBean> queryNofp(int jigouId, String xuexiaoId, String dqId, String nj, String bj, int lryId) throws Exception {
+		return new LxrDao().queryNofp(jigouId, xuexiaoId, dqId, nj, bj, lryId);
 	}
 	
 	public void add(String name, int xb, int xuexiaoId, String dqId, int nj, int bj, String lianxiren

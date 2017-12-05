@@ -96,6 +96,33 @@ public class PageUtils {
 	}
 	
 	/**
+	 * 获取parameter中的参数，并转换为Int数组，当param不存在或param不是Int类型时返回null
+	 * @param request
+	 * @param paramName
+	 * @return
+	 */
+	public static int[] getIntParams(HttpServletRequest request, String paramName, int[] defaultValue) {
+		int[] values = null;
+		if(request != null || paramName != null) {
+			String[] params = request.getParameterValues(paramName);
+			if(params != null){
+				values = new int[params.length];
+				int i=0;
+				for(String value : params){
+					try {
+						values[i++] = Integer.parseInt(value);
+					} catch(Exception e){}
+				}
+			}
+		}
+		if(defaultValue != null && values == null){
+			return defaultValue;
+		} else {
+			return values;
+		}
+	}
+	
+	/**
 	 * 获取parameter中的参数，并转换为boolean，当param不存在或param不是Int类型时返回false
 	 * @param request
 	 * @param paramName

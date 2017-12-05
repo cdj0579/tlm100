@@ -124,13 +124,12 @@ public class FenpeiJob extends SProcess {
 	
 	private void fenpei(FenpeiBean bean) throws Exception {
 		//1、加载待分配联系人(未被分配、未被关注、未被签约且符合指定的条件（学校、年级、班级）)
-		int xuexiaoId = bean.getXuexiaoId();
-		if(xuexiaoId <= 0) xuexiaoId=-1;
-		int nj = bean.getNj();
-		if(nj <= 0) nj=-1;
-		int bj = bean.getBj();
-		if(bj <= 0) bj=-1;
-		List<LxrBean> lxres = Lists.newLinkedList(lxrService.queryNofp(jigouId, xuexiaoId, null, nj, bj));
+		String lxrDqId = bean.getLxrDqId();
+		String xuexiaoId = bean.getXuexiaoId();
+		String nj = bean.getNj();
+		String bj = bean.getBj();
+		int lryId = bean.getLryId();
+		List<LxrBean> lxres = Lists.newLinkedList(lxrService.queryNofp(jigouId, xuexiaoId, lxrDqId, nj, bj, lryId));
 		
 		//2、加载待分配使用者
 		String dqId = bean.getDqId();

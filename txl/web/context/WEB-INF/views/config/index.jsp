@@ -23,7 +23,7 @@
 	                <div class="col-md-8">
 	                	<div class="input-icon right">
 	                     	<i class="fa"></i>
-	                     	<input type="number" name="shichang" class="form-control" validate="{required:true,max: 10, min: 1}"/>
+	                     	<input type="number" name="shichang" class="form-control" validate="{required:true,max: 30, min: 1}"/>
 	                    </div>
 	                    <span class="help-block">关注后联系人被锁定的时限，单位是天</span>
 	                </div>
@@ -33,7 +33,7 @@
 	                <div class="col-md-8">
 	                	<div class="input-icon right">
 	                     	<i class="fa"></i>
-	                     	<input type="number" name="shangxian" class="form-control" validate="{required:true,max: 100, min: 1}"/>
+	                     	<input type="number" name="shangxian" class="form-control" validate="{required:true,max: 499, min: 1}"/>
 	                    </div>
 	                    <span class="help-block">通过分享注册页面录入的联系人上限</span>
 	                </div>

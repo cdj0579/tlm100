@@ -4,7 +4,7 @@
 	margin-bottom: 0;
 }
 .form .form-section, .portlet-form .form-section {
-	font-weight: 600;
+	font-weight: 400;
     margin: 7px 0 8px;
     padding-bottom: 5px;
     border-bottom: 1px solid #e7ecf1;
@@ -72,6 +72,9 @@
                      						<option value="7">7年级</option>
                      						<option value="8">8年级</option>
                      						<option value="9" selected="selected">9年级</option>
+                     						<option value="10">10年级</option>
+				       						<option value="11">11年级</option>
+				       						<option value="12">12年级</option>
 				                     	</select>
 				                    </div>
 				                </div>

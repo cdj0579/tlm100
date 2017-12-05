@@ -59,12 +59,14 @@ public class FpgzController {
     
     @RequestMapping(value="add",method = RequestMethod.POST)
     @ResponseBody
-    public AjaxDataModal addSyz(HttpServletRequest request) {
+    public AjaxDataModal add(HttpServletRequest request) {
     	try {
     		String dqId = PageUtils.getParam(request, "dqId", null);
-    		int xxId = PageUtils.getIntParam(request, "xxId");
-    		int nj = PageUtils.getIntParam(request, "nj");
-    		int bj = PageUtils.getIntParam(request, "bj");
+    		int[] xxId = PageUtils.getIntParams(request, "xxId", null);
+    		int[] nj = PageUtils.getIntParams(request, "nj", null);
+    		int[] bj = PageUtils.getIntParams(request, "bj", null);
+    		String lxrDqId = PageUtils.getParam(request, "lxrDqId", null);
+    		int lryId = PageUtils.getIntParam(request, "lryId");
     		int danliang = PageUtils.getIntParamAndCheckEmpty(request, "danliang", "分配单数不能为空！");
     		String _syzIds = PageUtils.getParam(request, "syzIds", null);
     		List<Integer> syzIds = null;
@@ -76,7 +78,7 @@ public class FpgzController {
     			}
     		} catch(Exception e){}
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-			new FpgzService().add(dqId, xxId, nj, bj, danliang, syzIds, user);
+			new FpgzService().add(dqId, lxrDqId, xxId, nj, bj, lryId, danliang, syzIds, user);
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;
@@ -154,16 +156,16 @@ public class FpgzController {
     
     @RequestMapping(value="update",method = RequestMethod.POST)
     @ResponseBody
-    public AjaxDataModal updateSyz(HttpServletRequest request) {
+    public AjaxDataModal update(HttpServletRequest request) {
     	try {
     		int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的分配规则ID！");
     		String dqId = PageUtils.getParam(request, "dqId", null);
-    		int xxId = PageUtils.getIntParam(request, "xxId");
-    		if(xxId <= 0) xxId = -2;
-    		int nj = PageUtils.getIntParam(request, "nj");
-    		if(nj <= 0) nj = -2;
-    		int bj = PageUtils.getIntParam(request, "bj");
-    		if(bj <= 0) bj = -2;
+    		int[] xxId = PageUtils.getIntParams(request, "xxId", new int[0]);
+    		int[] nj = PageUtils.getIntParams(request, "nj", new int[0]);
+    		int[] bj = PageUtils.getIntParams(request, "bj", new int[0]);
+    		String lxrDqId = PageUtils.getParam(request, "lxrDqId", "");
+    		int lryId = PageUtils.getIntParam(request, "lryId");
+    		if(lryId == -1) lryId = -2;
     		int danliang = PageUtils.getIntParamAndCheckEmpty(request, "danliang", "分配单数不能为空！");
     		String _syzIds = PageUtils.getParam(request, "syzIds", null);
     		List<Integer> syzIds = null;
@@ -175,7 +177,7 @@ public class FpgzController {
     			}
     		} catch(Exception e){}
     		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-    		new FpgzService().update(id, dqId, xxId, nj, bj, danliang, syzIds, user);
+    		new FpgzService().update(id, dqId, lxrDqId, xxId, nj, bj, lryId, danliang, syzIds, user);
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;
@@ -190,7 +192,7 @@ public class FpgzController {
     
     @RequestMapping(value="delete",method = RequestMethod.POST)
     @ResponseBody
-    public AjaxDataModal deleteSyz(HttpServletRequest request) {
+    public AjaxDataModal delete(HttpServletRequest request) {
     	try {
     		int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的分配规则ID！");
     		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
