@@ -29,6 +29,7 @@ public class SyzDao extends JdbcDao<SyzBean> {
 			if(StringUtils.isNotEmpty(name)){
 				sm.addCondition(SyzBean.class, "name", "like", "%"+name+"%");
 			}
+			sm.addOrder(SyzBean.class, "id", SelectSqlModal.Order.ASC);
 			return SelectHandler.executeSelect(conn, sm);
 		} finally {
 			DBFactory.close(conn, null, null);

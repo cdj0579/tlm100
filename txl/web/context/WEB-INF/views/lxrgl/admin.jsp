@@ -23,10 +23,10 @@
 				                	<div class="input-icon right">
 				                    	<i class="fa"></i>
 				                     	<select name="status" class="form-control">
-				                     		<option value="0">未分配</option>
+				                     		<option value="0" selected="selected">未分配</option>
 				                     		<option value="1">已分配</option>
                      						<option value="2">已关注</option>
-                     						<option value="3" selected="selected">已共享</option>
+                     						<option value="3">已共享</option>
 				                     	</select>
 				                    </div>
 				                </div>
@@ -63,6 +63,7 @@
 				                	<div class="input-icon right">
 				                    	<i class="fa"></i>
 				                     	<select name="nj" class="form-control" validate="{required:true}">
+				                     		<option value="-1"></option>
 				                     		<option value="1">1年级</option>
                      						<option value="2">2年级</option>
                      						<option value="3">3年级</option>
@@ -71,7 +72,7 @@
                      						<option value="6">6年级</option>
                      						<option value="7">7年级</option>
                      						<option value="8">8年级</option>
-                     						<option value="9" selected="selected">9年级</option>
+                     						<option value="9">9年级</option>
                      						<option value="10">10年级</option>
 				       						<option value="11">11年级</option>
 				       						<option value="12">12年级</option>
@@ -87,6 +88,7 @@
 				                	<div class="input-icon right">
 				                    	<i class="fa"></i>
 				                     	<select name="bj" class="form-control" validate="{required:true}">
+				                     		<option value="-1"></option>
 				                     		<option value="1">1班</option>
                      						<option value="2">2班</option>
                      						<option value="3">3班</option>

@@ -52,7 +52,7 @@ define(["validate.additional", "select3"], function(a, b){
 	var isSelected = function(id){
 		var $display = $('span.display-num');
 		var ids = $display.data("ids") || [];
-		return ids.join(",").indexOf(id) != -1;
+		return (","+ids.join(",")+",").indexOf(","+id+",") != -1;
 	};
 	
 	var setSyzIds = function(ids){
@@ -91,21 +91,10 @@ define(["validate.additional", "select3"], function(a, b){
 					pageLength: 10,
 					lengthChange: false,
 					dom: "f<'table-scrollable't><'row'<'col-md-5 col-sm-5'i><'col-md-7 col-sm-7'p>>",
-					drawCallback: function(){ 
-						App.handleTooltips();  
-						var checkboxes = $table.find('tr td input.checkboxes');
-						checkboxes.each(function(){
-							var id = parseInt($(this).val());
-							if(isSelected(id)){
-								$(this).closest('tr').addClass('checked');
-								$(this).attr("checked", true);
-							}
-						});
-						App.initUniform();
-					},
+					drawCallback: function(){ App.handleTooltips(); App.initUniform(); },
 		            columns: [
 							{ title: '<input type="checkbox" class="group-checkable"/>', className: "center", width: "8%", data: "id", render: function(data, type, full){
-								return '<input type="checkbox" class="checkboxes" value="'+data+'"/>';
+								return '<input type="checkbox" class="checkboxes"'+(isSelected(data)?' checked="checked"':'')+' value="'+data+'"/>';
 							}, createdCell: function(td){
 							  $(td).attr("align", "center");
 							}},
@@ -118,35 +107,19 @@ define(["validate.additional", "select3"], function(a, b){
 				$tableWrapper.find('.dataTables_filter').appendTo(modal1.$element.find('.search-inp'));
 				$table.closest('.dataTables_wrapper').on("change", '.group-checkable', function(){
 					var checkboxes = $table.find('tr td input.checkboxes');
-					var checked = false;
-					if($(this).prop("checked")){
-						checked = true;
-						checkboxes.closest('tr').addClass('checked');
-					}else{
-						checked = false;
-						checkboxes.closest('tr').removeClass('checked');
-					}
-					checkboxes.attr("checked", checked);
+					checkboxes.attr("checked", $(this).prop("checked"));
 					checkboxes.uniform();
 				});
-				$table.closest('.dataTables_wrapper').on("change", 'tr td input.checkboxes', function(){
-					var $tr = $(this).closest('tr');
-					if($(this).prop("checked") == true){
-						$tr.addClass('checked');
-					} else {
-						$tr.removeClass('checked');
-					}
-				});
 				modal1.$element.find('.modal-footer .btn.save').on("click",function(){
-					var datas = dt.api().rows(['.checked']).data();
-					if(datas.length == 0){
+					var nodes = dt.api().column(0).nodes().to$().find("input:checked");
+					var ids = [];
+					$.each(nodes, function(){
+						ids.push($(this).val());
+					});
+					if(ids.length == 0){
 						App.getAlert().warning("请至少选择一个使用者！", "提示");
 						return false;
 					}
-					var ids = [];
-					$.each(datas, function(){
-						ids.push(this.id);
-					});
 					setSyzIds(ids);
 					modal1.hide();
 				});
@@ -168,7 +141,7 @@ define(["validate.additional", "select3"], function(a, b){
 			id = _data?_data.id:-1;
 			_data = _data || {
 				zhouqi: 7,
-				danliang: 20
+				danliang: 100
 			};
 			isAdd = !(id && id > 0);
 			if(!isAdd && !(_data.dqId && _data.dqId != "")){

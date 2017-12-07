@@ -169,10 +169,12 @@ define(['assets/common/config'], function(config) {
     	}).on('select.select3', reload);
 		$form.find('select[name="nj"]').select2({
     		placeholder: "请选择",
+    		value: -1,
     		allowClear: true
     	}).on("change", reload);
 		$form.find('select[name="bj"]').select2({
     		placeholder: "请选择",
+    		value: -1,
     		allowClear: true
     	}).on("change", reload);
 		$form.find('select[name="status"]').select2({

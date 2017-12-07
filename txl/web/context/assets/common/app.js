@@ -1055,7 +1055,7 @@ define(["bootstrap-toastr"], function(toastr){
 	    		var $element = $('#'+mid);
 	    		if($element.length == 0) {
 	    			$element = $(
-	    				'<div class="modal fade" id="'+mid+'" role="basic" aria-hidden="true" tabindex="-1">'+
+	    				'<div class="modal fade" id="'+mid+'" role="basic">'+
 	                        '<div class="modal-dialog">'+
 	                            '<div class="modal-content">'+
 	                                '<div class="modal-body">'+
