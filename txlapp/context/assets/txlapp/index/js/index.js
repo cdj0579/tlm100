@@ -23,6 +23,7 @@ define(['assets/common/config'], function(config) {
 				$returnBtn.hide();
 			}
 			$(".bz_content").hide();
+			$("#tableBeizhu").hide();
 			
 		})
 		$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
@@ -34,6 +35,7 @@ define(['assets/common/config'], function(config) {
 			getTableInfo();
 		 	$(".bz_content").hide();
 			$("#card").hide();
+			$("#tableBeizhu").hide();
 			$returnBtn.hide();
 		 	
 		});
@@ -56,18 +58,29 @@ define(['assets/common/config'], function(config) {
 			}
 		}
 		
-		function telPhone(){
-			$(".txl>div.tp").click(function(){
+		function telPhone(parentId){
+			$(parentId +" .txl>div.tp").click(function(){
 				var phone = $(this).prev("input").val(); 
 //				console.info(phone);
+				if(tabId == "#txl"){
+					isCall = true;
+					var _id = $(this).siblings("input[name='id']").val();
+					var url =  App.remoteUrlPre + "updateCall";
+					$.ajax({url:url, type: "post",data:{fpId : _id},
+						beforeSend: function () {
+						  	
+						}
+					});
+				}
 				location.href = 'tel:' + phone;
 			});
 		}
 		
 		var zwFlag = true;
-		function setEvent(){
-			telPhone();
-			$(".anniu").click(function(){
+		var _gzBei = {};
+		function setEvent( parentId ){
+			telPhone(parentId);
+			$(parentId+" .anniu").click(function(){
 				var _$this = $(this);
 				var _thisName = _$this.attr("name");
 				
@@ -85,16 +98,51 @@ define(['assets/common/config'], function(config) {
 				$(".tab-pane.active").removeClass("active");
 				$("#card").hide();
 				
-				
-				var _$bz = $(".bz_content");
-				_$bz.find(".btn-sub").text("提交"+(zwFlag?"关注":"共享"));
-				_$bz.find("textarea").val(_beizhu);
-				_$bz.find("label").text("请对“"+_name+"”填写"+(zwFlag?"备注信息":"共享信息"));
-				_$bz.show();
+				if(zwFlag){
+					var _$bz = $("#tableBeizhu");
+					_$bz.find("label").text("请对“"+_name+"”填写备注信息");
+					var _txt = _$bz.find(":text");
+					 for (var i = 0; i < _txt.length; i++) {
+			        	var _obj = _txt.eq(i);
+			        	var name = _obj.attr("name");
+			        	var _v = "";
+			        	if(_gzBei[name] != undefined ){
+			        	 	_v = _gzBei[name];
+			        	}
+			            _obj.val( _v ); 
+			        }
+			        var _input = _$bz.find(":checkbox");
+			        for (var i = 0; i < _input.length; i++) {
+			        	var _obj = _input.eq(i);
+			        	var name = _obj.attr("name");
+			         	if(_gzBei[name] != undefined && _gzBei[name] == "1" ){
+			          		_obj.attr("checked",'true');
+			          	}else{
+			           		_obj.removeAttr("checked");
+			          	}
+			        }
+					var info_v = "";
+					if(_gzBei["info"] != undefined ){
+						info_v = _gzBei["info"] ;
+					}
+					_$bz.find("textarea[name='info']").val(info_v);
+					_$bz.show();
+				}else{
+					var _$bz = $(".bz_content");
+					_$bz.find(".btn-sub").text("提交"+(zwFlag?"关注":"共享"));
+					_$bz.find("textarea").val(_beizhu);
+					_$bz.find("label").text("请对“"+_name+"”填写"+(zwFlag?"备注信息":"共享信息"));
+					_$bz.show();
+				}
 				$returnBtn.show();
 			});
+			beizhuShowHideFun(parentId);
 		}
-		setEvent();
+		function beizhuShowHideFun(parentId){
+			$(parentId +" .card-beizhu").click(function(){
+				$(".table-div").slideToggle(500);
+			});
+		}
 		
 		function setRowEvent(){
 			$(".active>.row:gt(0)").click(function(){
@@ -142,13 +190,13 @@ define(['assets/common/config'], function(config) {
 						_iClass = "fa-female"
 					}
 					_$child.append('<div class="td"><i class="fa '+ _iClass +'"></i>'+ data.name +'</div>');
-					_$child.append('<div class="td">' + data.xuexiao + '</div>');
-					_$child.append('<div class="td">' + data.banji + '</div>');
+					_$child.append('<div class="td">' + setValue(data.xuexiao) + '</div>');
+					_$child.append('<div class="td">' + setValue(data.banji) + '</div>');
 					_$child.append('<div class="clearfix"></div>');
 					_$row.append('<input type="hidden" value="' + i + '" />')
-					if(!$.isEmptyObject(data.gzbeizhu) ){
+					/*if(!$.isEmptyObject(data.gzbeizhu) ){
 						_$row.append('<div class="p-info">备注：' + data.gzbeizhu + '</div>');
-					}
+					}*/
 					if(!$.isEmptyObject(data.gxbeizhu) ){
 						_$row.append('<div class="p-info">共享信息：' + data.gxbeizhu + '</div>');
 					}
@@ -156,9 +204,21 @@ define(['assets/common/config'], function(config) {
 					_$parent.append(_$row);
 				});
 			}
-			
 		}
-		
+		function setValue(value){
+			if($.isEmptyObject(value)){
+				return '&nbsp';
+			}else{
+				return value;
+			}
+		}
+		function setOk(value){
+			if(value == 1){
+				return '<i class="fa fa-check"></i>';
+			}else{
+				return '&nbsp';
+			}
+		}
 		function createCard(data ,parentId){
 			var _gzStr = tabId == "#txl" ?'关注':'修改备注信息'
 			var _gxStr = tabId != "#ygx" ?'共享':'修改共享信息'
@@ -180,8 +240,20 @@ define(['assets/common/config'], function(config) {
 			  			+'</div>'
 			  		+'</div>';
 			var _$html =  $(html);
-			if( !$.isEmptyObject(data.gzbeizhu) ){
-				_$html.find(".div_neirong").append('<div>备注：</div>').append('<p class="beizhu">'+data.gzbeizhu+'</p>');
+			_gzBei = {} ;
+			if( !$.isEmptyObject(data.gzbeizhu) && data.gzbeizhu.indexOf("{")=='0' ){
+				var _bz = eval("("+data.gzbeizhu+")");
+				_gzBei = _bz;
+				var _table = '<div class="table-div" style="display: none;" ><table class="table table-bordered">'
+								+'<tr><th width="40px">科目</th><th>数学</th><th>科学</th><th>英语</th><th>语文</th><th>社会</th></tr>'
+								+'<tr><th>分数</td><td>'+_bz.sx+'</td><td>'+_bz.kx+'</td><td>'+_bz.yy+'</td><td>'+_bz.yw+'</td><td>'+_bz.sh+'</td></tr>'
+								+'<tr><th>目标</th><td colspan="5">'+_bz.mb+'</td></tr>'
+								+'<tr><th rowspan="2">辅导情况</th><th>班课</th><th>教师</th><th>家教</th><th>1对1</th><th>排斥</th></tr>'
+								+'<tr><td>'+setOk(_bz.bk)+'</td><td>'+setOk(_bz.js)+'</td><td>'+setOk(_bz.jj)+'</td><td>'+setOk(_bz.one)+'</td><td>'+setOk(_bz.pc)+'</tr>'
+								+'<tr><th>距离</th><td colspan="5">'+_bz.jl+'</td></tr>'
+								+'<tr><td colspan="6">'+_bz.info+'</td></tr>'
+							+'</table></div>';
+				_$html.find(".div_neirong").append('<div class="card-beizhu">备注：</div>').append(_table);
 			}
 			if( !$.isEmptyObject(data.gxbeizhu) ){
 				_$html.find(".div_neirong").append('<div>共享信息：</div>').append('<p class="gxinfo">'+data.gxbeizhu+'</p>');
@@ -189,7 +261,7 @@ define(['assets/common/config'], function(config) {
 			
 			var _$parent = $(parentId).empty() ;
 			_$parent.append(_$html).show();
-			setEvent();
+			setEvent(parentId);
 		}
 		
 		function getOneStuInfo(parentId,param){
@@ -197,6 +269,7 @@ define(['assets/common/config'], function(config) {
 			$.post(url, param, function(data, textStatus, jqXHR){
 	     		App.handlerAjaxJson(data, null,"获取数据失败！");
 	     		if(data.success ==true || data.success == "true"){
+	     			isCall = false;
 	     			if( data.over == true || data.success == "true" ){
 	     				var _$parent = $(parentId).empty();
 	     				_$parent.siblings().hide();
@@ -217,13 +290,19 @@ define(['assets/common/config'], function(config) {
 	     	},"json");
 		}
 		var fpId = 0;
+		var isCall = false;
 		getOneStuInfo("#txl>div",{fpId:fpId});
 		$("button[name='next']").click(function(){
-			fpId = $("input[name='id']").val();
-			getOneStuInfo("#txl>div",{fpId:fpId});
+			if(isCall){
+				fpId = $("input[name='id']").val();
+				getOneStuInfo("#txl>div",{fpId:fpId});
+			}else{
+				var alert = App.getAlert({positionClass:"toast-top-center"});
+		     	alert.success("请拨打电话后再操作", "提示");
+			}
 		});
 		
-		$(".btn-sub").click(function(){
+		$(".bz_content .btn-sub").click(function(){
 			var info_v = $("textarea[name='info']").val();
 			if( info_v != ""){
 				var param ={};
@@ -234,7 +313,12 @@ define(['assets/common/config'], function(config) {
 				}else{
 					param.lxrId =  $("#card input[name='lxrId']").val();
 				}
-				var url = App.remoteUrlPre + "saveBeizhu";
+				saveBeizhu(param);
+			}
+			
+		});
+		function saveBeizhu(param){
+			var url = App.remoteUrlPre + "saveBeizhu";
 				$.post(url, param, function(data, textStatus, jqXHR){
 		     		App.handlerAjaxJson(data, function(){
 		     			var alert = App.getAlert({positionClass:"toast-top-center"});
@@ -242,14 +326,36 @@ define(['assets/common/config'], function(config) {
 		     			$returnBtn.click();
 		     		},"保存数据失败！");
 		     	},"json");
-			/*}else{
-				var alert = App.getAlert({positionClass:"toast-top-center"});
-     			alert.success("保存数据成功", "提示");
-     			$returnBtn.click();*/
+		}
+		$("#tableBeizhu .btn-sub").click(function(){
+			var data ={};
+			var _t =$("#tableBeizhu");
+			var _input = _t.find(":text");
+	        for (var i = 0; i < _input.length; i++) {
+	        	var _obj = _input.eq(i);
+	        	var name = _obj.attr("name");
+	            data[name]=_obj.val(); // 将文本框的值添加到数组中
+	        }
+	        var _input = _t.find(":checkbox");
+	        for (var i = 0; i < _input.length; i++) {
+	        	var _obj = _input.eq(i);
+	        	var name = _obj.attr("name");
+	            data[name]=_obj.is(':checked')?"1":"0"; // 将文本框的值添加到数组中
+	        }
+			var info_v = $("textarea[name='info']").val();
+			data["info"]= info_v;
+			var dataString = JSON.stringify(data)
+			console.info(data);
+			var param ={};
+			param.beizhu = dataString;
+			param.type = "gz";
+			if(tabId == "#txl"){
+				param.lxrId =  $("#txl input[name='lxrId']").val();
+			}else{
+				param.lxrId =  $("#card input[name='lxrId']").val();
 			}
-			
+			saveBeizhu(param);
 		});
-		
 	
 	
 	});

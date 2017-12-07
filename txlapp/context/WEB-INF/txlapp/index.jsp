@@ -57,7 +57,7 @@
 				line-height: 40px;
 				color: #8f8f94;
 				float: left;
-				font-size: 16px;
+				font-size: 14px;
 				width:33.333%;
 			}
 			.th{
@@ -99,6 +99,32 @@
 				border:0;
 				color: #FFFFFF; 
 				background-color: #303642;
+			}
+			.table-div{
+				padding-top:5px;
+				background-color: #DCDCDC;
+			}
+			.table-bordered, .table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>td, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>thead>tr>th{
+				border: 1px solid #b0b5b9;
+			}
+			.table>tbody>tr>td, .table>tbody>tr>th{
+			    padding:0;
+			    height:40px;
+			    text-align:center;
+			    vertical-align: middle;
+			}
+			.table>tbody>tr>th{
+				padding:0 5px;
+			}
+			.table>tbody>tr>td input,.table>tbody>tr>td textarea{
+				margin-bottom: 0; 
+			   	padding: 2px;
+			    border: 0;
+			}
+			#tableBeizhu{
+				margin:10px 5px 0;
+				padding:0 5px;
+				background-color: #DCDCDC;
 			}
 		</style>
 	</head>
@@ -185,6 +211,19 @@
 			  	</div>
 			</div>
 			<div id="card"></div>
+			<div id="tableBeizhu" style="display: none">
+				<label class="label-block"></label>
+				<table class="table table-bordered">
+  					<tr><th width="40px">科目</th><th>数学</th><th>科学</th><th>英语</th><th>语文</th><th>社会</th></tr>
+  					<tr><th>分数</td><td><input type="text" name="sx" /></td><td><input type="text" name="kx" /></td><td><input type="text" name="yy" /></td><td><input type="text" name="yw" /></td><td><input type="text" name="sh" /></td></tr>
+  					<tr><th>目标</th><td colspan="5"><input type="text" name="mb" /></td></tr>
+  					<tr><th rowspan="2">辅导情况</th><th>班课</th><th>教师</th><th>家教</th><th>1对1</th><th>排斥</th></tr>
+  					<tr><td><input type="checkbox" name="bk" /></td><td><input type="checkbox" name="js" /></td><td><input type="checkbox" name="jj" /></td><td><input type="checkbox" name="one" /></td><td><input type="checkbox" name="pc" /></td></tr>
+  					<tr><th>距离</th><td colspan="5"><input type="text" name="jl" /></td></tr>
+  					<tr><td colspan="6"><textarea name="info" rows="3" maxlength="100" placeholder="其他内容限定100字符" ></textarea></td></tr>
+  				</table>
+  				<button class="btn btn-block btn-lg btn-sub margintop">提交关注</button>
+			</div>
 			<div class="bz_content" style="display: none;">
 				<div class="div_ds">
 					<label class="label-block">请对“吴磊”填写备注</label>

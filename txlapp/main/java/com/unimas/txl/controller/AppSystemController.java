@@ -1,7 +1,6 @@
 package com.unimas.txl.controller;
 
 
-import java.sql.Connection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.unimas.common.date.DateUtils;
-import com.unimas.jdbc.DBFactory;
 import com.unimas.txl.service.AppIndexService;
 import com.unimas.txl.service.user.UserService;
 import com.unimas.web.auth.AuthRealm.ShiroUser;
@@ -209,7 +207,23 @@ public class AppSystemController {
 			return uiex.toDM();
 		}
     }
-    
-    
+    @RequestMapping(value="updateCall",method = RequestMethod.POST)
+    @ResponseBody
+    public Object updateCall(HttpServletRequest request) {
+    	try {
+    		int fpId = PageUtils.getIntParam(request, "fpId");
+    		indexService.updateCall(fpId);
+    		AjaxDataModal dm = new AjaxDataModal(true);
+			return dm;
+		}  catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException(e.getMessage(), e);
+			}
+			return uiex.toDM();
+		}
+    }
     
 }

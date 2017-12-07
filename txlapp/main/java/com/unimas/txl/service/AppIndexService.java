@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.unimas.common.date.DateUtils;
 import com.unimas.common.md5.MD5;
+import com.unimas.common.util.StringUtils;
 import com.unimas.jdbc.DBFactory;
 import com.unimas.jdbc.handler.ResultSetHandler;
 import com.unimas.txl.bean.user.Account;
@@ -20,6 +22,7 @@ import com.unimas.txl.bean.user.GuanZhuInfo;
 import com.unimas.txl.bean.user.LianXiRenInfo;
 import com.unimas.txl.bean.user.QianYueInfo;
 import com.unimas.txl.dao.JdbcDao;
+import com.unimas.web.auth.AuthRealm.ShiroUser;
 
 @Service
 public class AppIndexService {
@@ -165,10 +168,12 @@ public class AppIndexService {
 		ResultSet rs = null;
 		Map<String, Object> result = null;
 		StringBuffer sqlSb = new StringBuffer();
+		
 		sqlSb.append(" select  T0.id as fpId ,T0.lxr_id as lxrId,T1.lianxiren as name,T1.xingbie as sex,T3.name quyu,")
-			.append(" T2.xuexiaoming as xuexiao,CONCAT(T1.nianji,'年级（',IFNULL(T1.banji,'--'),'）班') banji,T1.phone ,T1.beizhu as gzbeizhu ")
-			.append(" from txl_lianxiren_fenpei T0 right join txl_lianxiren T1 on T1.id = T0.lxr_id  and T1.is_del=0 and T1.jigou_id=? ")
-			.append(" left join txl_xuexiao T2 on T2.id=T1.xuexiao_id left join xzqh T3 on T1.dq_id=T3.`code` where T0.syz_id=? and T0.id >? order by T0.id limit 1");
+			.append(" IF(T1.nianji > 0,CONCAT(T1.nianji,'年级',IF(T1.banji>0, CONCAT('（',T1.banji,'）班') ,'')),'') banji , ")
+			.append(" T2.xuexiaoming as xuexiao,T1.phone ,T1.beizhu as gzbeizhu ")
+			.append(" from txl_lianxiren_fenpei T0 left join txl_lianxiren T1 on T1.id = T0.lxr_id  and T1.is_del=0 and T1.jigou_id=? ")
+			.append(" left join txl_xuexiao T2 on T2.id=T1.xuexiao_id left join xzqh T3 on T1.dq_id=T3.`code` where T0.syz_id=? and T0.id >? and T0.is_call=0 order by T0.id limit 1");
 		try {
 			conn = DBFactory.getConn();
 			stmt = conn.prepareStatement(sqlSb.toString());
@@ -205,7 +210,8 @@ public class AppIndexService {
 		if(isGx){
 			sqlSb.append(" T0.beizhu as gxbeizhu , ");
 		}
-		sqlSb.append(" T2.xuexiaoming as xuexiao,CONCAT(T1.nianji,'年级（',IFNULL(T1.banji,'--'),'）班') banji,T1.phone ,T1.beizhu as gzbeizhu from");
+		sqlSb.append(" IF(T1.nianji > 0,CONCAT(T1.nianji,'年级',IF(T1.banji>0, CONCAT('（',T1.banji,'）班') ,'')),'') banji , ");
+		sqlSb.append(" T2.xuexiaoming as xuexiao, T1.phone ,T1.beizhu as gzbeizhu from");
 		if(isGx){
 			sqlSb.append(" txl_lianxiren_qianyue "); //共享关联表
 		}else {
@@ -225,6 +231,113 @@ public class AppIndexService {
 			DBFactory.close(conn, stmt, rs);
 		}
 		return result;
+	}
+	
+	public void updateCall( int fpId ) throws Exception{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		StringBuilder sqlSb = new StringBuilder();
+		sqlSb.append("update txl_lianxiren_fenpei set is_call=1 where id=?");
+		try {
+			conn = DBFactory.getConn();
+			stmt = conn.prepareStatement(sqlSb.toString());
+			stmt.setInt(1, fpId);
+			stmt.execute();
+		}catch (Exception e) {
+			// TODO: handle exception
+		} finally {
+			DBFactory.close(conn, stmt, null);
+		}
+	}
+	
+	public void checkPhone(Connection conn, int jigouId, String phone) throws Exception {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			StringBuffer sql = new StringBuffer();
+			sql.append("select count(*) from txl_lianxiren where jigou_id=? and phone=?");
+			stmt = conn.prepareStatement(sql.toString());
+			stmt.setInt(1, jigouId);
+			stmt.setString(2, phone);
+			rs = stmt.executeQuery();
+			if(ResultSetHandler.toLong(rs) > 0){
+				throw new Exception("联系电话已存在！");
+			}
+		} finally {
+			DBFactory.close(null, stmt, rs);
+		}
+	}
+	
+	private void saveLxrInfo(Connection conn, String name, int xb, int xuexiaoId, String dqId, int nj, int bj, String lianxiren
+			, String phone,int jgId,int lryId) throws Exception {
+		PreparedStatement stmt = null;
+		StringBuilder sqlSb = new StringBuilder();
+		sqlSb.append("insert into txl_lianxiren(jigou_id,lry_id,lianxiren,phone,xingming,xingbie,xuexiao_id,dq_id,nianji,banji) value(?,?,?,?,?,?,?,?,?,?);");
+		try {
+			stmt = conn.prepareStatement(sqlSb.toString());
+			stmt.setInt(1, jgId);
+			stmt.setInt(2, lryId);
+			stmt.setString(3, lianxiren);
+			stmt.setString(4, phone);
+			stmt.setString(5, name);
+			stmt.setInt(6, xb);
+			stmt.setInt(7, xuexiaoId);
+			stmt.setString(8, dqId);
+			stmt.setInt(9, nj);
+			stmt.setInt(10, bj);
+			stmt.execute();
+		} finally {
+			DBFactory.close(null, stmt, null);
+		}
+	}
+	public void addLxrInfo(String name, int xb, int xuexiaoId, String dqId, int nj, int bj, String lianxiren
+			, String phone,int jgId,int lryId) throws Exception {
+		Connection conn = null;
+		try {
+			conn = DBFactory.getConn();
+			checkPhone(conn,jgId,phone);
+			saveLxrInfo(conn, name, xb, xuexiaoId, dqId, nj, bj, lianxiren, phone, jgId, lryId);
+		} finally {
+			DBFactory.close(conn, null, null);
+		}
+	}
+	
+	public List<Map<String, Object>> get(String tableName, String idField, String nameField, String groupField, 
+			String typeField, String typeVelue,String opreate) throws Exception {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			StringBuffer sql = new StringBuffer();
+			sql.append("select ");
+			sql.append(idField);
+			sql.append(" as id,");
+			sql.append(nameField);
+			sql.append(" as name");
+			if(StringUtils.isNotEmpty(groupField)){
+				sql.append(",");
+				sql.append(groupField);
+				sql.append(" as type");
+			}
+			sql.append(" from ");
+			sql.append(tableName);
+			if(StringUtils.isNotEmpty(typeField) && StringUtils.isNotEmpty(typeVelue)){
+				sql.append(" where ");
+				sql.append(typeField);
+				sql.append(" ").append(opreate);
+				sql.append(" '");
+				sql.append(typeVelue);
+				sql.append("'");
+			}
+			conn = DBFactory.getConn();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql.toString());
+			return ResultSetHandler.listMap(rs);
+		}catch (Exception e) {
+			throw e;
+		} finally {
+			DBFactory.close(conn, stmt, rs);
+		}
 	}
 	
 	public static void main(String[] args) throws Exception {
