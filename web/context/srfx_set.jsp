@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -49,13 +51,15 @@
 			<h1 class="mui-title">深入分析</h1>
 		</header>
 		<div class="container-fluid" style="margin-top: 55px;">
-			 
 		 	<form class="form-horizontal" action="" method="post">
 		 		<div class="form-group">
 	                <label class="col-xs-4 col-sm-4 col-md-4 control-label">所在年级：</label>
 	                <div class="col-xs-8 col-sm-8 col-md-8">
 	                	<select name="nj" class="select2 form-control" >
 	                		<option value="-1">请选择...</option>
+	                        <c:forEach var="nj" items="${njList}">
+	                        	<option value="${nj['id'] }">${nj['name'] }</option>
+							</c:forEach>
 	                    </select>
 	            	</div>	            	
 	            </div>
@@ -67,7 +71,7 @@
 	            <div class="row">
 	                <label class="col-xs-3  col-sm-3 col-md-3 control-label ">语文:</label>
 	                <div  class="col-xs-3 col-sm-3 col-md-3">
-	                	<input type="text" placeholder="语文成绩" name="yw_cj"/> 
+	                	<input type="text" placeholder="语文成绩" value="${n }" name="yw_cj"/> 
 	                </div>
 	                <label class="col-xs-2 col-sm-2 col-md-2 control-label ">满分:</label>
 	                <div  class="col-xs-3 col-sm-3 col-md-3">
@@ -120,6 +124,9 @@
 	                <div class="col-xs-8 col-sm-8 col-md-8">
 	                	<select name="mbxx" class="select2 form-control" >
 	                		<option value="-1">请选择...</option>
+	                        <c:forEach var="mbxx" items="${mbxxList}">
+	                        	<option value="${mbxx['id'] }">${mbxx['name'] }</option>
+							</c:forEach>
 	                    </select>
 	            	</div>	            	
 	            </div>

@@ -15,7 +15,6 @@ define(['assets/common/config'], function(config) {
 		function load(){
 			App.post(App.remoteUrlPre + "getStuInfo", null,function(result){
 				var njList = result.nj_list;
-				var schoolList = result.school_list;
 				var info = result.info;
 				var _form = $(".form-horizontal");
 				if(njList!=null){
@@ -25,19 +24,11 @@ define(['assets/common/config'], function(config) {
 						njSelect.append('<option value="'+ value.id +'" '+ selected +'>'+ value.name +'</option>');
 					});
 				}
-				if(schoolList!=null){
-					var njSelect = _form.find("select[name='school']");
-					$.each(schoolList, function(index, value, array) {
-						var selected = value.id == info.mbxxId ? "selected" :"" ;
-						njSelect.append('<option value="'+ value.id +'" '+ selected +'>'+ value.name +'</option>');
-					});
-				}
+				_form.find("input[name='school']").val(info.school);
 				_form.find("input[name='xs_name']").val(info.studentName);					
 				_form.find("input[name='jz_name']").val(info.parentName);
 				_form.find("input[name='phone']").val(info.contact);
-				if(info.zhcj != -1){
-					_form.find("input[name='zhcj']").val(info.zhcj);
-				}
+				
 				
 			});
 		}
@@ -73,14 +64,8 @@ define(['assets/common/config'], function(config) {
                     required: true,
                     isMobile: true
                 },
-                school: {
-                	isIntGtZero: true
-                },
                 nj: {
                 	isIntGtZero: true
-                },
-                zhcj: {
-                	isNumber:true
                 }
             },
             messages: {
@@ -90,14 +75,8 @@ define(['assets/common/config'], function(config) {
                 phone: {
                 	required: "手机号码不能为空."
                 },
-                school: {
-                	isIntGtZero: "请选择具体学校."
-                },
                 nj: {
                 	isIntGtZero: "请选择所属年级."
-                },
-                zhcj: {
-                	isNumber:"请填写数值。"
                 }
             }
 		});
