@@ -32,6 +32,10 @@
 	 		.toast-top-center,.toast-top-right,.toast-top-left {
 			  	top: 138px;
 			}
+			.form-horizontal .form-group{
+				margin-left: 0;
+				margin-right: 0;				
+			}
 			.portlet .actions .form-group {
 				margin-bottom: 0;
 			}
@@ -77,10 +81,12 @@
 			.control-label {
 				padding-left:0;
 				padding-right:10px;
+				line-height: 32px;
 				text-align: right;
 			}
 			.bd-left {
 				padding-left: 0;
+				padding-right: 0;
 			}
 		</style>
 	</head>

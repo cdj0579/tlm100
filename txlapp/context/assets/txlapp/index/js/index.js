@@ -63,7 +63,6 @@ define(['assets/common/config'], function(config) {
 				var phone = $(this).prev("input").val(); 
 //				console.info(phone);
 				if(tabId == "#txl"){
-					isCall = true;
 					var _id = $(this).siblings("input[name='id']").val();
 					var url =  App.remoteUrlPre + "updateCall";
 					$.ajax({url:url, type: "post",data:{fpId : _id},
@@ -71,6 +70,7 @@ define(['assets/common/config'], function(config) {
 						  	
 						}
 					});
+					$("button[name='next']").removeAttr("disabled");
 				}
 				location.href = 'tel:' + phone;
 			});
@@ -269,7 +269,6 @@ define(['assets/common/config'], function(config) {
 			$.post(url, param, function(data, textStatus, jqXHR){
 	     		App.handlerAjaxJson(data, null,"获取数据失败！");
 	     		if(data.success ==true || data.success == "true"){
-	     			isCall = false;
 	     			if( data.over == true || data.success == "true" ){
 	     				var _$parent = $(parentId).empty();
 	     				_$parent.siblings().hide();
@@ -290,17 +289,12 @@ define(['assets/common/config'], function(config) {
 	     	},"json");
 		}
 		var fpId = 0;
-		var isCall = false;
 		getOneStuInfo("#txl>div",{fpId:fpId});
 		$("button[name='next']").click(function(){
-			if(isCall){
-				fpId = $("input[name='id']").val();
-				getOneStuInfo("#txl>div",{fpId:fpId});
-			}else{
-				var alert = App.getAlert({positionClass:"toast-top-center"});
-		     	alert.success("请拨打电话后再操作", "提示");
-			}
-		});
+			$(this).attr("disabled","true");
+			fpId = $("input[name='id']").val();
+			getOneStuInfo("#txl>div",{fpId:fpId});
+		}).attr("disabled","true"); 
 		
 		$(".bz_content .btn-sub").click(function(){
 			var info_v = $("textarea[name='info']").val();
