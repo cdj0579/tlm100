@@ -126,6 +126,13 @@
 				padding:0 5px;
 				background-color: #DCDCDC;
 			}
+			
+			.myAlert{
+				margin-bottom: 2px;
+				padding: 10px; 
+				display:none;
+			}
+			
 		</style>
 	</head>
     <body>

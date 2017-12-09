@@ -15,15 +15,17 @@ define(['assets/common/config'], function(config) {
 		var tabId = "#txl";
 		var $returnBtn =$(".mui-bar>button");
 		$returnBtn.click(function(){
-			if(tabId != "#txl" && $(".bz_content").is(':visible')){
+			var _$tbz = $("#tableBeizhu");
+			var _$bz = $(".bz_content");
+			if(tabId != "#txl" && (_$bz.is(':visible') || _$tbz.is(':visible') )){
 				$("#card").show();
 			}else{
 				$("#card").hide();
 				$(tabId).addClass("active");
 				$returnBtn.hide();
 			}
-			$(".bz_content").hide();
-			$("#tableBeizhu").hide();
+			_$bz.hide();
+			_$tbz.hide();
 			
 		})
 		$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
@@ -77,6 +79,7 @@ define(['assets/common/config'], function(config) {
 		}
 		
 		var zwFlag = true;
+		var isBeizhu =  false;
 		var _gzBei = {};
 		function setEvent( parentId ){
 			telPhone(parentId);
@@ -85,7 +88,7 @@ define(['assets/common/config'], function(config) {
 				var _thisName = _$this.attr("name");
 				
 				zwFlag = _thisName == "guanzhu";
-				
+				isBeizhu = _thisName == "beizhu";
 				var tab = _$this.parent().siblings(".div_neirong");
 				var _name = tab.find("p[class='name']").text();
 				var _beizhu = "";
@@ -98,9 +101,10 @@ define(['assets/common/config'], function(config) {
 				$(".tab-pane.active").removeClass("active");
 				$("#card").hide();
 				
-				if(zwFlag){
+				if(zwFlag || isBeizhu ){
 					var _$bz = $("#tableBeizhu");
 					_$bz.find("label").text("请对“"+_name+"”填写备注信息");
+					_$bz.find(".btn-sub").text("提交"+(zwFlag?"关注":"备注"));
 					var _txt = _$bz.find(":text");
 					 for (var i = 0; i < _txt.length; i++) {
 			        	var _obj = _txt.eq(i);
@@ -129,9 +133,9 @@ define(['assets/common/config'], function(config) {
 					_$bz.show();
 				}else{
 					var _$bz = $(".bz_content");
-					_$bz.find(".btn-sub").text("提交"+(zwFlag?"关注":"共享"));
+					_$bz.find(".btn-sub").text("提交共享");
 					_$bz.find("textarea").val(_beizhu);
-					_$bz.find("label").text("请对“"+_name+"”填写"+(zwFlag?"备注信息":"共享信息"));
+					_$bz.find("label").text("请对“"+_name+"”填写共享信息");
 					_$bz.show();
 				}
 				$returnBtn.show();
@@ -222,7 +226,9 @@ define(['assets/common/config'], function(config) {
 		function createCard(data ,parentId){
 			var _gzStr = tabId == "#txl" ?'关注':'修改备注信息'
 			var _gxStr = tabId != "#ygx" ?'共享':'修改共享信息'
-			var html = '<div class="div_ds"><div>'
+			var _bzStr = tabId == "#txl" ?'备注':'修改备注信息'
+			var html = '<div class="alert alert-success myAlert"></div><div class="div_ds"><div>'
+			  			+(tabId != "#ygz"?'<button name="beizhu" class="btn btn-lg anniu">'+ _bzStr +'</button>':'')
 			  			+(tabId != "#ygx"?'<button name="guanzhu" class="btn btn-lg anniu">'+_gzStr+'</button>':'')
 			  			+'<button name="gongxing" class="btn btn-lg anniu">'+_gxStr+'</button>'
 			  			+'</div>'
@@ -307,17 +313,28 @@ define(['assets/common/config'], function(config) {
 				}else{
 					param.lxrId =  $("#card input[name='lxrId']").val();
 				}
-				saveBeizhu(param);
+				saveBeizhu(param,"恭喜你，我们赢取了阶段性战果，继续加油！");
 			}
 			
 		});
-		function saveBeizhu(param){
+		function showPopover(target, msg) {
+		  	target.text(msg).slideDown("slow");
+		 	//2秒后消失提示框
+		  	var id = setTimeout(
+		    	function () {
+			      	target.slideUp("slow");
+		    	}, 2000
+		  	);
+		}
+
+		function saveBeizhu(param , msg){
 			var url = App.remoteUrlPre + "saveBeizhu";
 				$.post(url, param, function(data, textStatus, jqXHR){
 		     		App.handlerAjaxJson(data, function(){
-		     			var alert = App.getAlert({positionClass:"toast-top-center"});
-		     			alert.success("保存数据成功", "提示");
+		     			/*var alert = App.getAlert({positionClass:"toast-top-center"});
+		     			alert.success("谢谢你的努力，我们的距离成功又近了一步！", "提示");*/
 		     			$returnBtn.click();
+		     			showPopover($(".myAlert"),msg);
 		     		},"保存数据失败！");
 		     	},"json");
 		}
@@ -338,17 +355,19 @@ define(['assets/common/config'], function(config) {
 	        }
 			var info_v = $("textarea[name='info']").val();
 			data["info"]= info_v;
+			_gzBei = data;
 			var dataString = JSON.stringify(data)
-			console.info(data);
+			//console.info(data);
 			var param ={};
 			param.beizhu = dataString;
 			param.type = "gz";
+			param.isBz = isBeizhu?"1":"0" ;
 			if(tabId == "#txl"){
 				param.lxrId =  $("#txl input[name='lxrId']").val();
 			}else{
 				param.lxrId =  $("#card input[name='lxrId']").val();
 			}
-			saveBeizhu(param);
+			saveBeizhu(param,"谢谢你的努力，我们的距离成功又近了一步！");
 		});
 	
 	

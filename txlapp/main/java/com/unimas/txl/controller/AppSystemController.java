@@ -182,10 +182,13 @@ public class AppSystemController {
     		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
     		int jgId = user.getJgId();
     		if("gz".equals(type)){
+    			int isBz = PageUtils.getIntParam(request, "isBz");//1:备注；0：关注
     			indexService.updateLianxirenBeizhu(lxrId, beizhu);
-    			int glId = indexService.isExistsInfo(lxrId, user.getUserId(), false);
-    			if(glId == -1){
-    				indexService.saveGuanZhuInfo(-1,user.getUserId(), lxrId, DateUtils.formatDateToHMS(new Date()),jgId);
+    			if(isBz == 0){
+    				int glId = indexService.isExistsInfo(lxrId, user.getUserId(), false);
+    				if(glId == -1){
+    					indexService.saveGuanZhuInfo(-1,user.getUserId(), lxrId, DateUtils.formatDateToHMS(new Date()),jgId);
+    				}
     			}
     		}else if("gx".equals(type)){
     			String time = null;
