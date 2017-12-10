@@ -140,17 +140,10 @@ define(['assets/common/config'], function(config) {
 				}
 				$returnBtn.show();
 			});
-			beizhuShowHideFun(parentId);
-		}
-		function beizhuShowHideFun(parentId){
-			$(parentId +" .card-beizhu").click(function(){
-				$(".table-div").slideToggle(500);
-			});
 		}
 		
 		var tableStore = [];
 		var _currentRowId = -1;
-		var _cardbz; ;
 		function setRowEvent(){
 			$(".active>.row:gt(0)").click(function(){
 				var _$this = $(this);
@@ -246,7 +239,10 @@ define(['assets/common/config'], function(config) {
 				_$P.find(".table-div").empty().append(bzTableHtml( _gzBei ));
 			}else{
 				var _table = '<div class="card-beizhu">备注：</div><div class="table-div" style="display: none;" >'+bzTableHtml( _gzBei )+'</div>';
-				_$P.find(".txl").after(_table);
+				_$P.find(".txl").after($(_table));
+				_$P.find('.card-beizhu').click(function(){
+					$(this).siblings(".table-div").slideToggle(500);
+				});
 			}
 			
 		}
