@@ -27,7 +27,7 @@ define(['assets/common/config'], function(config) {
 			_$bz.hide();
 			_$tbz.hide();
 			
-		})
+		});
 		$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
 		 /* e.target // 激活的标签页
 		  e.relatedTarget // 前一个激活的标签页*/
@@ -148,6 +148,9 @@ define(['assets/common/config'], function(config) {
 			});
 		}
 		
+		var tableStore = [];
+		var _currentRowId = -1;
+		var _cardbz; ;
 		function setRowEvent(){
 			$(".active>.row:gt(0)").click(function(){
 				var _$this = $(this);
@@ -160,21 +163,24 @@ define(['assets/common/config'], function(config) {
 					params.flag = "gx";
 				}
 				var rowId = _$this.find("input").val();
+				_currentRowId = rowId;
 				var datainfo =  tableStore[rowId];
+				_cardDatas = 
 //				console.info(datainfo);
 				//getOneStuInfo("#card",params);
 				createCard(datainfo,"#card");
 				
 			});
 		}
-		var tableStore = [];
+		
 		function createtable(arrayData,parentId,isclear){
 			var _$parent = $(parentId);
 			if(isclear){
 				_$parent.empty();
 				tableStore = [] ;
+				_currentRowId = -1;
 				var thead = '<div class="row "><div class="th">姓名</div>'
-						+'<div class="th">学校</div><div class="th">班级</div></div>'
+						+'<div class="th">学校</div><div class="th">班级</div></div>';
 				_$parent.append(thead);
 			};
 			if(arrayData.length == 0 ){
@@ -191,13 +197,13 @@ define(['assets/common/config'], function(config) {
 					var _$child = _$row.children();
 					var _iClass = "fa-user";
 					if(data.sex == "1"){
-						_iClass = "fa-female"
+						_iClass = "fa-female";
 					}
 					_$child.append('<div class="td"><i class="fa '+ _iClass +'"></i>'+ data.name +'</div>');
 					_$child.append('<div class="td">' + setValue(data.xuexiao) + '</div>');
 					_$child.append('<div class="td">' + setValue(data.banji) + '</div>');
 					_$child.append('<div class="clearfix"></div>');
-					_$row.append('<input type="hidden" value="' + i + '" />')
+					_$row.append('<input type="hidden" value="' + i + '" />');
 					/*if(!$.isEmptyObject(data.gzbeizhu) ){
 						_$row.append('<div class="p-info">备注：' + data.gzbeizhu + '</div>');
 					}*/
@@ -223,10 +229,31 @@ define(['assets/common/config'], function(config) {
 				return '&nbsp';
 			}
 		}
+		function bzTableHtml(_bz ){
+			return '<table class="table table-bordered">'
+					+'<tr><th width="40px">科目</th><th>数学</th><th>科学</th><th>英语</th><th>语文</th><th>社会</th></tr>'
+					+'<tr><th>分数</td><td>'+_bz.sx+'</td><td>'+_bz.kx+'</td><td>'+_bz.yy+'</td><td>'+_bz.yw+'</td><td>'+_bz.sh+'</td></tr>'
+					+'<tr><th>目标</th><td colspan="5">'+_bz.mb+'</td></tr>'
+					+'<tr><th rowspan="2">辅导情况</th><th>班课</th><th>教师</th><th>家教</th><th>1对1</th><th>排斥</th></tr>'
+					+'<tr><td>'+setOk(_bz.bk)+'</td><td>'+setOk(_bz.js)+'</td><td>'+setOk(_bz.jj)+'</td><td>'+setOk(_bz.one)+'</td><td>'+setOk(_bz.pc)+'</tr>'
+					+'<tr><th>距离</th><td colspan="5">'+_bz.jl+'</td></tr>'
+					+'<tr><td colspan="6">'+_bz.info+'</td></tr>'
+				+'</table>';
+		}
+		function reloadShowBz( _$P ){
+			var _$bz =_$P.find(".card-beizhu");
+			if(_$bz.text() != "" ){
+				_$P.find(".table-div").empty().append(bzTableHtml( _gzBei ));
+			}else{
+				var _table = '<div class="card-beizhu">备注：</div><div class="table-div" style="display: none;" >'+bzTableHtml( _gzBei )+'</div>';
+				_$P.find(".txl").after(_table);
+			}
+			
+		}
 		function createCard(data ,parentId){
-			var _gzStr = tabId == "#txl" ?'关注':'修改备注信息'
-			var _gxStr = tabId != "#ygx" ?'共享':'修改共享信息'
-			var _bzStr = tabId == "#txl" ?'备注':'修改备注信息'
+			var _gzStr = tabId == "#txl" ?'关注':'修改备注信息';
+			var _gxStr = tabId != "#ygx" ?'共享':'修改共享信息';
+			var _bzStr = tabId == "#txl" ?'备注':'修改备注信息';
 			var html = '<div class="alert alert-success myAlert"></div><div class="div_ds"><div>'
 			  			+(tabId != "#ygz"?'<button name="beizhu" class="btn btn-lg anniu">'+ _bzStr +'</button>':'')
 			  			+(tabId != "#ygx"?'<button name="guanzhu" class="btn btn-lg anniu">'+_gzStr+'</button>':'')
@@ -250,16 +277,9 @@ define(['assets/common/config'], function(config) {
 			if( !$.isEmptyObject(data.gzbeizhu) && data.gzbeizhu.indexOf("{")=='0' ){
 				var _bz = eval("("+data.gzbeizhu+")");
 				_gzBei = _bz;
-				var _table = '<div class="table-div" style="display: none;" ><table class="table table-bordered">'
-								+'<tr><th width="40px">科目</th><th>数学</th><th>科学</th><th>英语</th><th>语文</th><th>社会</th></tr>'
-								+'<tr><th>分数</td><td>'+_bz.sx+'</td><td>'+_bz.kx+'</td><td>'+_bz.yy+'</td><td>'+_bz.yw+'</td><td>'+_bz.sh+'</td></tr>'
-								+'<tr><th>目标</th><td colspan="5">'+_bz.mb+'</td></tr>'
-								+'<tr><th rowspan="2">辅导情况</th><th>班课</th><th>教师</th><th>家教</th><th>1对1</th><th>排斥</th></tr>'
-								+'<tr><td>'+setOk(_bz.bk)+'</td><td>'+setOk(_bz.js)+'</td><td>'+setOk(_bz.jj)+'</td><td>'+setOk(_bz.one)+'</td><td>'+setOk(_bz.pc)+'</tr>'
-								+'<tr><th>距离</th><td colspan="5">'+_bz.jl+'</td></tr>'
-								+'<tr><td colspan="6">'+_bz.info+'</td></tr>'
-							+'</table></div>';
-				_$html.find(".div_neirong").append('<div class="card-beizhu">备注：</div>').append(_table);
+				reloadShowBz( _$html );
+				/*var _table = '<div class="table-div" style="display: none;" >'+createGzbeizhu(_bz)+'</div>';
+				_$html.find(".div_neirong").append('<div class="card-beizhu">备注：</div>').append(_table);*/
 			}
 			if( !$.isEmptyObject(data.gxbeizhu) ){
 				_$html.find(".div_neirong").append('<div>共享信息：</div>').append('<p class="gxinfo">'+data.gxbeizhu+'</p>');
@@ -333,6 +353,13 @@ define(['assets/common/config'], function(config) {
 		     		App.handlerAjaxJson(data, function(){
 		     			/*var alert = App.getAlert({positionClass:"toast-top-center"});
 		     			alert.success("谢谢你的努力，我们的距离成功又近了一步！", "提示");*/
+		     			if( param.type == "gz" ){
+		     				if(tabId == "#txl"){
+		     					reloadShowBz( $('#txl') );
+		     				}else{
+		     					reloadShowBz( $('#card') );
+		     				}
+		     			}
 		     			$returnBtn.click();
 		     			showPopover($(".myAlert"),msg);
 		     		},"保存数据失败！");
@@ -356,7 +383,7 @@ define(['assets/common/config'], function(config) {
 			var info_v = $("textarea[name='info']").val();
 			data["info"]= info_v;
 			_gzBei = data;
-			var dataString = JSON.stringify(data)
+			var dataString = JSON.stringify(data);
 			//console.info(data);
 			var param ={};
 			param.beizhu = dataString;
@@ -366,8 +393,9 @@ define(['assets/common/config'], function(config) {
 				param.lxrId =  $("#txl input[name='lxrId']").val();
 			}else{
 				param.lxrId =  $("#card input[name='lxrId']").val();
+				tableStore[_currentRowId].gzbeizhu = dataString;
 			}
-			saveBeizhu(param,"谢谢你的努力，我们的距离成功又近了一步！");
+			saveBeizhu(param,"谢谢你的努力，我们距离成功又近了一步！");
 		});
 	
 	
