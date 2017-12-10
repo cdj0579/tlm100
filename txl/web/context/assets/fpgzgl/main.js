@@ -47,16 +47,16 @@ define(['assets/common/config'], function(config) {
 					"targets": 0,
 				     "orderable": true
 				},{
-					"targets": [1,2,3,4,5,6],
+					"targets": [1,2,3,4,5],
 				     "orderable": false
 				}],
 	            columns: [
-	                  { title: "创建时间", data: "shijian"},
-	    	          { title: "分配单数", data: "danliang", render: function(data, type, full){
+	                  { title: "创建时间", width: "15%", data: "shijian"},
+	    	          { title: "分配单数", width: "10%", data: "danliang", render: function(data, type, full){
 	    	        	  return data+'单/人';
 	    	          }},
-	    	          { title: "所属地区", data: "lxrDqName"},
-	                  { title: "所属学校", data: "xuexiaoId", render: function(data, type, full){
+	    	          { title: "所属地区", width: "10%", data: "lxrDqName"},
+	                  { title: "所属学校", width: "20%", data: "xuexiaoId", render: function(data, type, full){
 	    	        	  if(data){
 	    	        		  if(data.indexOf(",") != -1){
 	    	        			  return "多个";
@@ -67,7 +67,14 @@ define(['assets/common/config'], function(config) {
 	    	        		  return "";
 	    	        	  }
 	    	          }},
-	                  { title: "所属年级", data: "nj", render: function(data, type, full){
+	    	          { title: "备注", width: "30%", data: "beizhu", render: function(data, type, full){
+	    	        	  if(data && data.length > 20){
+	    	        		  return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+data+'">'+data+'</button>';
+	    	        	  } else {
+	    	        		  return data;
+	    	        	  }
+	    	          }},
+	                  /*{ title: "所属年级", data: "nj", render: function(data, type, full){
 	    	        	  if(data){
 	    	        		  if(data.indexOf(",") != -1){
 	    	        			  return "多个";
@@ -88,8 +95,8 @@ define(['assets/common/config'], function(config) {
 	    	        	  } else {
 	    	        		  return "";
 	    	        	  }
-	    	          }},
-	    	          { title: "操作", data: "id", render: function(data, type, full){
+	    	          }},*/
+	    	          { title: "操作", width: "15%", data: "id", render: function(data, type, full){
 	    	        	  return '<a href="javascript:;" class="btn blue edit"> 编辑 <i class="fa fa-edit"></i></a>'+
 	    	        	  '<a href="javascript:;" class="btn red delete"> 删除 <i class="fa fa-remove"></i></a>';
 	    	          }}
@@ -102,6 +109,7 @@ define(['assets/common/config'], function(config) {
 				var data = dt.api().row($tr).data();
 				edit({
 					id: data.id,
+					beizhu: data.beizhu,
 					zhouqi: data.zhouqi,
 					danliang: data.danliang,
 					xxId: data.xuexiaoId?data.xuexiaoId.split(","):null,

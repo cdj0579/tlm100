@@ -1,8 +1,13 @@
 package com.unimas.txl.service;
 
+import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
+import java.text.MessageFormat;
 import java.util.List;
+import java.util.Map;
 
+import com.unimas.common.file.PropertyUtils;
+import com.unimas.common.qrcode.QrcodeUtils;
 import com.unimas.common.util.StringUtils;
 import com.unimas.jdbc.DBFactory;
 import com.unimas.txl.bean.LxrBean;
@@ -93,6 +98,14 @@ public class LxrService {
 		LxrQianyueBean bean = new LxrQianyueBean();
 		bean.setLxrId(id);
 		dao.delete(bean);
+	}
+	
+	public ByteArrayOutputStream getLxrzcQrcode(int lryId) throws Exception {
+		LxrBean bean = (LxrBean)new LxrDao().getById(lryId, LxrBean.class);
+		String config_path = LxrService.class.getClassLoader().getResource("config.properties").getFile();
+		Map<String, String> config = PropertyUtils.readProperties(config_path);
+		String baseUrl = MessageFormat.format(config.get("lxrzc.url"), bean.getJigouId(), lryId);
+		return new QrcodeUtils().genQrcodeImage(baseUrl, false);
 	}
 
 }

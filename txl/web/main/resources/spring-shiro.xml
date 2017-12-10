@@ -77,6 +77,7 @@
             	<!-- 静态资源免登录访问 -->
                 /assets/** = anon
                 /errors/** = anon
+                /services/** = anon
                 /user/teacher/register = anon
                 /user/student/register = anon
                 <!-- 登录相关 -->

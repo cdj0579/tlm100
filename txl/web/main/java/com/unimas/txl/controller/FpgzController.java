@@ -68,6 +68,7 @@ public class FpgzController {
     		String lxrDqId = PageUtils.getParam(request, "lxrDqId", null);
     		int lryId = PageUtils.getIntParam(request, "lryId");
     		int danliang = PageUtils.getIntParamAndCheckEmpty(request, "danliang", "分配单数不能为空！");
+    		String beizhu = PageUtils.getParam(request, "beizhu", null);
     		String _syzIds = PageUtils.getParam(request, "syzIds", null);
     		List<Integer> syzIds = null;
     		try {
@@ -78,7 +79,7 @@ public class FpgzController {
     			}
     		} catch(Exception e){}
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-			new FpgzService().add(dqId, lxrDqId, xxId, nj, bj, lryId, danliang, syzIds, user);
+			new FpgzService().add(dqId, lxrDqId, xxId, nj, bj, lryId, danliang, syzIds, beizhu, user);
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;
@@ -167,6 +168,7 @@ public class FpgzController {
     		int lryId = PageUtils.getIntParam(request, "lryId");
     		if(lryId == -1) lryId = -2;
     		int danliang = PageUtils.getIntParamAndCheckEmpty(request, "danliang", "分配单数不能为空！");
+    		String beizhu = PageUtils.getParam(request, "beizhu", null);
     		String _syzIds = PageUtils.getParam(request, "syzIds", null);
     		List<Integer> syzIds = null;
     		try {
@@ -177,7 +179,7 @@ public class FpgzController {
     			}
     		} catch(Exception e){}
     		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-    		new FpgzService().update(id, dqId, lxrDqId, xxId, nj, bj, lryId, danliang, syzIds, user);
+    		new FpgzService().update(id, dqId, lxrDqId, xxId, nj, bj, lryId, danliang, syzIds, beizhu, user);
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;

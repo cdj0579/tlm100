@@ -36,6 +36,7 @@ public class FenpeiBean extends JdbcBean {
 	private int lryId = -1;
 	@Column(nullNumberValue=-1)
 	private int danliang = -1;
+	private String beizhu;
 	@Column(toType=ToType.DateToString,insertValue=DefaultValue.Now)
 	private String shijian;
 	
@@ -107,6 +108,12 @@ public class FenpeiBean extends JdbcBean {
 	}
 	public void setRefs(List<FenpeiSyzBean> refs) {
 		this.refs = refs;
+	}
+	public String getBeizhu() {
+		return beizhu;
+	}
+	public void setBeizhu(String beizhu) {
+		this.beizhu = beizhu;
 	}
 	public String getLxrDqName() {
 		return lxrDqName;

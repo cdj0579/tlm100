@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,6 +46,31 @@ public class SystemController {
     	} else {
     		return "redirect:lxrgl";
     	}
+    }
+    
+    /**
+     * 访问主页面的请求
+     *
+     * @return
+     */
+    @RequestMapping(value="home")
+    public String home(Model model,HttpServletRequest request) {
+    	PageUtils.setPageView(request, PageView.HOME);
+    	return "home/index";
+    }
+    
+    /**
+     * 访问主页面的请求
+     *
+     * @return
+     */
+    @RequestMapping(value="wdfx")
+    @RequiresRoles("lry")
+    public String wdfx(Model model,HttpServletRequest request) {
+    	PageUtils.setPageView(request, PageView.WDFX);
+    	ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+    	request.setAttribute("lryId", user.getUserId());
+    	return "lxrgl/wdfx";
     }
     
     /**

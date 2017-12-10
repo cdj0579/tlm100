@@ -61,6 +61,8 @@ public class MenuManage {
 			menus.add(getMenuItem(PageView.XUEXIAO));
 			
 			menus.add(getMenuItem(PageView.CONFIG));
+		} else if(subject.hasRole("lry")){
+			menus.add(getMenuItem(PageView.WDFX));
 		}
 		
 		return menus;
@@ -140,6 +142,10 @@ public class MenuManage {
 		 * 系统配置
 		 */
 		CONFIG("config", "系统配置", "fa fa-cog", null, Lists.newArrayList(HOME)),
+		/**
+		 * 我的分享
+		 */
+		WDFX("wdfx", "我的分享", "fa fa-share", null, Lists.newArrayList(HOME)),
 		/**
 		 * 锁定屏幕
 		 */

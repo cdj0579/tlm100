@@ -24,7 +24,6 @@ public class FpgzService {
 		return query(user.getJigouId());
 	}
 	
-	@SuppressWarnings("unchecked")
 	public List<FenpeiBean> query(int jigouId) throws Exception {
 		FenpeiBean bean = new FenpeiBean();
 		bean.setJigouId(jigouId);
@@ -32,7 +31,7 @@ public class FpgzService {
 	}
 	
 	public void add(String dqId, String lxrDqId, int[] xxIds, int[] njIds, int[] bjIds, int lryId, int danliang, List<Integer> syzIds
-			, ShiroUser user) throws Exception {
+			, String beizhu, ShiroUser user) throws Exception {
 		FenpeiBean bean = new FenpeiBean();
 		int jigouId = user.getJigouId();
 		bean.setJigouId(jigouId);
@@ -55,12 +54,13 @@ public class FpgzService {
 		bean.setNj(njIds);
 		bean.setBj(bjIds);
 		bean.setDanliang(danliang);
+		bean.setBeizhu(beizhu);
 		new FpgzDao().save(bean);
 		restartJob(user);
 	}
 	
 	public void update(int id, String dqId, String lxrDqId, int[] xxIds, int[] njIds, int[] bjIds, int lryId, int danliang
-			, List<Integer> syzIds, ShiroUser user) throws Exception {
+			, List<Integer> syzIds, String beizhu, ShiroUser user) throws Exception {
 		FenpeiBean bean = new FenpeiBean();
 		bean.setId(id);
 		if(StringUtils.isNotEmpty(dqId)){
@@ -83,6 +83,7 @@ public class FpgzService {
 		bean.setNj(njIds);
 		bean.setBj(bjIds);
 		bean.setDanliang(danliang);
+		bean.setBeizhu(beizhu);
 		new FpgzDao().save(bean);
 		restartJob(user);
 	}
