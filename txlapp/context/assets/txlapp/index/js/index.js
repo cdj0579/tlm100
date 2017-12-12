@@ -246,6 +246,15 @@ define(['assets/common/config'], function(config) {
 			}
 			
 		}
+		function reloadShowGx( _$P , gxInfo ){
+			var _$gx =_$P.find(".gxinfo");
+			if(_$gx.text() != "" ){
+				_$gx.text(gxInfo);
+			}else{
+				_$P.find(".div_neirong").append('<div>共享信息：</div>').append('<p class="gxinfo">'+gxInfo+'</p>');
+			}
+		}
+		
 		function createCard(data ,parentId){
 			var _gzStr = tabId == "#txl" ?'关注':'修改备注信息';
 			var _gxStr = tabId != "#ygx" ?'共享':'修改共享信息';
@@ -278,7 +287,8 @@ define(['assets/common/config'], function(config) {
 				_$html.find(".div_neirong").append('<div class="card-beizhu">备注：</div>').append(_table);*/
 			}
 			if( !$.isEmptyObject(data.gxbeizhu) ){
-				_$html.find(".div_neirong").append('<div>共享信息：</div>').append('<p class="gxinfo">'+data.gxbeizhu+'</p>');
+				reloadShowGx( _$html, data.gxbeizhu );
+				/*_$html.find(".div_neirong").append('<div>共享信息：</div>').append('<p class="gxinfo">'+data.gxbeizhu+'</p>');*/
 			}
 			
 			var _$parent = $(parentId).empty() ;
@@ -319,7 +329,7 @@ define(['assets/common/config'], function(config) {
 		}).attr("disabled","true"); 
 		
 		$(".bz_content .btn-sub").click(function(){
-			var info_v = $("textarea[name='info']").val();
+			var info_v = $(this).siblings().find("textarea[name='info']").val();
 			if( info_v != ""){
 				var param ={};
 				param.beizhu = info_v;
@@ -354,6 +364,17 @@ define(['assets/common/config'], function(config) {
 		     					reloadShowBz( $('#txl') );
 		     				}else{
 		     					reloadShowBz( $('#card') );
+		     					tableStore[_currentRowId].gzbeizhu = param.beizhu;
+		     				}
+		     			}else{
+		     				if(tabId == "#txl"){
+		     					reloadShowGx( $('#txl') , param.beizhu);
+		     				}else{
+		     					reloadShowGx( $('#card') , param.beizhu);
+		     					if(tabId == "#ygx"){
+		     						tableStore[_currentRowId].gxbeizhu = param.beizhu;
+		     						$('#ygx .row input[value="'+ _currentRowId +'"]').siblings('.p-info').text('共享信息：' + param.beizhu );
+		     					}
 		     				}
 		     			}
 		     			$returnBtn.click();
@@ -376,7 +397,7 @@ define(['assets/common/config'], function(config) {
 	        	var name = _obj.attr("name");
 	            data[name]=_obj.is(':checked')?"1":"0"; // 将文本框的值添加到数组中
 	        }
-			var info_v = $("textarea[name='info']").val();
+			var info_v = _t.find("textarea[name='info']").val();
 			data["info"]= info_v;
 			_gzBei = data;
 			var dataString = JSON.stringify(data);
@@ -389,7 +410,6 @@ define(['assets/common/config'], function(config) {
 				param.lxrId =  $("#txl input[name='lxrId']").val();
 			}else{
 				param.lxrId =  $("#card input[name='lxrId']").val();
-				tableStore[_currentRowId].gzbeizhu = dataString;
 			}
 			saveBeizhu(param,"谢谢你的努力，我们距离成功又近了一步！");
 		});
