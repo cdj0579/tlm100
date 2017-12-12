@@ -1,8 +1,11 @@
 package com.unimas.txl.controller;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -10,7 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.unimas.txl.bean.LxrBean;
 import com.unimas.txl.service.LxrService;
@@ -78,6 +83,52 @@ public class LxrController {
 			return uiex.toDM();
 		}
 	}
+    
+    /**
+     * 联系人上传模板下载
+     *
+     * @return
+	 * @throws Exception 
+     */
+    @RequestMapping(value="template/download")
+    public void downloadTemplate(final HttpServletResponse response) throws Exception {
+    	response.reset();  
+    	response.setHeader("Content-Disposition", "attachment; filename=\""+new String("联系人模板.xls".getBytes("UTF-8"),"iso-8859-1")+"\"");  
+    	response.setContentType("application/octet-stream;charset=UTF-8");  
+    	OutputStream os = response.getOutputStream();
+    	new LxrService().writeSampleExcel(os);
+    	//response.addHeader("Content-Length", "" + os.length);  
+		os.flush();
+		os.close();
+    }
+    
+    /**
+     * 上传受害人名单
+     * @return
+     */
+	@RequestMapping(value="upload")
+    @ResponseBody
+    public AjaxDataModal uploadFile(@RequestParam("lxrFile") CommonsMultipartFile[] files, HttpServletRequest request) {
+    	try {
+    		if(files == null || files.length == 0){
+    			throw new Exception();
+    		} else {
+    			AjaxDataModal json = new AjaxDataModal(true, "上传联系人Excel成功！");
+    			InputStream inputStream = files[0].getInputStream();
+    			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+    			new LxrService().uploadLxrExcel(inputStream, user);
+    			return json;
+    		}
+		}  catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("上传联系人Excel失败！", e);
+			}
+			return uiex.toDM();
+		}
+    }
     
     @RequestMapping(value="add",method = RequestMethod.POST)
     @ResponseBody

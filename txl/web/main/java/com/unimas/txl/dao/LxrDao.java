@@ -107,6 +107,35 @@ public class LxrDao extends JdbcDao<LxrBean> {
 		}
 	}
 	
+	public void save(List<LxrBean> list, int jigouId, int lryId) throws Exception {
+		if(list == null || list.size() == 0) return ;
+		Connection conn = null;
+		try {
+			conn = DBFactory.getConn();
+			conn.setAutoCommit(false);
+			for(LxrBean bean : list){
+				checkPhone(conn, bean.getJigouId(), bean.getId(), bean.getPhone());
+				bean.setIsDel(0);
+				bean.setCishu(0);
+				bean.setJigouId(jigouId);
+				bean.setLryId(lryId);
+				save(conn, bean);
+			}
+			conn.commit();
+		} catch(Exception e){
+			if(conn != null){
+				try{ conn.rollback(); }catch(Exception e1){}
+			}
+			String message = e.getMessage();
+			if(message != null && message.indexOf("phone_unique") != -1){
+				throw new Exception("录入了相同的联系电话！", e);
+			}
+			throw e;
+		} finally {
+			DBFactory.close(conn, null, null);
+		}
+	}
+	
 	public void checkPhone(Connection conn, int jigouId, int id, String phone) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;

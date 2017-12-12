@@ -58,6 +58,8 @@ define({
 			"ztree.select": "assets/global/plugins/ztree-select/ztree.select",
 			"datatables": "assets/global/plugins/datatables/jquery.dataTables.min",
 			"datatables.bt": "assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap",
+			"jquery.fileupload": "assets/global/plugins/jquery-file-upload/js/jquery.fileupload",
+			"jquery.ui.widget": "assets/global/plugins/jquery-file-upload/js/vendor/jquery.ui.widget",
 			'ckeditor-core': 'assets/global/plugins/ckeditor/full/ckeditor',
 			'ckeditor-ckfinder': 'assets/global/plugins/ckfinder/ckfinder',
 			'ckeditor-jquery':'assets/global/plugins/ckeditor/full/adapters/jquery',

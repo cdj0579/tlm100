@@ -16,7 +16,7 @@ define(['assets/common/config'], function(config) {
 	});
 	
 	require(['app','layout','demo']);
-	require(['domready!', 'app', 'datatables.bt', "select3"], function (doc, App){
+	require(['domready!', 'app', 'datatables.bt', "select3", 'jquery.fileupload'], function (doc, App){
 		var $table = $('#lxr_table');
 		var $form = $('form');
 		var dt = null;
@@ -124,6 +124,28 @@ define(['assets/common/config'], function(config) {
 				initTable();
 			}
 		};
+		
+		$('.btn-groups .fileinput-button input').fileupload({
+            disableImageResize: false,
+            autoUpload: true,
+            disableImageResize: /Android(?!.*Chrome)|Opera/.test(window.navigator.userAgent),
+            maxFileSize: 5000000,
+            acceptFileTypes: /(\.|\/)(xls)$/i,
+            url: basePath+'lxrgl/upload',
+            dataType: 'json',
+            /*add: function (e, data) {
+                //data.context = $('<p/>').text('Uploading...').appendTo(document.body);
+                data.submit();
+            },*/
+            done: function (e, data) {
+            	if(data._response.result.success == true){
+            		App.getAlert().info("上传成功！", "提示");
+            		reload();
+            	} else {
+            		App.getAlert().error(data._response.result.errors.exception, "错误");
+            	}
+            }
+        });
 
 		$form.find('select[name="dqId"]').select3({
     		placeholder: "请选择",

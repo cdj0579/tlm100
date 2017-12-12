@@ -105,6 +105,12 @@
     		<div class="col-md-4">
 	    		<div class="btn-groups pull-right">
 		            <a class="btn green add"><i class="fa fa-plus"></i> 添加</a>
+		            <span class="btn blue fileinput-button">
+	                	<i class="fa fa-upload"></i>
+	                	<span> 上传联系人 </span>
+	                	<input type="file" name="lxrFile">
+	                </span>
+		            <a href="${basePath }lxrgl/template/download" class="btn yellow download-template"><i class="fa fa-download"></i> 下载联系人模板 </a>
 		        </div>
     		</div>
     	</div>

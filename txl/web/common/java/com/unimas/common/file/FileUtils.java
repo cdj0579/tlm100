@@ -25,15 +25,6 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.servlet.ServletRequestContext;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.unimas.common.util.StringUtils;
 
@@ -448,7 +439,7 @@ public class FileUtils {
 	 * @param cell
 	 * @return
 	 */
-	private static String getStringCellValue(Cell cell) {
+	/*private static String getStringCellValue(Cell cell) {
 		if (cell == null) {
 			return "";
 		}
@@ -477,7 +468,7 @@ public class FileUtils {
 			return "";
 		}
 		return strCell.trim();
-	}
+	}*/
 
 	public synchronized static String[] parseTxt(Map amp) throws Exception {
 		String[] result = new String[0];
@@ -1289,7 +1280,7 @@ public class FileUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static List<String>  readExcelFile(String filePath) throws Exception {
+	/*public static List<String>  readExcelFile(String filePath) throws Exception {
 		String fileContext = "";
 		List<String> str = new ArrayList<String>();
 		InputStream is = null;
@@ -1388,8 +1379,8 @@ public class FileUtils {
 //			}
 //		}
 		return str;
-	}
-	public static String readExcelFile(File filePath) throws Exception {
+	}*/
+	/*public static String readExcelFile(File filePath) throws Exception {
 		String fileContext = "";
 		InputStream is = null;
 		try {
@@ -1481,5 +1472,5 @@ public class FileUtils {
 //			}
 //		}
 		return fileContext;
-	}
+	}*/
 }
