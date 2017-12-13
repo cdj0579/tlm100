@@ -19,8 +19,10 @@ import com.unimas.common.qrcode.QrcodeUtils;
 import com.unimas.common.util.StringUtils;
 import com.unimas.common.util.ExcelUtil.WorkbookBuffer;
 import com.unimas.jdbc.DBFactory;
+import com.unimas.txl.bean.LryBean;
 import com.unimas.txl.bean.LxrBean;
 import com.unimas.txl.bean.fenpei.LxrQianyueBean;
+import com.unimas.txl.dao.LryDao;
 import com.unimas.txl.dao.LxrDao;
 import com.unimas.web.auth.AuthRealm.ShiroUser;
 
@@ -110,7 +112,7 @@ public class LxrService {
 	}
 	
 	public ByteArrayOutputStream getLxrzcQrcode(int lryId) throws Exception {
-		LxrBean bean = (LxrBean)new LxrDao().getById(lryId, LxrBean.class);
+		LryBean bean = (LryBean)new LryDao().getById(lryId, LryBean.class);
 		String config_path = LxrService.class.getClassLoader().getResource("config.properties").getFile();
 		Map<String, String> config = PropertyUtils.readProperties(config_path);
 		String baseUrl = MessageFormat.format(config.get("lxrzc.url"), bean.getJigouId(), lryId);
