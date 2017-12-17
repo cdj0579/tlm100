@@ -7,9 +7,8 @@
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="en">
-  	<head>
-    
-	    <title>联系人信息录入</title>
+  	<head> 
+	    <title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<%PageUtils.initBasePath(request); %>
 	    <script>
@@ -91,10 +90,10 @@
 		</style>
 	</head>
 	<body>
-		<header class="mui-bar  mui-bar-nav" style="padding-right: 15px;">
+		<!--<header class="mui-bar  mui-bar-nav" style="padding-right: 15px;">
 			<h1 class="mui-title">联系人信息录入</h1>
 		</header>
-		<section style="margin-top: 55px;">
+		--><section style="margin-top: 55px;">
 			<form action="#" class="form-horizontal " id="form_remark">
 				<input type="hidden" name="id" value="-1"/>
 				<input type="hidden" name="jgId" value="${jgId }"/>
