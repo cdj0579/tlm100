@@ -29,6 +29,16 @@
 	                </div>
 	            </div>
 	            <div class="form-group">
+	                <label class="control-label col-md-3">关注上限<span class="required">*</span></label>
+	                <div class="col-md-8">
+	                	<div class="input-icon right">
+	                     	<i class="fa"></i>
+	                     	<input type="number" name="gzShangxian" class="form-control" validate="{required:true,max: 100, min: 1}"/>
+	                    </div>
+	                    <span class="help-block">每个使用者关注的联系人上限</span>
+	                </div>
+	            </div>
+	            <div class="form-group">
 	                <label class="control-label col-md-3">录入上限<span class="required">*</span></label>
 	                <div class="col-md-8">
 	                	<div class="input-icon right">

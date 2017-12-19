@@ -34,6 +34,12 @@ define(["validate.additional", "select3"], function(a, b){
 		});
 	};
 	
+	var reloadXxSelect = function($el, dqId){
+		$el.reload(null, {
+			dqId: dqId
+		});
+	};
+	
 	return {
 		init: function(_data, _modal, _cb){
 			modal = _modal;
@@ -53,18 +59,19 @@ define(["validate.additional", "select3"], function(a, b){
 				nameField: "name",
 				typeField: "pid",
 				typeVelue: "330500"
+	    	}).on('select.select3', function(){
+	    		reloadXxSelect($xxSelect, $(this).val());
 	    	});
-			$form.find('select[name="xxId"]').select3({
+			var $xxSelect = $form.find('select[name="xxId"]').select3({
 	    		placeholder: "请选择",
-	    		autoLoad: true,
+	    		autoLoad: false,
 	    		allowClear: true,
 	    		value: _data.xxId || null,
-	    		tableName: "txl_xuexiao",
+	    		getUrl: basePath+"xxgl/list",
 	    		idField: "id",
-				nameField: "xuexiaoming"/*,
-				typeField: "pid",
-				typeVelue: "330500"*/
+				nameField: "xuexiaoming"
 	    	});
+			reloadXxSelect($xxSelect, _data.dqId || null);
 			$form.find('select[name="nj"]').select2({
 	    		placeholder: "请选择",
 	    		allowClear: true

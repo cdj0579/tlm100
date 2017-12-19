@@ -58,9 +58,10 @@ public class ConfigController {
     	try {
     		int zhouqi = PageUtils.getIntParamAndCheckEmpty(request, "zhouqi", "错误的分配周期！");
     		int shichang = PageUtils.getIntParamAndCheckEmpty(request, "shichang", "错误的关注时限！");
+    		int gzShangxian = PageUtils.getIntParamAndCheckEmpty(request, "shangxian", "错误的关注上限！");
     		int shangxian = PageUtils.getIntParamAndCheckEmpty(request, "shangxian", "错误的录入上限！");
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-			new ConfigService().save(zhouqi, shichang, shangxian, user);
+			new ConfigService().save(zhouqi, shichang, gzShangxian, shangxian, user);
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;

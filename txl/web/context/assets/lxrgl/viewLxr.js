@@ -44,6 +44,19 @@ define(["validate.additional"], function(a, b){
 			$form.find('.form-control-static[name="status"]').html(statusHtml);
 			
 			$form.loadForm(_data);
+			
+			$form.on("click", ".btn.view-bz", function(){
+				App.ajaxModal({
+					id: "view-bz",
+					scroll: true,
+					width: "1000",
+					required: ["viewBz"],
+					remote: basePath+"assets/lxrgl/viewBz.html",
+					callback: function(modal, args){
+						args[0].init(_data.beizhu?eval('(' + _data.beizhu + ')'):{}, modal);
+					}
+				});
+			});
 		}
 	};
 });

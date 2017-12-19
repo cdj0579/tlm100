@@ -189,9 +189,7 @@ define(["validate.additional", "select3"], function(a, b){
 	    		value: _data.xxId || null,
 	    		getUrl: basePath+"xxgl/list",
 	    		idField: "id",
-				nameField: "xuexiaoming"/*,
-				typeField: "pid",
-				typeVelue: "330500"*/
+				nameField: "xuexiaoming"
 	    	});
 			reloadXxSelect($xxSelect, _data.lxrDqId || null);
 			$form.find('select[name="nj"]').select2({

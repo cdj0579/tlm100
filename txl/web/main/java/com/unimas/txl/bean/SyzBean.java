@@ -20,6 +20,13 @@ public class SyzBean extends JdbcBean {
 	@Column(ignore=true, name="dq_name")
 	@LeftField(name="name", joinTable="xzqh", joinField="code", refField="dqId")
 	private String dqName;
+	@Column(name="lry_id", nullNumberValue=-1)
+	private int lryId = -1;
+	
+	@Column(ignore=true)
+	@LeftField(name="name", joinTable="txl_luruyuan", joinField="id", refField="lryId")
+	private String lryName;
+	
 	@Column(name="is_del", nullNumberValue=-1)
 	private int isDel = -1;
 	private int cishu = 0;
@@ -35,6 +42,18 @@ public class SyzBean extends JdbcBean {
 	}
 	public void setJigouId(int jigouId) {
 		this.jigouId = jigouId;
+	}
+	public int getLryId() {
+		return lryId;
+	}
+	public void setLryId(int lryId) {
+		this.lryId = lryId;
+	}
+	public String getLryName() {
+		return lryName;
+	}
+	public void setLryName(String lryName) {
+		this.lryName = lryName;
 	}
 	public String getDqName() {
 		return dqName;

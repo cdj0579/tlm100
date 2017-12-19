@@ -12,6 +12,8 @@ public class ConfigBean {
 	private int zhouqi = -1;
 	@Column(name="guanzhu_shichang", nullNumberValue=-1)
 	private int shichang = -1;
+	@Column(name="guanzhu_shangxian", nullNumberValue=-1)
+	private int gzShangxian = -1;
 	@Column(name="luru_shangxian", nullNumberValue=-1)
 	private int shangxian = -1;
 	
@@ -32,6 +34,12 @@ public class ConfigBean {
 	}
 	public void setShichang(int shichang) {
 		this.shichang = shichang;
+	}
+	public int getGzShangxian() {
+		return gzShangxian;
+	}
+	public void setGzShangxian(int gzShangxian) {
+		this.gzShangxian = gzShangxian;
 	}
 	public int getShangxian() {
 		return shangxian;

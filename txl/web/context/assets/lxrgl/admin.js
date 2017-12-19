@@ -11,7 +11,8 @@ define(['assets/common/config'], function(config) {
 	require.config({
 		paths: {
 			"editLxr": "assets/lxrgl/editLxr",
-			"viewLxr": "assets/lxrgl/viewLxr"
+			"viewLxr": "assets/lxrgl/viewLxr",
+			"viewBz": "assets/lxrgl/viewBz"
 		},shim: {
 		}
 	});

@@ -50,6 +50,7 @@ define(['assets/common/config'], function(config) {
 	                  { title: "用户编号", data: "userNo"},
 	                  { title: "姓名", data: "name"},
 	                  { title: "所属地区", data: "dqName"},
+	                  { title: "录入员", data: "lryName"},
 	    	          { title: "操作", data: "id", render: function(data, type, full){
 	    	        	  return '<a href="javascript:;" class="btn blue edit"> 编辑 <i class="fa fa-edit"></i></a>'+
 	    	        	  '<a href="javascript:;" class="btn red delete"> 删除 <i class="fa fa-remove"></i></a>';

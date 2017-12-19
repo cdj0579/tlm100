@@ -65,10 +65,11 @@ public class ConfigService {
 		}
 	}
 	
-	public void save(int zhouqi, int shichang, int shangxian, ShiroUser user) throws Exception {
+	public void save(int zhouqi, int shichang, int gzShangxian, int shangxian, ShiroUser user) throws Exception {
 		ConfigBean bean = new ConfigBean();
 		bean.setJigouId(user.getJigouId());
 		bean.setShangxian(shangxian);
+		bean.setGzShangxian(gzShangxian);
 		bean.setShichang(shichang);
 		bean.setZhouqi(zhouqi);
 		save(bean);

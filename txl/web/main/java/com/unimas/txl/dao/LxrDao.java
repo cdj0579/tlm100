@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.unimas.common.util.StringUtils;
 import com.unimas.jdbc.DBFactory;
 import com.unimas.jdbc.handler.ResultSetHandler;
@@ -107,33 +108,44 @@ public class LxrDao extends JdbcDao<LxrBean> {
 		}
 	}
 	
-	public void save(List<LxrBean> list, int jigouId, int lryId) throws Exception {
-		if(list == null || list.size() == 0) return ;
+	public Object[] save(List<LxrBean> list, int jigouId, int lryId) throws Exception {
+		List<LxrBean> failureList = Lists.newArrayList();
+		int successCount = 0;
+		if(list == null || list.size() == 0) return new Object[]{failureList, successCount};
 		Connection conn = null;
 		try {
 			conn = DBFactory.getConn();
-			conn.setAutoCommit(false);
 			for(LxrBean bean : list){
-				checkPhone(conn, bean.getJigouId(), bean.getId(), bean.getPhone());
 				bean.setIsDel(0);
 				bean.setCishu(0);
 				bean.setJigouId(jigouId);
 				bean.setLryId(lryId);
-				save(conn, bean);
+				try {
+					checkPhone(conn, bean.getJigouId(), bean.getId(), bean.getPhone());
+					save(conn, bean);
+					successCount++;
+				} catch(Exception e){
+					String message = e.getMessage();
+					if(message != null && message.indexOf("phone_unique") != -1){
+						message = "录入了相同的联系电话！";
+					} else if(message != null && message.indexOf("联系电话") != -1){
+						
+					} else {
+						message = "录入失败！";
+					}
+					bean.setMsg(message);
+					failureList.add(bean);
+				}
 			}
-			conn.commit();
+			if(successCount == 0){
+				throw new Exception("全部录入失败！");
+			}
 		} catch(Exception e){
-			if(conn != null){
-				try{ conn.rollback(); }catch(Exception e1){}
-			}
-			String message = e.getMessage();
-			if(message != null && message.indexOf("phone_unique") != -1){
-				throw new Exception("录入了相同的联系电话！", e);
-			}
 			throw e;
 		} finally {
 			DBFactory.close(conn, null, null);
 		}
+		return new Object[]{failureList, successCount};
 	}
 	
 	public void checkPhone(Connection conn, int jigouId, int id, String phone) throws Exception {
@@ -141,7 +153,7 @@ public class LxrDao extends JdbcDao<LxrBean> {
 		ResultSet rs = null;
 		try {
 			StringBuffer sql = new StringBuffer();
-			sql.append("select count(*) from txl_lianxiren where jigou_id=? and phone=?");
+			sql.append("select count(*) from txl_lianxiren where jigou_id=? and phone=? and is_del=0");
 			if(id > 0){
 				sql.append( " and id <> "+id);
 			}
@@ -150,7 +162,7 @@ public class LxrDao extends JdbcDao<LxrBean> {
 			stmt.setString(2, phone);
 			rs = stmt.executeQuery();
 			if(ResultSetHandler.toLong(rs) > 0){
-				throw new Exception("联系电话已存在！");
+				throw new Exception("联系电话["+phone+"]已存在！");
 			}
 		} finally {
 			DBFactory.close(null, stmt, rs);

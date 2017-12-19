@@ -43,6 +43,9 @@ public class LxrBean extends JdbcBean {
 	@Column(name="shijian", ignore=true, toType=ToType.DateToString)
 	private String shijian;
 	
+	@Column(ignore=true)
+	private String msg;
+	
 	public String getDqId() {
 		return dqId;
 	}
@@ -60,6 +63,12 @@ public class LxrBean extends JdbcBean {
 	}
 	public void setStatus(int status) {
 		this.status = status;
+	}
+	public String getMsg() {
+		return msg;
+	}
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 	public String getShijian() {
 		return shijian;

@@ -116,7 +116,9 @@ public class LxrController {
     			AjaxDataModal json = new AjaxDataModal(true, "上传联系人Excel成功！");
     			InputStream inputStream = files[0].getInputStream();
     			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-    			new LxrService().uploadLxrExcel(inputStream, user);
+    			Object[] objs = new LxrService().uploadLxrExcel(inputStream, user);
+    			json.put("failureList", objs[0]);
+    			json.put("successCount", objs[1]);
     			return json;
     		}
 		}  catch (Exception e) {

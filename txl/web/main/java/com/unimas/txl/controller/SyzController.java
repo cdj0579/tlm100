@@ -63,10 +63,11 @@ public class SyzController {
     	try {
     		String name = PageUtils.getParamAndCheckEmpty(request, "name", "姓名不能为空！");
     		String dqId = PageUtils.getParamAndCheckEmpty(request, "dqId", "地区不能为空！");
+    		int lryId = PageUtils.getIntParam(request, "lryId");
     		String username = PageUtils.getParamAndCheckEmpty(request, "username", "账号不能为空！");
 			String password = PageUtils.getParamAndCheckEmpty(request, "password", "密码不能为空！");
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-			new SyzService().add(name, dqId, username, password, user);
+			new SyzService().add(name, dqId, lryId, username, password, user);
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;
@@ -86,13 +87,14 @@ public class SyzController {
     		int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的使用者ID！");
     		String name = PageUtils.getParamAndCheckEmpty(request, "name", "姓名不能为空！");
     		String dqId = PageUtils.getParamAndCheckEmpty(request, "dqId", "地区不能为空！");
+    		int lryId = PageUtils.getIntParam(request, "lryId");
     		String userNo = PageUtils.getParamAndCheckEmpty(request, "userNo", "用户编号不能为空！");
     		boolean updatePwd = PageUtils.getBooleanParam(request, "isUpdatePwd");
 			String password = null;
 			if(updatePwd){
 				password = PageUtils.getParamAndCheckEmpty(request, "password", "密码不能为空！");
 			}
-    		new SyzService().update(id, name, dqId, updatePwd, userNo, password);
+    		new SyzService().update(id, name, dqId, lryId, updatePwd, userNo, password);
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;

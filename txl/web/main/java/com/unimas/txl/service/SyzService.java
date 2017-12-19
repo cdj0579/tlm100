@@ -22,7 +22,7 @@ public class SyzService {
 		return new SyzDao().query(jigouId, ids);
 	}
 	
-	public void add(String name, String dqId, String username, String password, ShiroUser user) throws Exception {
+	public void add(String name, String dqId, int lryId, String username, String password, ShiroUser user) throws Exception {
 		Connection conn = null;
 		try {
 			conn = DBFactory.getConn();
@@ -35,6 +35,7 @@ public class SyzService {
 				bean.setName(name);
 				bean.setDqId(dqId);
 				bean.setUserNo(userNo);
+				bean.setLryId(lryId);
 				bean.setCishu(0);
 				bean.setIsDel(0);
 				new SyzDao().save(conn, bean);
@@ -52,7 +53,7 @@ public class SyzService {
 		}
 	}
 	
-	public void update(int id, String name, String dqId, boolean updatePwd, String userNo, String password) throws Exception {
+	public void update(int id, String name, String dqId, int lryId, boolean updatePwd, String userNo, String password) throws Exception {
 		Connection conn = null;
 		try {
 			conn = DBFactory.getConn();
@@ -65,6 +66,7 @@ public class SyzService {
 			bean.setId(id);
 			bean.setName(name);
 			bean.setDqId(dqId);
+			bean.setLryId(lryId);
 			new SyzDao().save(conn, bean);
 			conn.commit();
 		} catch(Exception e){

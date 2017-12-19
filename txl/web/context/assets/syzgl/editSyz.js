@@ -54,6 +54,15 @@ define(["validate.additional", "select3"], function(a, b){
 				typeVelue: "330500"
 	    	});
 			
+			$form.find('select[name="lryId"]').select3({
+	    		placeholder: "请选择",
+	    		autoLoad: true,
+	    		value: _data.lryId || null,
+	    		tableName: "txl_luruyuan",
+	    		idField: "id",
+				nameField: "name"
+	    	});
+			
 			if(!isAdd){
 				$form.find('input[name="username"]').attr("disabled", true);
 				$form.hideOrShowFormItem(["isUpdatePwd"], true);

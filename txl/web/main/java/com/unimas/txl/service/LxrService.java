@@ -97,7 +97,7 @@ public class LxrService {
 			dao.checkStatus(conn, id);
 			LxrBean bean = new LxrBean();
 			bean.setId(id);
-			bean.setIsDel(1);
+			bean.setIsDel(id);
 			dao.save(conn, bean);
 		} finally {
 			DBFactory.close(conn, null, null);
@@ -165,9 +165,9 @@ public class LxrService {
 		wb.write();
 	}
 	
-	public void uploadLxrExcel(InputStream is, ShiroUser user) throws Exception {
+	public Object[] uploadLxrExcel(InputStream is, ShiroUser user) throws Exception {
 		List<LxrBean> list = readLxrExcel(is);
-		new LxrDao().save(list, user.getJigouId(), user.getUserId());
+		return new LxrDao().save(list, user.getJigouId(), user.getUserId());
 	}
 	
 	private List<LxrBean> readLxrExcel(InputStream is) throws Exception {
@@ -305,8 +305,11 @@ public class LxrService {
 		String path = "D://";
 		//new LxrService().createSampleExcel(filename, path);
 		//ExcelUtil.readXls(path+filename);
-		List<LxrBean> list = new LxrService().readLxrExcel(new FileInputStream(path+filename));
-		System.out.println(list);
+		//List<LxrBean> list = new LxrService().readLxrExcel(new FileInputStream(path+filename));
+		//System.out.println(list);
+		ShiroUser user = new ShiroUser(1, "", "", "", "");
+		user.setJigouId(1);
+		new LxrService().uploadLxrExcel(new FileInputStream(path+filename), user);
 	}
 
 }

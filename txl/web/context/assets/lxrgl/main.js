@@ -10,7 +10,8 @@ define(['assets/common/config'], function(config) {
 	require.config(config.require);
 	require.config({
 		paths: {
-			"editLxr": "assets/lxrgl/editLxr"
+			"editLxr": "assets/lxrgl/editLxr",
+			"viewBz": "assets/lxrgl/viewBz"
 		},shim: {
 		}
 	});
@@ -79,7 +80,8 @@ define(['assets/common/config'], function(config) {
 	                  { title: "联系人", width: "13%", data: "lianxiren"},
 	    	          { title: "操作", width: "12%", data: "id", render: function(data, type, full){
 	    	        	  return '<a href="javascript:;" class="btn blue edit"> 编辑 <i class="fa fa-edit"></i></a>'+
-	    	        	  '<a href="javascript:;" class="btn red delete"> 删除 <i class="fa fa-remove"></i></a>';
+	    	        	  '<a href="javascript:;" class="btn red delete"> 删除 <i class="fa fa-remove"></i></a>'+
+	    	        	  '<a href="javascript:;" class="btn yellow view"> 查看备注 <i class="fa fa-search"></i></a>';
 	    	          }}
 	    	      ]
 		      } );
@@ -115,6 +117,20 @@ define(['assets/common/config'], function(config) {
 					cancerFn: function(){}
 				});
 			});
+			$tableWrapper.on("click", ".btn.view", function(){
+				var $tr = $(this).closest("tr");
+				var data = dt.api().row($tr).data();
+				App.ajaxModal({
+					id: "view",
+					scroll: true,
+					width: "1000",
+					required: ["viewBz"],
+					remote: basePath+"assets/lxrgl/viewBz.html",
+					callback: function(modal, args){
+						args[0].init(data.beizhu?eval('(' + data.beizhu + ')'):{}, modal);
+					}
+				});
+			});
 		};
 		
 		var reload = function(){
@@ -139,7 +155,37 @@ define(['assets/common/config'], function(config) {
             },*/
             done: function (e, data) {
             	if(data._response.result.success == true){
-            		App.getAlert().info("上传成功！", "提示");
+            		var list = data._response.result.failureList;
+            		if(!list || list.length == 0){
+            			App.getAlert().info("上传成功！", "提示");
+            		} else {
+            			App.ajaxModal({
+            				id: "failureList",
+            				scroll: true,
+            				width: "600",
+            				required: [],
+            				remote: basePath+"assets/lxrgl/failureLxrs.html",
+            				callback: function(modal, args){
+            					modal.$element.find('.upload-msg span.font-blue').html(data._response.result.successCount);
+            					modal.$element.find('.upload-msg span.font-red').html(list.length);
+            					modal.$element.find('table').dataTable( {
+            						data: list,
+            						scrollY: "330px",
+            						scrollCollapse: false,
+            						paging: true,
+            						pageLength: 10,
+            						lengthChange: false,
+            						dom: "<'table-scrollable't><'row'<'col-md-5 col-sm-5'i><'col-md-7 col-sm-7'p>>",
+            						drawCallback: function(){ App.handleTooltips();  },
+            			            columns: [
+            			                  { title: "联系人", data: "lianxiren"},
+            			                  { title: "联系电话", data: "phone"},
+            			                  { title: "失败原因", data: "msg"}
+            			    	      ]
+            				      } );
+            				}
+            			});
+            		}
             		reload();
             	} else {
             		App.getAlert().error(data._response.result.errors.exception, "错误");
