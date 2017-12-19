@@ -146,6 +146,10 @@
 			<a  data-toggle="dropdown" data-hover="dropdown" data-close-others="true"><span class="mui-icon mui-icon-bars"></span></a>
 			<ul class="dropdown-menu dropdown-menu-default">
                 <li>
+                    <a href="${basePath }share/page"><i class="fa fa-share-alt"></i>查看二维码 </a>
+                </li>
+               <li class="divider"> </li>
+                <li>
                     <a href="${basePath }app/setPwd"><i class="icon-key"></i> 密码修改 </a>
                 </li>
                 <li class="divider"> </li>

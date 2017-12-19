@@ -25,7 +25,10 @@ public class ShiYongZheInfo extends JdbcBean implements java.io.Serializable {
 	
 	@Column(name="cishu", nullNumberValue=-1)
 	private int cishu = -1;
-
+	
+	@Column(name="lry_id", nullNumberValue=-1)
+	private int lryId = -1;
+	
 	public int getJigouId() {
 		return jigouId;
 	}
@@ -64,6 +67,14 @@ public class ShiYongZheInfo extends JdbcBean implements java.io.Serializable {
 
 	public void setCishu(int cishu) {
 		this.cishu = cishu;
+	}
+
+	public int getLryId() {
+		return lryId;
+	}
+
+	public void setLryId(int lryId) {
+		this.lryId = lryId;
 	}
 	
 	

@@ -379,7 +379,15 @@ define(['assets/common/config'], function(config) {
 		     			}
 		     			$returnBtn.click();
 		     			showPopover($(".myAlert"),msg);
-		     		},"保存数据失败！");
+		     		},function(msg){
+		     			var alert = App.getAlert({positionClass:"toast-top-center"});
+		     			if(msg == "over"){
+		     				msg = "已超出今日关注上限，明天再关注！";
+		     			}else{
+		     				msg = "保存数据失败！";
+		     			}
+		     			alert.error(msg, "错误");
+		     		});
 		     	},"json");
 		}
 		$("#tableBeizhu .btn-sub").click(function(){

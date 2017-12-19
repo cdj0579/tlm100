@@ -187,6 +187,9 @@ public class AppSystemController {
     			if(isBz == 0){
     				int glId = indexService.isExistsInfo(lxrId, user.getUserId(), false);
     				if(glId == -1){
+    					if( indexService.isUpperLimit(jgId, user.getUserId()) ){
+        					throw new UIException("over");
+        				}
     					indexService.saveGuanZhuInfo(-1,user.getUserId(), lxrId, DateUtils.formatDateToHMS(new Date()),jgId);
     				}
     			}

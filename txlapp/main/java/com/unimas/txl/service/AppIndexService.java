@@ -141,6 +141,48 @@ public class AppIndexService {
 			DBFactory.close(conn, null, null);
 		}
 	}
+	
+	public boolean isUpperLimit(int jgId ,int syzId) throws Exception{
+		boolean result = true;
+		String date = DateUtils.formatDate(new Date());
+		StringBuffer limitSb = new StringBuffer();
+		limitSb.append("select guanzhu_shangxian sx from txl_config where jigou_id =").append(jgId);
+		
+		StringBuffer dataSb = new StringBuffer();
+		dataSb.append("select count(*) num  from txl_lianxiren_guanzhu WHERE syz_id = '").append(syzId)
+			.append("' and DATE_FORMAT(shijian,'%Y-%m-%d')='").append(date).append("' and jigou_id =").append(jgId);
+		Connection conn = null;
+		try {
+			conn = DBFactory.getConn();
+			int limit = this.getCount(conn,limitSb.toString(),10);
+			int count = this.getCount(conn,dataSb.toString(),0);
+			result = count >= limit;
+		} finally {
+			DBFactory.close(conn, null, null);
+		}
+		return result;
+	}
+	
+	
+	private int getCount(Connection conn,String sql,int defaultVaule){
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		int id = defaultVaule;
+		try {
+			stmt = conn.prepareStatement(sql);
+			rs = stmt.executeQuery();
+			id = ResultSetHandler.toInt(rs);
+			if( id == -1 ){
+				id = defaultVaule;
+			}
+		}catch (Exception e) {
+		} finally {
+			DBFactory.close(null, stmt, rs);
+		}
+		return id;
+	}
+	
+	
 	/*@SuppressWarnings("unchecked")
 	public List<QianYueInfo> queryAllQYInfoBySyzId(int syzId) throws Exception{
 		QianYueInfo qy = new QianYueInfo();
