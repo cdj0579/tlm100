@@ -1,0 +1,53 @@
+	.mui-bar-nav {
+	    top: 0;
+	}
+
+	.mui-bar {
+	    position: fixed;
+	    z-index: 10;
+	    right: 0;
+	    left: 0;
+	    height: 44px;
+	    padding-left: 10px;
+	    border-bottom: 0;
+	    background-color: #f7f7f7;
+	    box-shadow: 0 0 1px rgba(0,0,0,.85);
+	    backface-visibility: hidden;
+	}
+	.mui-bar .mui-title {
+	    right: 40px;
+	    left: 40px;
+	    display: inline-block;
+	    overflow: hidden;
+	    width: auto;
+	    margin: 0;
+	    text-overflow: ellipsis;
+	}
+	.mui-title {
+	    font-size: 17px;
+	    font-weight: 500;
+	    line-height: 44px;
+	    position: absolute;
+	    padding: 0;
+	    text-align: center;
+	    white-space: nowrap;
+	    color: #000;
+	}
+	.mui-icon{
+		margin-left: -5px;
+	    margin-right: 10px;
+	    font-size: 16px;
+	    line-height: 44px;
+	    top: 0;
+	    padding: 0;
+	    /* color: #007aff; */
+	    border: 0;
+	    float: left;
+		background-color: transparent;
+	}
+	.mui-bar .fa-angle-left {
+		font-size:24px;
+		width:24px;
+		height:24px;
+		position: relative;
+	}
