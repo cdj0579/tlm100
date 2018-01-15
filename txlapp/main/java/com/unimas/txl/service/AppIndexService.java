@@ -12,17 +12,13 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.unimas.common.date.DateUtils;
-import com.unimas.common.md5.MD5;
 import com.unimas.common.util.StringUtils;
 import com.unimas.jdbc.DBFactory;
 import com.unimas.jdbc.handler.ResultSetHandler;
-import com.unimas.txl.bean.user.Account;
-import com.unimas.txl.bean.user.FenPeiInfo;
 import com.unimas.txl.bean.user.GuanZhuInfo;
 import com.unimas.txl.bean.user.LianXiRenInfo;
 import com.unimas.txl.bean.user.QianYueInfo;
 import com.unimas.txl.dao.JdbcDao;
-import com.unimas.web.auth.AuthRealm.ShiroUser;
 
 @Service
 public class AppIndexService {
@@ -292,27 +288,69 @@ public class AppIndexService {
 		}
 	}
 	
-	public void checkPhone(Connection conn, int jigouId, String phone) throws Exception {
+	public long checkPhone(Connection conn, int jigouId, String phone) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
+		long result = -1;
 		try {
 			StringBuffer sql = new StringBuffer();
-			sql.append("select count(*) from txl_lianxiren where jigou_id=? and phone=?");
+			sql.append("select id from txl_lianxiren where jigou_id=? and phone=?");
 			stmt = conn.prepareStatement(sql.toString());
 			stmt.setInt(1, jigouId);
 			stmt.setString(2, phone);
 			rs = stmt.executeQuery();
-			if(ResultSetHandler.toLong(rs) > 0){
+			result = ResultSetHandler.toLong(rs);
+			/*if(ResultSetHandler.toLong(rs) > 0){
 				throw new Exception("联系电话已存在！");
-			}
+			}*/
 		} finally {
 			DBFactory.close(null, stmt, rs);
 		}
+		return result;
 	}
 	
+	/**
+	 * 保存联系人活动信息；
+	 * @param conn
+	 * @param lryId
+	 * @throws Exception
+	 */
+	private void saveLxrHuodongInfo(Connection conn, long lryId) throws Exception {
+		PreparedStatement stmt = null;
+		StringBuilder sqlSb = new StringBuilder();
+		sqlSb.append("insert into txl_lianxiren_huodong(huodong_id,lxr_id) value(?,?);");
+		try {
+			stmt = conn.prepareStatement(sqlSb.toString());
+			stmt.setString(1, "1"); 
+			stmt.setLong(2, lryId);
+			stmt.executeUpdate();
+		}catch (Exception e) {
+			String msg = e.getMessage();
+			if(msg.endsWith("key 'PRIMARY'")){
+				System.out.println("lusl");
+			}else{
+				throw e;
+			}
+		} finally {
+			DBFactory.close(null, stmt, null);
+		}
+	}
+	private void updateLxrInfo(Connection conn, long id) throws Exception {
+		PreparedStatement stmt = null;
+		StringBuilder sqlSb = new StringBuilder();
+		sqlSb.append("update txl_lianxiren set is_del=0 where id=?");
+		try {
+			stmt = conn.prepareStatement(sqlSb.toString());
+			stmt.setLong(1, id);
+			stmt.executeUpdate();
+		} finally {
+			DBFactory.close(null, stmt, null);
+		}
+	}
 	private void saveLxrInfo(Connection conn, String name, int xb, int xuexiaoId, String dqId, int nj, int bj, String lianxiren
 			, String phone,int jgId,int lryId) throws Exception {
 		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		StringBuilder sqlSb = new StringBuilder();
 		sqlSb.append("insert into txl_lianxiren(jigou_id,lry_id,lianxiren,phone,xingming,xingbie,xuexiao_id,dq_id,nianji,banji) value(?,?,?,?,?,?,?,?,?,?);");
 		try {
@@ -327,18 +365,30 @@ public class AppIndexService {
 			stmt.setString(8, dqId);
 			stmt.setInt(9, nj);
 			stmt.setInt(10, bj);
-			stmt.execute();
+			stmt.executeUpdate();
+	        rs = stmt.getGeneratedKeys();
+	        int pid = -1;
+	        if(rs.next()) {
+	        	pid = rs.getInt(1);
+            }
+	        saveLxrHuodongInfo(conn, pid);
 		} finally {
-			DBFactory.close(null, stmt, null);
+			DBFactory.close(null, stmt, rs);
 		}
 	}
+	
 	public void addLxrInfo(String name, int xb, int xuexiaoId, String dqId, int nj, int bj, String lianxiren
 			, String phone,int jgId,int lryId) throws Exception {
 		Connection conn = null;
 		try {
 			conn = DBFactory.getConn();
-			checkPhone(conn,jgId,phone);
-			saveLxrInfo(conn, name, xb, xuexiaoId, dqId, nj, bj, lianxiren, phone, jgId, lryId);
+			long dataId = checkPhone(conn,jgId,phone);
+			if(dataId > 0){
+				updateLxrInfo(conn, dataId);
+				saveLxrHuodongInfo(conn, dataId);
+			}else{
+				saveLxrInfo(conn, name, xb, xuexiaoId, dqId, nj, bj, lianxiren, phone, jgId, lryId);
+			}
 		} finally {
 			DBFactory.close(conn, null, null);
 		}
@@ -384,12 +434,12 @@ public class AppIndexService {
 	
 	public static void main(String[] args) throws Exception {
 		AppIndexService service = new AppIndexService();
-		service.saveQianYueInfo(-1 ,1,1,"签约备注",DateUtils.formatDateToHMS(new Date()),1);
+//		service.saveQianYueInfo(-1 ,1,1,"签约备注",DateUtils.formatDateToHMS(new Date()),1);
 //		service.updateLianxirenBeizhu(1, DateUtils.formatDateToHMS(new Date()),1);
 	
-		System.out.println(service.queryOneFenPeiLianxiren(1,"1", "0"));
+//		System.out.println(service.queryOneFenPeiLianxiren(1,"1", "0"));
 //		System.out.println(service.queryGzOrGxLianxiren("1", true));
 //		System.out.println(service.queryGzOrGxLianxiren("1", false));
-	
+		service.addLxrInfo("lusl", 1, 13, "330501", 8, 7, "lusl2", "13789782523", 1, 5);
 	}
 }
