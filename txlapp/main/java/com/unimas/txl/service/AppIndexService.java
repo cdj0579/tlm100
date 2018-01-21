@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +21,7 @@ import com.unimas.txl.bean.user.GuanZhuInfo;
 import com.unimas.txl.bean.user.LianXiRenInfo;
 import com.unimas.txl.bean.user.QianYueInfo;
 import com.unimas.txl.dao.JdbcDao;
+import com.unimas.web.exception.UIException;
 
 @Service
 public class AppIndexService {
@@ -440,6 +443,172 @@ public class AppIndexService {
 //		System.out.println(service.queryOneFenPeiLianxiren(1,"1", "0"));
 //		System.out.println(service.queryGzOrGxLianxiren("1", true));
 //		System.out.println(service.queryGzOrGxLianxiren("1", false));
-		service.addLxrInfo("lusl", 1, 13, "330501", 8, 7, "lusl2", "13789782523", 1, 5);
+//		service.addLxrInfo("lusl", 1, 13, "330501", 8, 7, "lusl2", "13789782523", 1, 5);
+		
+		
+		Map<String,Object> dataMap =  service.queryShareInfo("C120671915");
+		System.out.println(dataMap);
+		dataMap = service.dealShareContent(dataMap);
+		System.out.println("2==========="+dataMap);
 	}
+	
+	
+	public void saveShareInfo(Map<String,Object>  dataMap,String user_no) throws UIException{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		StringBuilder sqlSb = new StringBuilder();
+		sqlSb.append("insert into txl_fenxiang(title,content,tupian_id,user_no ) value( ?, ?, ?, ? );");
+		try {
+			conn = DBFactory.getConn();
+			List<Map<String, Object>> info = queryShare(user_no, conn);
+			if(info != null && info.size() > 0 ){
+				String update = "update txl_fenxiang set title=?,content=? ,tupian_id=? where user_no = ?  ";
+				stmt = conn.prepareStatement(update);
+			}else{
+				stmt = conn.prepareStatement(sqlSb.toString());
+			}
+			String title = dataMap.get("mainTitle")+ "\u0005" + dataMap.get("subTitle");
+			stmt.setString(1, title);
+			stmt.setString(2, (String)dataMap.get("content"));
+			stmt.setString(3, (String)dataMap.get("tupId"));
+			stmt.setString(4, user_no);
+			stmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new UIException("保存数据失败");
+		} finally {
+			DBFactory.close(conn, stmt, null);
+		}
+	}
+	
+	public Map<String, Object> queryShareInfo(String user_no){
+		Map<String, Object> result = null;
+		Connection conn = null;
+		try {
+			conn = DBFactory.getConn();
+			List<Map<String, Object>> list = queryShare(user_no, conn);
+			if(list!=null && list.size() > 0){
+				result = list.get(0);
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+		} finally {
+			DBFactory.close(conn, null, null);
+		}
+		return result;
+	}
+
+
+	public List<Map<String, Object>> queryShare(String user_no, Connection conn) {
+		List<Map<String, Object>> result = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		StringBuilder sqlSb = new StringBuilder();
+		sqlSb.append("select id,user_no,title,content,tupian_id tupId from txl_fenxiang where user_no = ? limit 1;");
+		try {
+			stmt = conn.prepareStatement(sqlSb.toString());
+			stmt.setString(1, user_no);
+			rs = stmt.executeQuery();
+			result = ResultSetHandler.listMap(rs);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBFactory.close(null, stmt, rs);
+		}
+		return result;
+	}
+	
+	public String queryImgNameById(String tupId){
+		String result = "";
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String sql = "SELECT tupian imgName from txl_base_tupian where id = ? ;";
+		try {
+			conn = DBFactory.getConn();
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, tupId);
+			rs = stmt.executeQuery();
+			result = ResultSetHandler.toString(rs);
+		}catch (Exception e) {
+			// TODO: handle exception
+		} finally {
+			DBFactory.close(conn, stmt, rs);
+		}
+		return result;
+	} 
+	
+	public Map<String, Object> queryShareInfo2(String lryId,String jgId){
+		Map<String, Object> result = null;
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String sql = "SELECT a.title,a.content,b.lry_id lryId,b.jigou_id jgId ,c.tupian imgName FROM `txl_fenxiang` a " +
+				"LEFT JOIN txl_shiyongzhe b on a.user_no = b.user_no LEFT JOIN txl_base_tupian c on a.tupian_id = c.id " +
+				"where b.lry_id= ? and b.jigou_id = ? ;";
+		try {
+			conn = DBFactory.getConn();
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, lryId);
+			stmt.setString(2, jgId);
+			rs = stmt.executeQuery();
+			List<Map<String, Object>> list = ResultSetHandler.listMap(rs);
+			if(list != null && list.size() > 0){
+				result = list.get(0);
+				result = dealShareContent(result);
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+		} finally {
+			DBFactory.close(conn, stmt, rs);
+		}
+		return result;
+	} 
+
+	public Map<String, Object> dealShareContent(Map<String, Object> dataMap){
+		if(dataMap != null && dataMap.size() > 0 ){
+			if(!dataMap.containsKey("mainTitle")){
+				String title = (String)dataMap.get("title");
+				String[] titles = title.split("\u0005");
+				String subTitle = "";
+				if(titles.length == 2){
+					subTitle = titles[1];
+				}
+				dataMap.put("mainTitle",titles[0]);
+				dataMap.put("subTitle",subTitle);
+			}
+			String content = (String)dataMap.get("content");
+			if(content!=null && !"".equals(content)){
+				List<Map<String, Object>> modelList = new ArrayList<Map<String, Object>>();
+				String[] model = content.split("\u0002");
+				for(int i=0;i<model.length;i++){
+					String[] info = model[i].split("\u0001");
+					Map<String, Object> map1 = new HashMap<String, Object>();
+					map1.put("model_title", info[0]);
+					List<String> lineList = new ArrayList<String>();
+					String[] lines = info[1].split("\u0003");
+					for(int j=0;j<lines.length ;j++){
+						lineList.add(lines[j]);
+					}
+					map1.put("lineList", lineList);
+					modelList.add(map1);
+				}
+				dataMap.put("modelList",modelList);
+			}
+		}else{
+			dataMap = new HashMap<String, Object>();
+			List<Map<String, Object>> modelList = new ArrayList<Map<String, Object>>();
+			Map<String, Object> map1 = new HashMap<String, Object>();
+			map1.put("model_title", "");
+			List<String> lineList = new ArrayList<String>();
+			lineList.add("");
+			map1.put("lineList", lineList);
+			modelList.add(map1);
+			dataMap.put("mainTitle","");
+			dataMap.put("subTitle","");
+			dataMap.put("modelList",modelList);
+		}
+		return dataMap;
+	}
+	
 }

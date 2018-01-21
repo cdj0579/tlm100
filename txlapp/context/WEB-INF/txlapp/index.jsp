@@ -145,10 +145,18 @@
 			<div class="dropdown"> 
 			<a  data-toggle="dropdown" data-hover="dropdown" data-close-others="true"><span class="mui-icon mui-icon-bars"></span></a>
 			<ul class="dropdown-menu dropdown-menu-default">
-                <li>
-                    <a href="${basePath }share/page"><i class="fa fa-share-alt"></i>查看二维码 </a>
+               	<li>
+                    <a href="${basePath }app/setShare"><i class="fa fa-cog"></i>分享内容设置</a>
                 </li>
-               <li class="divider"> </li>
+               	<li class="divider"> </li>
+               	<li>
+                    <a href="${basePath }app/showShare"><i class="fa fa-share-alt"></i>查看分享内容</a>
+                </li>
+               	<li class="divider"> </li>
+                <li>
+                    <a href="${basePath }share/page"><i class="fa  fa-eye"></i>查看二维码 </a>
+                </li>
+               	<li class="divider"></li>
                 <li>
                     <a href="${basePath }app/setPwd"><i class="icon-key"></i> 密码修改 </a>
                 </li>

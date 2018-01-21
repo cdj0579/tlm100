@@ -87,13 +87,18 @@
 				padding-left: 0;
 				padding-right: 0;
 			}
+			.mui-icon {
+				margin: 10px 0 0;
+			}
 		</style>
 	</head>
 	<body>
-		<!--<header class="mui-bar  mui-bar-nav" style="padding-right: 15px;">
-			<h1 class="mui-title">联系人信息录入</h1>
+		<header class="mui-bar  mui-bar-nav" style="padding-right: 15px;">
+			<button type="button" class="mui-icon" >
+				<i class="fa fa-angle-left" aria-hidden="true"></i>
+			</button>
 		</header>
-		--><section style="margin-top: 55px;">
+		<section style="margin-top: 55px;">
 			<form action="#" class="form-horizontal " id="form_remark">
 				<input type="hidden" name="id" value="-1"/>
 				<input type="hidden" name="jgId" value="${jgId }"/>

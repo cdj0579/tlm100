@@ -96,6 +96,19 @@ public class UserService {
 		return null;
 	}
 	
+	public ShiYongZheInfo getShiYongZheByUserNo(String userNo) {
+		Connection conn = null;
+		try {
+			conn = DBFactory.getConn();
+			return getShiYongZheByUserNo(conn, userNo);
+		} catch(Exception e){
+		} finally {
+			DBFactory.close(conn, null, null);
+		}
+		return null;
+	}
+	
+	
 	public void updatePwd(String password, String newPassword, ShiroUser user) throws Exception{
 		Connection conn = null;
 		try {
