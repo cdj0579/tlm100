@@ -254,8 +254,8 @@
 				obj.find(".fa-plus-square").click(function(){
 					var _this =	$(this);
 					var oldInput = _this.siblings(".left-1").find("input");
-					var value = oldInput.val();
-					if(!$.isEmptyObject(value)){
+					var value = $.trim(oldInput.val());
+					if(value != ""){
 						var html = getHangHtml(false);
 						var _html = $(html);
 						oldInput.val("");

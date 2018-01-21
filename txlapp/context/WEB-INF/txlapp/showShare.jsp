@@ -145,8 +145,12 @@
 		<script type="text/javascript" src="${basePath }assets/global/plugins/jquery.min.js"></script>
 		<script type="text/javascript">
 			$(".back").click(function(){
-				//history.back();
-				self.location = document.referrer;
+				<c:if test="${data.title == null }">
+				self.location =  basePath + "app/setShare";
+				</c:if>
+				<c:if test="${data.title != null }">
+				history.back();
+				</c:if>
 			});
 			$("footer .inBtn").click(function(){
 				self.location = basePath + "fx/${data.jgId }/${data.lryId }"
