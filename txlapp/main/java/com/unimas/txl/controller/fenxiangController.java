@@ -36,7 +36,7 @@ public class fenxiangController {
 		try {
 			List<Map<String, Object>> xxList = indexService.get("txl_xuexiao", "CONCAT(id,'-',dq_id)", "xuexiaoming", null, null, null,null);
 	    	request.setAttribute("xxList", xxList);
-	    	List<Map<String, Object>> dqList = indexService.get("xzqh", "code", "name", null, "code", "3305%","like");
+	    	List<Map<String, Object>> dqList = indexService.get("xzqh", "code", "name", null, "pid", "330500","=");
 	    	request.setAttribute("dqList", dqList);
 		} catch (Exception e) {
 			e.printStackTrace();
