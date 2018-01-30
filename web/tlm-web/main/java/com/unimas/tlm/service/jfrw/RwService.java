@@ -193,8 +193,6 @@ public class RwService {
 	 * @throws Exception
 	 */
 	public void clearCswwcRw() throws Exception {
-		//KF_CSWWC
-		System.out.println("############任务开始执行了--------------");
 		Connection conn = null;
 		try {
 			conn = DBFactory.getConn();
