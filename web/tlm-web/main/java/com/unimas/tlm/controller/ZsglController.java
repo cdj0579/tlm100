@@ -29,6 +29,8 @@ import com.unimas.tlm.bean.zs.ZtContentBean;
 import com.unimas.tlm.exception.UIException;
 import com.unimas.tlm.service.MenuManage.PageView;
 import com.unimas.tlm.service.dic.DicService;
+import com.unimas.tlm.service.hyd.aspect.annotations.HydPointcut;
+import com.unimas.tlm.service.hyd.aspect.annotations.HydPointcut.HydRule;
 import com.unimas.tlm.service.jfrw.aspect.RwHandlerFactory;
 import com.unimas.tlm.service.jfrw.aspect.annotations.RwPointcut;
 import com.unimas.tlm.service.zs.ZsService;
@@ -165,6 +167,7 @@ public class ZsglController {
     
     @RequestMapping(value="zsd/add",method = RequestMethod.POST)
     @ResponseBody
+    @HydPointcut(type=HydRule.ADD_ZSD)
     public AjaxDataModal addZsd(HttpServletRequest request) {
     	try {
     		String dqId = PageUtils.getParamAndCheckEmpty(request, "dqId", "地区不能为空！");
@@ -192,6 +195,7 @@ public class ZsglController {
     
     @RequestMapping(value="zsd/update",method = RequestMethod.POST)
     @ResponseBody
+    @HydPointcut(type=HydRule. ADD_ZSD)
     public AjaxDataModal updateZsd(HttpServletRequest request) {
     	try {
     		int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的知识点ID！");
@@ -375,6 +379,7 @@ public class ZsglController {
     @ResponseBody
     @RwPointcut
     @RequiresRoles("teacher")
+    @HydPointcut(type=HydRule.ADD_ZSD_CONTENT)
     public AjaxDataModal addZsdContent(HttpServletRequest request) {
     	try {
 			int pid = PageUtils.getIntParamAndCheckEmpty(request, "pid", "错误的知识点ID！");
@@ -404,6 +409,7 @@ public class ZsglController {
     @RequestMapping(value="zsd/content/update",method = RequestMethod.POST)
     @ResponseBody
     @RequiresRoles("teacher")
+    @HydPointcut(type=HydRule.EDIT_ZSD_CONTENT)
     public AjaxDataModal updateZsdContent(HttpServletRequest request) {
     	try {
     		int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的知识点内容ID！");
@@ -618,6 +624,7 @@ public class ZsglController {
     @ResponseBody
     @RwPointcut
     @RequiresRoles("teacher")
+    @HydPointcut(type=HydRule.ADD_ZT_CONTENT)
     public AjaxDataModal addZtContent(HttpServletRequest request) {
     	try {
 			int pid = PageUtils.getIntParamAndCheckEmpty(request, "pid", "错误的专题ID！");
@@ -647,6 +654,7 @@ public class ZsglController {
     @RequestMapping(value="zt/content/update",method = RequestMethod.POST)
     @ResponseBody
     @RequiresRoles("teacher")
+    @HydPointcut(type=HydRule.EDIT_ZT_CONTENT)
     public AjaxDataModal updateZtContent(HttpServletRequest request) {
     	try {
     		int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的专题内容ID！");
@@ -875,6 +883,7 @@ public class ZsglController {
     @ResponseBody
     @RwPointcut
     @RequiresRoles("teacher")
+    @HydPointcut(type=HydRule.ADD_XT)
     public AjaxDataModal addXt(HttpServletRequest request) {
     	try {
 			int ndId = PageUtils.getIntParamAndCheckEmpty(request, "ndId", "错误的难度ID！");
@@ -915,6 +924,7 @@ public class ZsglController {
     @RequestMapping(value="xt/update",method = RequestMethod.POST)
     @ResponseBody
     @RequiresRoles("teacher")
+    @HydPointcut(type=HydRule.EDIT_XT)
     public AjaxDataModal updateXt(HttpServletRequest request) {
     	try {
     		int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的习题ID！");

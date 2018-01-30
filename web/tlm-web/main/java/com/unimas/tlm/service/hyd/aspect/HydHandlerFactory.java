@@ -1,6 +1,7 @@
 package com.unimas.tlm.service.hyd.aspect;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
 
 import com.unimas.tlm.bean.HydListBean;
 import com.unimas.tlm.service.hyd.HydService;
@@ -21,6 +22,8 @@ public class HydHandlerFactory {
 		HydListBean bean = new HydListBean();
 		bean.setHpc(hpc);
 		bean.setRule(hpc.type().value());
+		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+		bean.setUser(user);
 		local.set(bean);
 	}
 	
@@ -36,18 +39,6 @@ public class HydHandlerFactory {
 			}
 		} catch (Exception e) {
 			logger.error("保存活跃度记录信息失败！", e);
-		}
-	}
-	
-	/**
-	 * 设置活跃度的用户
-	 * @param success
-	 */
-	public static void setHydInfo(ShiroUser user){
-		HydListBean bean = local.get();
-		if(bean != null){
-			bean.setUserNo(user.getUserNo());
-			bean.setUser(user);
 		}
 	}
 

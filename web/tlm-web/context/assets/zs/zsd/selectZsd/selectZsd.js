@@ -54,7 +54,7 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'bootstrap-select', 'QuickSide
 		if(setting.type == "zsd"){
 			columns.push({ title: "名称", width: "20%", data: "name"},
 			        { title: "难度", width: "10%", data: "ndName"},
-			        { title: "课时", width: "10%", data: "ks"},
+			        { title: "课时(分)", width: "10%", data: "ks"},
 			        { title: "描述", width: "60%", data: "desc", render: function(data, type, full){
 			        	return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+data+'">'+data+'</div>';
 			        }});
@@ -91,7 +91,7 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'bootstrap-select', 'QuickSide
 		} else if(setting.type == "zt"){
 			columns.push({ title: "名称", width: "20%", data: "name"},
 			        { title: "难度", width: "10%", data: "ndName"},
-			        { title: "课时", width: "10%", data: "ks"},
+			        { title: "课时(分)", width: "10%", data: "ks"},
 			        { title: "描述", width: "60%", data: "desc", render: function(data, type, full){
 			        	return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+data+'">'+data+'</div>';
 			        }});

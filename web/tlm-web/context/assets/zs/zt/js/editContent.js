@@ -75,7 +75,7 @@ define(["validate.additional", "select3", "ztree.select"], function(){
 		            columns: [
 		                  { title: "名称", data: "name"},
 		                  { title: "难度", data: "ndName"},
-		                  { title: "课时", data: "ks"},
+		                  { title: "课时(分)", data: "ks"},
 		    	          { title: "操作", data: "id", render: function(data, type, full){
 		    	        	  return '<a href="javascript:;" class="btn green selected"><i class="fa fa-check"></i> 选择</a>';
 		    	          }}

@@ -23,6 +23,8 @@ import com.unimas.tlm.bean.ja.JaDirs;
 import com.unimas.tlm.bean.ja.JaTemplete;
 import com.unimas.tlm.exception.UIException;
 import com.unimas.tlm.service.MenuManage.PageView;
+import com.unimas.tlm.service.hyd.aspect.annotations.HydPointcut;
+import com.unimas.tlm.service.hyd.aspect.annotations.HydPointcut.HydRule;
 import com.unimas.tlm.service.jagl.JaglService;
 import com.unimas.web.auth.AuthRealm.ShiroUser;
 import com.unimas.web.utils.PageUtils;
@@ -158,6 +160,7 @@ public class JaglController {
     
     @RequestMapping(value="save",method = RequestMethod.POST)
     @ResponseBody
+    @HydPointcut(type=HydRule. ADD_JA)
     public AjaxDataModal save(HttpServletRequest request) {
     	try {
 			int id = PageUtils.getIntParam(request, "id");
@@ -219,6 +222,7 @@ public class JaglController {
     
     @RequestMapping(value="templetes/save",method = RequestMethod.POST)
     @ResponseBody
+    @HydPointcut(type=HydRule. ADD_JAMB)
     public AjaxDataModal saveTemplete(HttpServletRequest request) {
     	try {
 			int id = PageUtils.getIntParam(request, "id");

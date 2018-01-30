@@ -10,8 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import com.unimas.common.util.StringUtils;
 import com.unimas.jdbc.DBFactory;
+import com.unimas.tlm.bean.HydListBean;
 import com.unimas.tlm.bean.user.StudentInfo;
 import com.unimas.tlm.bean.user.TeacherInfo;
+import com.unimas.tlm.service.hyd.HydService;
+import com.unimas.tlm.service.hyd.aspect.annotations.HydPointcut;
 import com.unimas.tlm.service.user.UserService;
 
 import java.io.Serializable;
@@ -103,6 +106,7 @@ public class AuthRealm extends AuthorizingRealm {
         String username = token.getUsername();
         String password = new String(token.getPassword());
 		Connection conn = null;
+		ShiroUser user = null;
         try {
         	conn = DBFactory.getConn();
         	UserService service = new UserService();
@@ -141,7 +145,7 @@ public class AuthRealm extends AuthorizingRealm {
 					}
 				}
 			}
-			ShiroUser user = new ShiroUser(userId, userNo, username, realName, role);
+			user = new ShiroUser(userId, userNo, username, realName, role);
 			user.setInfo(info);
 			user.setTxImg(txImg);
 			simpleAuthenticationInfo = new SimpleAuthenticationInfo(user, password, getName());
@@ -155,6 +159,12 @@ public class AuthRealm extends AuthorizingRealm {
 			DBFactory.close(conn, null, null);
 		}
 
+        try{
+        	HydListBean bean = new HydListBean();
+        	bean.setRule(HydPointcut.HydRule.LOGIN.value());
+        	bean.setUser(user);
+        	new HydService().saveHydInfo(bean);
+        }catch(Exception e){}
         return simpleAuthenticationInfo;
     }
 

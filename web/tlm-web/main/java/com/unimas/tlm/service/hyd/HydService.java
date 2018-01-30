@@ -15,13 +15,17 @@ public class HydService {
 	public void saveHydInfo(HydListBean bean) throws Exception{
 		Connection conn = null;
 		try {
+			ShiroUser user = bean.getUser();
+			if("admin".equals(user.getRole())){
+				return;
+			}
 			conn = DBFactory.getConn();
 			conn.setAutoCommit(false);
 			JdbcDao<HydListBean> dao = new JdbcDao<HydListBean>();
+			bean.setUserNo(user.getUserNo());
 			dao.save(conn, bean);
 			String rule = bean.getRule();
 			HydRule hydRule = new SystemService().getHydRuleByType(rule);
-			ShiroUser user = bean.getUser();
 			Object info = user.getInfo();
 			if(info != null || hydRule != null){
 				if(info instanceof TeacherInfo){

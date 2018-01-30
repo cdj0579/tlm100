@@ -14,21 +14,37 @@ public @interface HydPointcut {
 		 */
 		LOGIN("login"),
 		/**
-		 * 添加知识点内容
+		 * 领取任务
+		 */
+		LQRW("lqrw"),
+		/**
+		 * 完成任务
+		 */
+		WCRW("wcrw"),
+		/**
+		 * 添加知识点
 		 */
 		ADD_ZSD("add-zsd"),
 		/**
-		 * 编辑知识点内容
+		 * 编辑知识点
 		 */
 		EDIT_ZSD("edit-zsd"),
 		/**
+		 * 添加知识点内容
+		 */
+		ADD_ZSD_CONTENT("add-zsd-content"),
+		/**
+		 * 编辑知识点内容
+		 */
+		EDIT_ZSD_CONTENT("edit-zsd-content"),
+		/**
 		 * 添加专题内容
 		 */
-		ADD_ZT("add-zt"),
+		ADD_ZT_CONTENT("add-zt-content"),
 		/**
 		 * 编辑专题内容
 		 */
-		EDIT_ZT("edit-zt"),
+		EDIT_ZT_CONTENT("edit-zt-content"),
 		/**
 		 * 添加习题
 		 */

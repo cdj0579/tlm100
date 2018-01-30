@@ -98,7 +98,7 @@ define(["validate.additional", "select3", 'RememberBaseInfo'], function(a, b, Re
                   { title: "名称", data: "name"},
                   { title: "章节", data: "zjName"},
                   { title: "难度", data: "ndName"},
-                  { title: "课时", data: "ks"}
+                  { title: "课时(分)", data: "ks"}
     	      ]
 	      } );
 		$tableWrapper = $table.closest('.dataTables_wrapper');

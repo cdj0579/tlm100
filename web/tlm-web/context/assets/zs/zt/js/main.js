@@ -70,7 +70,7 @@ define(['assets/common/config'], function(config) {
 	                	  }
 	                  }},
 	                  { title: "难度", data: "ndName"},
-	                  { title: "课时", data: "ks"},
+	                  { title: "课时(分)", data: "ks"},
 	    	          { title: "操作", data: "id", render: function(data, type, full){
 	    	        	  return '<a href="javascript:;" class="btn blue edit"> 编辑 <i class="fa fa-edit"></i></a>';
 	    	          }}

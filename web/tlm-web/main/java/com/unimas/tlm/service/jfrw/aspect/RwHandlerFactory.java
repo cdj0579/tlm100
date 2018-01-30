@@ -28,7 +28,7 @@ public class RwHandlerFactory {
 	public static void save(){
 		try {
 			UserFulfilRwBean bean = local.get();
-			if(bean != null){
+			if(bean != null && bean.getRwId() > 0){
 				new RwService().wcrw(bean);
 				local.remove();
 			}

@@ -23,6 +23,8 @@ import com.unimas.tlm.bean.jfrw.UserFulfilRwBean;
 import com.unimas.tlm.bean.user.TeacherInfo;
 import com.unimas.tlm.exception.UIException;
 import com.unimas.tlm.service.MenuManage.PageView;
+import com.unimas.tlm.service.hyd.aspect.annotations.HydPointcut;
+import com.unimas.tlm.service.hyd.aspect.annotations.HydPointcut.HydRule;
 import com.unimas.tlm.service.jfrw.RwService;
 import com.unimas.tlm.service.zs.ZsService;
 import com.unimas.web.auth.AuthRealm.ShiroUser;
@@ -135,6 +137,7 @@ public class JfrwController {
      * @return
      */
     @RequestMapping(value="rw/lqrw")
+    @HydPointcut(type=HydRule.LQRW)
     @ResponseBody
     public Object lqrw(HttpServletRequest request) {
     	try {
