@@ -7,6 +7,9 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.unimas.common.util.StringUtils;
 import com.unimas.jdbc.DBFactory;
 import com.unimas.jdbc.handler.ResultSetHandler;
@@ -17,6 +20,7 @@ import com.unimas.tlm.bean.zs.ZsdBean;
 import com.unimas.tlm.bean.zs.ZsdContentBean;
 import com.unimas.tlm.bean.zs.ZsdModified;
 import com.unimas.tlm.bean.zs.ZsdSort;
+import com.unimas.tlm.bean.zs.ZtContentBean;
 import com.unimas.tlm.dao.JdbcDao;
 import com.unimas.tlm.service.user.UserService;
 
@@ -99,6 +103,60 @@ public class ZsdDao extends JdbcDao<ZsdBean> {
 			rs = stmt.executeQuery(sql);
 			List<Map<String,Object>> list = ResultSetHandler.listMap(rs);
 			return list.get(0);
+		} finally {
+			DBFactory.close(conn, stmt, rs);
+		}
+	}
+	
+	public List<Map<String, Object>> getContentByIds(String ids, String type) throws Exception {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		List<Map<String, Object>> results = Lists.newArrayList();
+		try {
+			conn = DBFactory.getConn();
+			if("zsd".equals(type)){
+				String sql = "select * from zsd_content where id in ("+ids+")";
+				stmt = conn.createStatement();
+				rs = stmt.executeQuery(sql);
+				List<ZsdContentBean> list = ResultSetHandler.listBean(rs, ZsdContentBean.class);
+				if(list != null){
+					for(ZsdContentBean b : list){
+						Map<String, Object> map = Maps.newHashMap();
+						map.put("name", b.getName());
+						map.put("content", b.getContent());
+						results.add(map);
+					}
+				}
+			} else if("xt".equals(type)){
+				String sql = "select * from xt_main where id in ("+ids+")";
+				stmt = conn.createStatement();
+				rs = stmt.executeQuery(sql);
+				List<XtBean> list = ResultSetHandler.listBean(rs, XtBean.class);
+				if(list != null){
+					for(XtBean b : list){
+						Map<String, Object> map = Maps.newHashMap();
+						map.put("name", b.getName());
+						map.put("content", b.getContent());
+						map.put("answer", b.getAnswer());
+						results.add(map);
+					}
+				}
+			} else if("zt".equals(type)){
+				String sql = "select * from zt_content where id in ("+ids+")";
+				stmt = conn.createStatement();
+				rs = stmt.executeQuery(sql);
+				List<ZtContentBean> list = ResultSetHandler.listBean(rs, ZtContentBean.class);
+				if(list != null){
+					for(ZtContentBean b : list){
+						Map<String, Object> map = Maps.newHashMap();
+						map.put("name", b.getName());
+						map.put("content", b.getContent());
+						results.add(map);
+					}
+				}
+			}
+			return results;
 		} finally {
 			DBFactory.close(conn, stmt, rs);
 		}
@@ -274,7 +332,7 @@ public class ZsdDao extends JdbcDao<ZsdBean> {
 		}
 	}
 	
-	public List<Map<String, Object>> searchZsdContents(String type, int id, String userNo) throws Exception{
+	public List<Map<String, Object>> searchZsdContents(String type, int id, String userNo, String stype, boolean loadAll) throws Exception{
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -287,26 +345,56 @@ public class ZsdDao extends JdbcDao<ZsdBean> {
 				String ids = ResultSetHandler.toString(rs);
 				DBFactory.close(null, null, rs);
 				sql.append( "select a.id,a.name,a.is_original isOriginal,a.is_share isShare,a.user_no userNo,a.yyfs,a.type type,a.ljjf,if(b.user_no is null, 'no', 'yes') collect from ( ");
-				sql.append(		"select a.id,a.name,a.is_original,a.is_share,a.user_no,a.yyfs,a.ljjf,'zsd' as type from zsd_content a where a.pid in ( ");
-				sql.append(			"select id from zsd_main where zj_id in ("+ids+") ");
-				sql.append(		") and (a.is_share=1 or a.user_no='"+userNo+"') ");
-				sql.append(		"union ");
-				sql.append(		"select a.id,a.name,a.is_original,a.is_share,a.user_no,a.yyfs,a.ljjf,'xt' as type from xt_main a where a.id in ( ");
-				sql.append(			"select xt_id from xt_zsd_ref where zsd_id in ( ");
-				sql.append(				"select id from zsd_main where zj_id in ("+ids+") ");
-				sql.append(			")");
-				sql.append(		") and (a.is_share=1 or a.user_no='"+userNo+"') ");
+				List<String> sqls = Lists.newArrayList();
+				if(stype == null || "zsdContent".equals(stype)){
+					StringBuffer sql1 = new StringBuffer();
+					sql1.append(		"select a.id,a.name,a.is_original,a.is_share,a.user_no,a.yyfs,a.ljjf,'zsd' as type from zsd_content a where a.pid in ( ");
+					sql1.append(			"select id from zsd_main where zj_id in ("+ids+") ");
+					sql1.append(		") and (a.is_share=1 or a.user_no='"+userNo+"') ");
+					sqls.add(sql1.toString());
+				}
+				if(stype == null || "xt".equals(stype)){
+					StringBuffer sql1 = new StringBuffer();
+					sql1.append(		"select a.id,a.name,a.is_original,a.is_share,a.user_no,a.yyfs,a.ljjf,'xt' as type from xt_main a where a.id in ( ");
+					sql1.append(			"select xt_id from xt_zsd_ref where zsd_id in ( ");
+					sql1.append(				"select id from zsd_main where zj_id in ("+ids+") ");
+					sql1.append(			")");
+					sql1.append(		") and (a.is_share=1 or a.user_no='"+userNo+"') ");
+					sqls.add(sql1.toString());
+				}
+				if(sqls.size() > 1){
+					sql.append(Joiner.on(" union ").join(sqls));
+				} else {
+					sql.append(sqls.get(0));
+				}
 				sql.append(	") a ");
 			} else {
 				sql.append(	"select a.id,a.name,a.is_original isOriginal,a.is_share isShare,a.user_no userNo,a.yyfs,a.type type,a.ljjf,if(b.user_no is null, 'no', 'yes') collect from ( ");
-				sql.append(		"select a.id,a.name,a.is_original,a.is_share,a.user_no,a.yyfs,a.ljjf,'zsd' as type from zsd_content a where a.pid="+id+" and (a.is_share=1 or a.user_no='"+userNo+"') ");
-				sql.append(		"union ");
-				sql.append(		"select a.id,a.name,a.is_original,a.is_share,a.user_no,a.yyfs,a.ljjf,'xt' as type from xt_main a where a.id in ( ");
-				sql.append(			"select xt_id from xt_zsd_ref where zsd_id="+id+" ");
-				sql.append(		") and (a.is_share=1 or a.user_no='"+userNo+"') ");
+				List<String> sqls = Lists.newArrayList();
+				if(stype == null || "zsdContent".equals(stype)){
+					StringBuffer sql1 = new StringBuffer();
+					sql1.append(		"select a.id,a.name,a.is_original,a.is_share,a.user_no,a.yyfs,a.ljjf,'zsd' as type from zsd_content a where a.pid="+id+" and (a.is_share=1 or a.user_no='"+userNo+"') ");
+					sqls.add(sql1.toString());
+				}
+				if(stype == null || "xt".equals(stype)){
+					StringBuffer sql1 = new StringBuffer();
+					sql1.append(		"select a.id,a.name,a.is_original,a.is_share,a.user_no,a.yyfs,a.ljjf,'xt' as type from xt_main a where a.id in ( ");
+					sql1.append(			"select xt_id from xt_zsd_ref where zsd_id="+id+" ");
+					sql1.append(		") and (a.is_share=1 or a.user_no='"+userNo+"') ");
+					sqls.add(sql1.toString());
+				}
+				if(sqls.size() > 1){
+					sql.append(Joiner.on(" union ").join(sqls));
+				} else {
+					sql.append(sqls.get(0));
+				}
 				sql.append(	") a ");
 			}
 			sql.append(	"LEFT JOIN user_collections b on (a.id = b.cid and a.type = b.type and b.user_no='"+userNo+"') ");
+			sql.append(	"where 1=1 ");
+			if(!loadAll){ //过滤掉未收藏的内容
+				sql.append(	" and (b.user_no is not null or a.user_no='"+userNo+"') ");
+			}
 			sql.append(	"ORDER BY a.ljjf desc");
 			rs = stmt.executeQuery(sql.toString());
 			return ResultSetHandler.listMap(rs);

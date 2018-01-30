@@ -14,15 +14,13 @@ define(['assets/common/config'], function(config) {
 			'CachesSelectedContents': 'assets/jagl/cachesSelectedContents',
 			'SaveUtils': 'assets/jagl/saveUtils',
 			'changeTemplete': 'assets/jagl/templetes/changeTemplete',
-			'insertZsdContent': 'assets/jagl/insertZsdContent',
-			'insertZtContent': 'assets/jagl/insertZtContent',
-			'insertXt': 'assets/jagl/insertXt'
+			"selectZsd": "assets/zs/zsd/selectZsd/selectZsd"
 		},shim: {
 			
 		}
 	});
 	require(['app','layout','demo']);
-	require(['domready!', 'app', 'SaveUtils', 'ckeditor-ckfinder', 'validate.additional', "ztree.select", "select3"], function (doc, App, SaveUtils){
+	require(['domready!', 'app', 'SaveUtils', 'selectZsd', 'ckeditor-ckfinder', 'validate.additional', "ztree.select", "select3"], function (doc, App, SaveUtils,SelectZsd){
 		var $form = $('.portlet-body form');
 		var isTemplete = $form.find('input[name="isTemplete"]').val();
 		var isSaveTemplete = false;
@@ -118,43 +116,56 @@ define(['assets/common/config'], function(config) {
 			$form.submit();
 		});
 		$('.portlet-body form .btn.input-zsContent').on("click",function(){
-			App.ajaxModal({
-				id: "insertZsdContent",
-				scroll: true,
-				width: "900",
-				required: ["insertZsdContent"],
-				remote: basePath+"assets/jagl/insertZsdContent.html",
-				callback: function(modal, args){
-					args[0].init(modal, function(templeteHtml){
-						editor.insertHtml(templeteHtml);
+			SelectZsd.init({
+				type: "zsdContent",
+				onSelected: function(selected){
+					var ids = [];
+					$.each(selected, function(){
+						ids.push(this.id);
+					});
+					App.getJSON(basePath+"zs/content/byids", {ids: ids.join(","),type: "zsd"}, function(result){
+						var htmls = [];
+						$.each(result.list, function(){
+							htmls.push(this.content);
+						});
+						editor.insertHtml(htmls.join('<br/>'));
 					});
 				}
 			});
 		});
 		$('.portlet-body form .btn.input-ztContent').on("click",function(){
-			App.ajaxModal({
-				id: "insertZtContent",
-				scroll: true,
-				width: "900",
-				required: ["insertZtContent"],
-				remote: basePath+"assets/jagl/insertZtContent.html",
-				callback: function(modal, args){
-					args[0].init(modal, function(templeteHtml){
-						editor.insertHtml(templeteHtml);
+			SelectZsd.init({
+				type: "ztContent",
+				onSelected: function(selected){
+					var ids = [];
+					$.each(selected, function(){
+						ids.push(this.id);
+					});
+					App.getJSON(basePath+"zs/content/byids", {ids: ids.join(","),type: "zt"}, function(result){
+						var htmls = [];
+						$.each(result.list, function(){
+							htmls.push(this.content);
+						});
+						editor.insertHtml(htmls.join('<br/>'));
 					});
 				}
 			});
 		});
 		$('.portlet-body form .btn.input-xt').on("click",function(){
-			App.ajaxModal({
-				id: "insertXt",
-				scroll: true,
-				width: "900",
-				required: ["insertXt"],
-				remote: basePath+"assets/jagl/insertXt.html",
-				callback: function(modal, args){
-					args[0].init(modal, function(templeteHtml){
-						editor.insertHtml(templeteHtml);
+			SelectZsd.init({
+				type: "xt",
+				onSelected: function(selected){
+					var ids = [];
+					$.each(selected, function(){
+						ids.push(this.id);
+					});
+					App.getJSON(basePath+"zs/content/byids", {ids: ids.join(","),type: "xt"}, function(result){
+						var htmls = [];
+						$.each(result.list, function(){
+							htmls.push(this.content);
+							htmls.push(this.answer);
+						});
+						editor.insertHtml(htmls.join('<br/>'));
 					});
 				}
 			});

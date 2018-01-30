@@ -295,6 +295,26 @@ public class ZsglController {
 		}
     }
     
+    @RequestMapping(value="content/byids")
+    @ResponseBody
+    public AjaxDataModal contentByIds(HttpServletRequest request) {
+    	try {
+    		AjaxDataModal json = new AjaxDataModal(true);
+			String ids = PageUtils.getParamAndCheckEmpty(request, "ids", null);
+			String type = PageUtils.getParamAndCheckEmpty(request, "type", null);
+			json.put("list", service.getContentByIds(ids, type));
+			return json;
+		}  catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("迭代知识点失败！", e);
+			}
+			return uiex.toDM();
+		}
+    }
+    
     
     @RequestMapping(value="zsd/caina",method = RequestMethod.POST)
     @ResponseBody
@@ -471,7 +491,12 @@ public class ZsglController {
 				String userNo = PageUtils.getParamAndCheckEmpty(request, "userNo", "userNo不能为空！");
 				list = service.searchZsdContents(type, id, userNo);
 			} else {
-				list = service.searchZsdContents(type, id, user.getUserNo());
+				String stype = PageUtils.getParam(request, "stype", null);
+				if(StringUtils.isNotEmpty(stype)){
+					list = service.searchZsdContents(type, id, user.getUserNo(), stype);
+				} else {
+					list = service.searchZsdContents(type, id, user.getUserNo());
+				}
 				if(list != null){
 					for(Map<String, Object> map : list){
 						String userNo = (String)map.get("userNo");

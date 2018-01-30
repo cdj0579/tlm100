@@ -8,7 +8,7 @@ require.config({
 	},shim: {}
 });
 userNo = "T973643720";
-define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'bootstrap-select', 'QuickSidebar', 'cachesSelectedContents'],function(RememberBaseInfo, ZstxTree, Viewer){
+define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'datatables.bt', 'bootstrap-select', 'QuickSidebar', 'cachesSelectedContents'],function(RememberBaseInfo, ZstxTree, Viewer){
 	var modal = null;
 	var inited = false;
 	var defaultSetting = {
@@ -38,10 +38,12 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'bootstrap-select', 'QuickSide
 	var getTableUrl = function(){
 		if(setting.type == "zsd"){
 			return "zs/zsd/list";
-		} else if(setting.type == "zsdContent"){
+		} else if(setting.type == 'xt' || setting.type == 'zsdContent'){
 			return "zs/zsd/content/search";
 		} else if(setting.type == "zt"){
 			return "zs/zt/list";
+		} else if(setting.type == "ztContent"){
+			return "zs/zt/content/list";
 		} else {
 			return null;
 		}
@@ -58,7 +60,7 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'bootstrap-select', 'QuickSide
 			        { title: "描述", width: "60%", data: "desc", render: function(data, type, full){
 			        	return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+data+'">'+data+'</div>';
 			        }});
-		} else if(setting.type == "zsdContent"){
+		} else if(setting.type == 'xt' || setting.type == 'zsdContent'){
 			columns.push({ title: "内容名称", data: "name", width: "40%"},
 	                  { title: "类型", data: "type", width: "20%", render: function(data, type, full){
 	                	  if(data == 'zsd'){
@@ -95,6 +97,35 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'bootstrap-select', 'QuickSide
 			        { title: "描述", width: "60%", data: "desc", render: function(data, type, full){
 			        	return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+data+'">'+data+'</div>';
 			        }});
+		} else if(setting.type == "ztContent"){
+			columns.push({ title: "所属专题", data: "zt", render: function(data, type, full){
+		          	  return data.name;
+		            }},
+		            { title: "内容简介", data: "name", render: function(data, type, full){
+		          	  var html = data;
+		          	  if(full.collected && (full.collected == "true" || full.collected == true)){
+		          		  html += '&nbsp;&nbsp;&nbsp;&nbsp;<span class="label label-warning">收藏</span>';
+		      	  	  }
+		          	  return html;
+			          }},
+		            { title: "是否原创", data: "isOriginal", render: function(data, type, full){
+		          	  if(data == 1){
+		          		  return "原创";
+		          	  } else {
+		          		  return "非原创";
+		          	  }
+		            }},
+		            { title: "消耗积分数", data: "yyfs"},
+		            { title: "是否隐藏", data: "isShare", render: function(data, type, full){
+		          	  if(data == 1){
+		          		  return "显示";
+		          	  } else {
+		          		  return "隐藏";
+		          	  }
+		            }},
+			          { title: "操作", data: "id", render: function(data, type, full){
+			        	  return '<a href="javascript:void(0);" data-type="zt" class="btn yellow review"><i class="fa fa-search-plus"></i> 预览</a>';
+			          }});
 		} else {
 			return null;
 		}
@@ -133,7 +164,7 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'bootstrap-select', 'QuickSide
 		$tableWrapper.on('click', '.btn.review', function(){
 			var $tr = $(this).closest("tr");
 			var data = dt.api().row($tr).data();
-			Viewer.view(data.id, data.type);
+			Viewer.view(data.id, data.type || $(this).data("type"));
 		});
 		
 		$table.closest('.dataTables_wrapper').on("change", '.group-checkable', function(){
@@ -180,11 +211,11 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'bootstrap-select', 'QuickSide
 			placeholder: "请选择",
 			autoLoad: true,
 			value: baseParams.dqId?baseParams.dqId:null,
-			tableName: "xzqh",
-			idField: "code",
-			nameField: "name",
-			typeField: "pid",
-			typeVelue: "330500"
+					tableName: "xzqh",
+					idField: "code",
+					nameField: "name",
+					typeField: "pid",
+					typeVelue: "330500"
 		}).on("select.select3", setBaseParams);
 		$form.find('select[name="kmId"]').select3({
 			placeholder: "请选择",
@@ -302,21 +333,15 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'bootstrap-select', 'QuickSide
 		if(currentNode){
 			if(currentNode.type == 'zj'){
 				data.zjId = currentNode.zjId;
-			}
-		}
-		/*var id = -99999;
-		var type = 'zsd';
-		if(currentNode){
-			if(currentNode.type == 'zj'){
-				id = currentNode.zjId;
-				type = 'zj';
+				data.id = currentNode.zjId;
+				data.type = 'zj';
 			} else {
-				id = currentNode.id;
+				data.id = currentNode.id;
 			}
 		}
-		data.id = id;
-		data.type = type;
-		data.userNo = userNo;*/
+		if(setting.type == 'xt' || setting.type == 'zsdContent'){
+			data.stype = setting.type;
+		}
 		return data;
 	};
 	
@@ -337,6 +362,21 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'bootstrap-select', 'QuickSide
 		$search = modal.$element.find('.search-inp');
 		$form = modal.$element.find('form');
 		$selectedContents = modal.$element.find('.btn.selected-car');
+		
+		var $title = modal.$element.find('.modal-title');
+		if(setting.title){
+			$title.html(setting.title);
+		} else {
+			if(setting.type == 'zt'){
+				$title.html("选择专题");
+			} else if(setting.type == 'xt'){
+				$title.html("选择习题");
+			} else if(setting.type == 'zsdContent'){
+				$title.html("选择知识内容");
+			} else if(setting.type == 'ztContent'){
+				$title.html("选择专题内容");
+			}
+		}
 		
 		$selectedContents.cachesSelectedContents({
 			contents: setting.selected

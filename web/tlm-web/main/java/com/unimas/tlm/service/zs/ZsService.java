@@ -151,6 +151,10 @@ public class ZsService {
 		return map;
 	}
 	
+	public List<Map<String, Object>> getContentByIds(String ids, String type) throws Exception {
+		return new ZsdDao().getContentByIds(ids, type);
+	}
+	
 	public ZsdContentBean saveZsdContentOnUser(int id, int pid, String name, int isOriginal, int yyfs, int isShare, 
 			String content, ShiroUser user) throws Exception{
 		ZsdContentBean bean = new ZsdContentBean();
@@ -196,7 +200,11 @@ public class ZsService {
 	}
 	
 	public List<Map<String, Object>> searchZsdContents(String type, int id, String userNo) throws Exception{
-		return new ZsdDao().searchZsdContents(type, id, userNo);
+		return new ZsdDao().searchZsdContents(type, id, userNo, null, true);
+	}
+	
+	public List<Map<String, Object>> searchZsdContents(String type, int id, String userNo, String stype) throws Exception{
+		return new ZsdDao().searchZsdContents(type, id, userNo, stype, false);
 	}
 	
 	public List<ZsdBean> getZsdByZj(int bbId, String dqId, int kmId, int njId, int xq, String onUserNo) throws Exception{
