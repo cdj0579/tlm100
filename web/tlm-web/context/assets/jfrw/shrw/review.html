@@ -7,21 +7,21 @@
     	<div class="form-body">
     		<div class="row">
        			<div class="col-md-5">
+		            <div class="form-group">
+		                <label class="control-label col-md-4">完成用户</label>
+		                <div class="col-md-8">
+		                     <input type="text" name="userName" class="form-control" disabled>
+		                </div>
+		            </div>
+    			</div>
+    			<div class="col-md-7">
     				<div class='form-group'>
-		                <label class="control-label col-md-4">任务类型</label>
+		                <label class="control-label col-md-3">任务类型</label>
 		                <div class="col-md-8">
 		                	<input type="text" name="rwTypeName" class="form-control" disabled>
 		                	<input type="hidden" name="id">
 		                	<input type="hidden" name="userNo">
 		                	<input type="hidden" name="rwJf">
-		                </div>
-		            </div>
-    			</div>
-    			<div class="col-md-7">
-    				<div class="form-group">
-		                <label class="control-label col-md-3">完成用户</label>
-		                <div class="col-md-8">
-		                     <input type="text" name="userName" class="form-control" disabled>
 		                </div>
 		            </div>
     			</div>
@@ -36,26 +36,10 @@
 		            </div>
     			</div>
     			<div class="col-md-7">
-    				<div class="form-group hide">
-		           		<label class="control-label col-md-3">习题名称: </label>
+    				<div class="form-group source">
+		           		<label class="control-label col-md-3">所属知识点/专题: </label>
 		           		<div class="col-md-8">
-		         	  		<input type="text" name="xtName" class="form-control" disabled>
-		           		</div>
-		       		</div>
-    			</div>
-    			<div class="col-md-7">
-    				<div class="form-group hide">
-		           		<label class="control-label col-md-3">知识点简介: </label>
-		           		<div class="col-md-8">
-		         	  		<input type="text" name="zsdContentName" class="form-control" disabled>
-		           		</div>
-		       		</div>
-    			</div>
-    			<div class="col-md-7">
-    				<div class="form-group hide">
-		           		<label class="control-label col-md-3">专题简介: </label>
-		           		<div class="col-md-8">
-		         	  		<input type="text" name="ztContentName" class="form-control" disabled>
+		         	  		<input type="text" name="sourceName" class="form-control" disabled>
 		           		</div>
 		       		</div>
     			</div>
@@ -74,9 +58,11 @@
     			</div>
     			<div class="col-md-7">
     				<div class='form-group content'>
-		                <label class="control-label col-md-3"></label>
+		                <label class="control-label col-md-3">完成情况</label>
 		                <div class="col-md-8">
-		                    <div class="cke_textarea_inline"></div>
+		                    <div class="cke_textarea_inline" style="padding: 15px;">
+		                    	<span style="padding-right: 15px;"></span> <a href="javascript:;" class="btn btn-sm yellow review"> 详细 <i class="fa fa-search"></i></a>
+		                    </div>
 		                </div>
 		            </div>
     			</div>
@@ -88,10 +74,10 @@
 		                <div class="col-md-8">
 		                	<div class="radio-list">
                                 <label class="radio-inline">
-                                    <input type="radio" name="status" value="1" checked> 通过 
+                                    <input type="radio" name="status" value="2" checked> 通过 
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" name="status" value="2"> 不通过 
+                                    <input type="radio" name="status" value="3"> 不通过 
                                 </label>
                             </div>
 		                </div>

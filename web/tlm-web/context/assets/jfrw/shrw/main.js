@@ -10,13 +10,14 @@ define(['assets/common/config'], function(config) {
 	require.config(config.require);
 	require.config({
 		paths: {
-			"RememberBaseInfo": "assets/base/cookie/rememberBaseInfo"
+			"RememberBaseInfo": "assets/base/cookie/rememberBaseInfo",
+			"Viewer": "assets/zs/reviewContent"
 		},shim: {
 		}
 	});
 	
 	require(['app','layout','demo']);
-	require(['domready!', 'app', 'datatables.bt', "select3"], function (doc, App){
+	require(['domready!', 'app', 'Viewer', 'datatables.bt', "select3"], function (doc, App, Viewer){
 		var $table = $('table');
 		var $form = $('form');
 		var $search = $('#searchInp');
@@ -50,47 +51,31 @@ define(['assets/common/config'], function(config) {
 				dom: "f<'table-scrollable't><'row'<'col-md-5 col-sm-5'i><'col-md-7 col-sm-7'p>>",
 				drawCallback: function(){ App.handleTooltips();  },
 	            columns: [
-	                  { title: "任务名称", data: "parent", render: function(data, type, full){
-	                      return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+data.desc+'">'+data.name+'</div>';
+	                  { title: "任务名称", data: "rwName", render: function(data, type, full){
+	                      return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+full.rwDesc+'">'+data+'</div>';
 	                  }},
-	                  { title: "任务类型", data: "parent", render: function(data, type, full){
-	                	  if(data.type == 1){
+	                  { title: "任务类型", data: "type", render: function(data, type, full){
+	                	  if(data == 0){
 	                		  return "习题任务";
-	                	  } else if(data.type == 2){
-	                		  return "知识内容任务";
-	                	  } else if(data.type == 3){
-	                		  return "专题内容任务";
+	                	  } else if(data == 1){
+	                		  return "知识点任务";
+	                	  } else if(data == 2){
+	                		  return "专题任务";
 	                	  } else {
 	                		  return "";
 	                	  }
 	                  }},
-	                  { title: "科目", data: "parent", render: function(data, type, full){
-	                	  var v = data.kmId;
-	                	  $.each(kmList, function(){
-	                		  if(v == this.id){
-	                			  v = this.name;
-	                			  return false;
-	                		  }
-	                	  });
-	                	  return v;
+	                  { title: "所属知识点/专题", data: "sourceName", render: function(data, type, full){
+	                      return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+data+'">'+data+'</div>';
 	                  }},
-	                  { title: "年级", data: "parent", render: function(data, type, full){
-	                	  var v = data.njId;
-	                	  $.each(njList, function(){
-	                		  if(v == this.id){
-	                			  v = this.name;
-	                			  return false;
-	                		  }
-	                	  });
-	                	  return v;
+	                  { title: "完成用户", data: "userName", render: function(data, type, full){
+	                	  return data;
 	                  }},
-	                  { title: "完成用户", data: "user", render: function(data, type, full){
-	                	  return data.name;
-	                  }},
+	                  { title: "完成时间", data: "modifyTime"},
 	                  { title: "状态", data: "status", render: function(data, type, full){
-	                	  if(data == 1){
-	    	        		  return '<span class="font-grey-cascade">已获取积分<span class="font-blue">'+full.parent.jf+'</span>。</span>';
-	    	        	  } else if(data == 2){
+	                	  if(data == 2){
+	    	        		  return '<span class="badge badge-success badge-roundless">审核通过</span>';
+	    	        	  } else if(data == 3){
 	    	        		  return '<span class="badge badge-danger badge-roundless">审核不通过</span>';
 	    	        	  } else {
 	    	        		  return '<a href="javascript:;" class="btn blue shrm"> <i class="fa fa-edit"></i> 审核</a>';
@@ -120,37 +105,34 @@ define(['assets/common/config'], function(config) {
 			var $form = modal.$element.find("form");
 			var d = {
 					id: data.id,
-					type: data.parent.type,
-					rwName: data.parent.name,
-					userName: data.user.name,
-					rwDesc: data.parent.desc,
-					userNo: data.user.userNo,
-					rwJf: data.parent.jf
+					type: data.type,
+					rwName: data.rwName,
+					sourceName: data.sourceName,
+					userName: data.userName,
+					rwDesc: data.rwDesc,
+					userNo: data.userNo,
+					contentName: data.contentName
 			};
-			App.getJSON(basePath+'jfrw/rw/content', {contentId: data.contentId, type: d.type}, function(result){
-				var $label = $form.find('.form-group.content label.control-label');
-				var $content = $form.find('.form-group.content .cke_textarea_inline');
-				if(d.type == 1){
-					d.rwTypeName = "习题任务";
-					d.xtName = result.data.name;
-					$label.html("习题内容");
-					$content.html(result.data.content);
-					$form.hideOrShowFormItem(['xtName'], true);
-	    	    } else if(d.type == 2){
-	    	    	d.rwTypeName = "知识内容任务";
-	    	    	d.zsdContentName = result.data.name;
-					$label.html("知识点内容");
-					$content.html(result.data.content);
-	    	    	$form.hideOrShowFormItem(['zsdContentName'], true);
-	    	    } else if(d.type == 3){
-	    	    	d.rwTypeName = "专题内容任务";
-	    	    	d.ztContentName = result.data.name;
-					$label.html("专题内容");
-					$content.html(result.data.content);
-	    	    	$form.hideOrShowFormItem(['ztContentName'], true);
-	    	    }
-				$form.loadForm(d);
+			var $label = $form.find('.form-group.source label.control-label');
+			var $content = $form.find('.form-group.content .cke_textarea_inline span');
+			$content.html(d.contentName);
+			var typeStr = 'zsd';
+			if(d.type == 0){
+				d.rwTypeName = "习题任务";
+				$label.html("所属知识点");
+				typeStr = 'xt';
+    	    } else if(d.type == 1){
+    	    	d.rwTypeName = "知识点任务";
+				$label.html("所属知识点");
+    	    } else if(d.type == 2){
+    	    	d.rwTypeName = "专题任务";
+				$label.html("所属专题");
+				typeStr = 'zt';
+    	    }
+			$form.on('click', '.btn.review', function(){
+				Viewer.view(data.contentId, typeStr);
 			});
+			$form.loadForm(d);
 			
 			$form.validateB({
 	            submitHandler: function () {

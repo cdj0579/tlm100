@@ -77,7 +77,7 @@ define(["validate.additional", "select3", "ztree.select"], function(){
 			callback: function(modal, args){
 				args[0].init(params, modal, selected, function(ids){
 					$display.html(ids.length);
-					$display.data("ids", ids)
+					$display.data("ids", ids);
 				});
 			}
 		});
@@ -94,9 +94,10 @@ define(["validate.additional", "select3", "ztree.select"], function(){
 			var rwData = null;
 			if(rwId > 0){
 				rwData = {
-						kmId: _data.kmId,
-						njId: _data.njId
+						zsdId: _data.zsdId,
+						zsdName: _data.zsdName
 				};
+				_data.zsdIds = [_data.zsdId];
 			}
 			
 			$form.find('select[name="ndId"]').select3({
@@ -182,7 +183,7 @@ define(["validate.additional", "select3", "ztree.select"], function(){
 			});
 			
 			$form.find('.btn.select-zt').on('click', function(){
-				showSelectZt(rwData);
+				showSelectZt();
 			});
 			
 			$form.find('.btn.select-zsd').on('click', function(){

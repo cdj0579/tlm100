@@ -30,6 +30,68 @@ define(['assets/common/config'], function(config) {
 		var initTable1 = function(){
 			dt1 = $table1.dataTable( {
 				ajax: {
+	        		url: basePath+"jfrw/rw/dlqrw",
+					dataSrc: function(result){
+						var success = App.handlerGridLoad(result);
+						if(success == true){
+							return result.data;
+						} else {
+							return [];
+						}
+					}
+	        	},
+				deferRender: false,
+				ordering: false,
+				paging: true,
+				pageLength: 10,
+				lengthChange: false,
+				dom: "<'table-scrollable't><'row'<'col-md-5 col-sm-5'i><'col-md-7 col-sm-7'p>>",
+				drawCallback: function(){ App.handleTooltips();  },
+	            columns: [
+	                  { title: "任务名称", data: "rwName", render: function(data, type, full){
+	                      return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+data+": "+full.rwDesc+'">'+data+'</div>';
+	                  }},
+	                  { title: "任务类型", data: "type", render: function(data, type, full){
+	                	  if(data == 0){
+	                		  return "习题任务";
+	                	  } else if(data == 1){
+	                		  return "知识点任务";
+	                	  } else if(data == 2){
+	                		  return "专题任务";
+	                	  } else {
+	                		  return "";
+	                	  }
+	                  }},
+	                  { title: "所属知识点/专题", data: "sourceName", render: function(data, type, full){
+	                      return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+data+'">'+data+'</div>';
+	                  }},
+	                  { title:"剩余次数", data: "maxNum", render: function(data, type, full){
+	                	  return '<font class="font-yellow">'+full.lqcs+'</font>/<font class="font-green">'+data+'</font>';
+	                  }},
+	    	          { title: "操作", data: "id", render: function(data, type, full){
+	    	        	  return '<a href="javascript:;" class="btn blue lqrw"><i class="fa fa-link"></i> 领取任务</a>';
+	    	          }}
+	    	      ]
+		      } );
+			$table1.closest('.dataTables_wrapper').on("click", ".btn.lqrw", function(){
+				var $tr = $(this).closest("tr");
+				var data = dt1.api().row($tr).data();
+				App.confirm({
+					title: '提示信息',
+					msg: '您确定要领取任务['+data.rwName+']吗？领取后未及时完成将会扣除积分！',
+					okFn: function(){
+						App.getJSON(basePath+'jfrw/rw/lqrw', {id: data.id}, function(){
+							reload();
+						});
+					},
+					cancerFn: function(){}
+				});
+			});
+		};
+		
+		var initTable2 = function(){
+			dt2 = $table2.dataTable( {
+				ajax: {
 	        		url: basePath+"jfrw/rw/dwcrw",
 					dataSrc: function(result){
 						var success = App.handlerGridLoad(result);
@@ -48,39 +110,62 @@ define(['assets/common/config'], function(config) {
 				dom: "<'table-scrollable't><'row'<'col-md-5 col-sm-5'i><'col-md-7 col-sm-7'p>>",
 				drawCallback: function(){ App.handleTooltips();  },
 	            columns: [
-	                  { title: "任务名称", data: "name", render: function(data, type, full){
-	                      return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+full.desc+'">'+data+'</div>';
+	                  { title: "任务名称", data: "rwName", render: function(data, type, full){
+	                      return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+full.rwDesc+'">'+data+'</div>';
 	                  }},
 	                  { title: "任务类型", data: "type", render: function(data, type, full){
-	                	  if(data == 1){
+	                	  if(data == 0){
 	                		  return "习题任务";
+	                	  } else if(data == 1){
+	                		  return "知识点任务";
 	                	  } else if(data == 2){
-	                		  return "知识内容任务";
-	                	  } else if(data == 3){
-	                		  return "专题内容任务";
+	                		  return "专题任务";
 	                	  } else {
 	                		  return "";
 	                	  }
 	                  }},
-	                  { title: "年级", data: "njName"},
-	    	          { title: "操作", data: "id", render: function(data, type, full){
-	    	        	  return '<a href="javascript:;" class="btn blue wcrw"><i class="fa fa-link"></i> 完成任务</a>';
+	                  { title: "领取时间", data: "insertTime"},
+	    	          { title: "状态/操作", data: "status", render: function(data, type, full){
+	    	        	  if(data == 1){
+	    	        		  return '<span class="badge badge-warning badge-roundless">待审核</span>';
+	    	        	  } else if(data == 2){
+	    	        		  //return '<span class="font-grey-cascade">已获取积分<span class="font-blue">'+full.jf+'</span>。</span>';
+	    	        		  return '<span class="badge badge-success badge-roundless">审核通过</span>';
+	    	        	  } else if(data == 3){
+	    	        		  return '<span class="badge badge-danger badge-roundless">审核不通过</span>';
+	    	        	  } else if(data == 4){
+	    	        		  return '<span class="badge badge-danger badge-roundless">超时未完成</span>';
+	    	        	  } else if(data == 5){
+	    	        		  return '<span class="badge badge-default badge-roundless">已放弃</span>';
+	    	        	  } else {
+	    	        		  return '<a href="javascript:;" class="btn blue wcrw"><i class="fa fa-plus"></i> 完成</a>，<a href="javascript:;" class="btn red fqrw"><i class="fa fa-mail-reply"></i> 放弃</a>';
+	    	        	  }
 	    	          }}
 	    	      ]
 		      } );
-			$table1.closest('.dataTables_wrapper').on("click", ".btn.wcrw", function(){
+			$table2.closest('.dataTables_wrapper').on("click", ".btn.fqrw", function(){
 				var $tr = $(this).closest("tr");
-				var data = dt1.api().row($tr).data();
+				var data = dt2.api().row($tr).data();
+				App.confirm({
+					title: '提示信息',
+					msg: '您确定要放弃任务['+data.rwName+']吗？',
+					okFn: function(){
+						App.getJSON(basePath+'jfrw/rw/fqrw', {id: data.id}, function(){
+							reload();
+						});
+					},
+					cancerFn: function(){}
+				});
+			});
+			$table2.closest('.dataTables_wrapper').on("click", ".btn.wcrw", function(){
+				var $tr = $(this).closest("tr");
+				var data = dt2.api().row($tr).data();
 				var type = data.type;
-				data = {
-					rwId: data.id,
-					dqId: data.dqId,
-					kmId: data.kmId,
-					njId: data.njId,
-					xq: data.xq,
-					qzqm: data.qzqm
+				d = {
+					rwId: data.id
 				};
-				if(type == 1){
+				if(type == 0){
+					d.zsdId = data.sourceId;
 					App.ajaxModal({
 						id: "addXtRw",
 						scroll: true,
@@ -88,10 +173,12 @@ define(['assets/common/config'], function(config) {
 						required: ["addXt"],
 						remote: basePath+"assets/zs/xt/edit.html",
 						callback: function(modal, args){
-							args[0].init(data, modal, reload);
+							args[0].init(d, modal, reload);
 						}
 					});
-				} else if(type == 2){
+				} else if(type == 1){
+					d.pid = data.sourceId;
+					d.zsdName = data.sourceName;
 					App.ajaxModal({
 						id: "addZsdRw",
 						scroll: true,
@@ -99,10 +186,12 @@ define(['assets/common/config'], function(config) {
 						required: ["addZsd"],
 						remote: basePath+"assets/zs/zsd/editContent.html",
 						callback: function(modal, args){
-							args[0].init(data, modal, reload);
+							args[0].init(d, modal, reload);
 						}
 					});
-				} else if(type == 3){
+				} else if(type == 2){
+					d.pid = data.sourceId;
+					d.ztName = data.sourceName;
 					App.ajaxModal({
 						id: "addZtRw",
 						scroll: true,
@@ -110,62 +199,13 @@ define(['assets/common/config'], function(config) {
 						required: ["addZt"],
 						remote: basePath+"assets/zs/zt/editContent.html",
 						callback: function(modal, args){
-							args[0].init(data, modal, reload);
+							args[0].init(d, modal, reload);
 						}
 					});
 				} else {
 					App.getAlert().warning("错误的任务类型！", "警告");
 				}
 			});
-		};
-		
-		var initTable2 = function(){
-			dt2 = $table2.dataTable( {
-				ajax: {
-	        		url: basePath+"jfrw/rw/ywcrw",
-					dataSrc: function(result){
-						var success = App.handlerGridLoad(result);
-						if(success == true){
-							return result.data;
-						} else {
-							return [];
-						}
-					}
-	        	},
-				deferRender: false,
-				ordering: false,
-				paging: true,
-				pageLength: 10,
-				lengthChange: false,
-				dom: "<'table-scrollable't><'row'<'col-md-5 col-sm-5'i><'col-md-7 col-sm-7'p>>",
-				drawCallback: function(){ App.handleTooltips();  },
-	            columns: [
-	                  { title: "任务名称", data: "name", render: function(data, type, full){
-	                      return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+full.desc+'">'+data+'</div>';
-	                  }},
-	                  { title: "任务类型", data: "type", render: function(data, type, full){
-	                	  if(data == 1){
-	                		  return "习题任务";
-	                	  } else if(data == 2){
-	                		  return "知识内容任务";
-	                	  } else if(data == 3){
-	                		  return "专题内容任务";
-	                	  } else {
-	                		  return "";
-	                	  }
-	                  }},
-	                  { title: "年级", data: "njName"},
-	    	          { title: "状态", data: "userStatus", render: function(data, type, full){
-	    	        	  if(data == 1){
-	    	        		  return '<span class="font-grey-cascade">已获取积分<span class="font-blue">'+full.jf+'</span>。</span>';
-	    	        	  } else if(data == 2){
-	    	        		  return '<span class="badge badge-danger badge-roundless">审核不通过</span>';
-	    	        	  } else {
-	    	        		  return '<span class="badge badge-warning badge-roundless">待审核</span>';
-	    	        	  }
-	    	          }}
-	    	      ]
-		      } );
 		};
 		
 		var reload = function(type){

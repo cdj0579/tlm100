@@ -4,32 +4,17 @@ import com.unimas.jdbc.handler.annotation.Column;
 import com.unimas.jdbc.handler.annotation.DefaultValue;
 import com.unimas.jdbc.handler.annotation.Table;
 import com.unimas.jdbc.handler.annotation.ToType;
-import com.unimas.jdbc.handler.entry.SelectSqlModal.LeftField;
 import com.unimas.tlm.bean.JdbcBean;
 
 @Table("rw_main")
-public class RwBean extends JdbcBean {
+public class RwMainBean extends JdbcBean {
 	
 	private String name;
 	private String desc;
-	private int type = 0;
 	private int jf = 0;
-	@Column(name="nj_id", nullNumberValue=-1)
-	private int njId = -1;
-	@Column(ignore=true)
-	@LeftField(name="name", joinTable="nj_dic", joinField="id", refField="njId")
-	private String njName;
-	@Column(name="dq_id")
-	private String dqId;
-	@Column(name="km_id", nullNumberValue=-1)
-	private int kmId = -1;
-	@Column(ignore=true)
-	@LeftField(name="name", joinTable="km_dic", joinField="id", refField="kmId")
-	private String kmName;
-	@Column(nullNumberValue=-1)
-	private int xq = -1;
-	@Column(nullNumberValue=-1)
-	private int qzqm = -1;
+	/**
+	 * 任务状态， 0：进行中，1：已完成，2：关闭
+	 */
 	@Column(nullNumberValue=-1)
 	private int status = -1;
 	@Column(name="fulfil_num", nullNumberValue=-1)
@@ -41,8 +26,8 @@ public class RwBean extends JdbcBean {
 	@Column(name="modify_time", toType=ToType.DateToString,insertValue=DefaultValue.Now,updateValue=DefaultValue.Now)
 	private String modifyTime;
 	
-	@Column(ignore=true, name="status2")
-	private int userStatus;
+	@Column(ignore=true, name="rw_count")
+	private long rwCount;
 	
 	public String getName() {
 		return name;
@@ -56,59 +41,11 @@ public class RwBean extends JdbcBean {
 	public void setDesc(String desc) {
 		this.desc = desc;
 	}
-	public int getType() {
-		return type;
-	}
-	public void setType(int type) {
-		this.type = type;
-	}
 	public int getJf() {
 		return jf;
 	}
 	public void setJf(int jf) {
 		this.jf = jf;
-	}
-	public int getNjId() {
-		return njId;
-	}
-	public void setNjId(int njId) {
-		this.njId = njId;
-	}
-	public String getNjName() {
-		return njName;
-	}
-	public void setNjName(String njName) {
-		this.njName = njName;
-	}
-	public String getDqId() {
-		return dqId;
-	}
-	public void setDqId(String dqId) {
-		this.dqId = dqId;
-	}
-	public int getKmId() {
-		return kmId;
-	}
-	public void setKmId(int kmId) {
-		this.kmId = kmId;
-	}
-	public String getKmName() {
-		return kmName;
-	}
-	public void setKmName(String kmName) {
-		this.kmName = kmName;
-	}
-	public int getXq() {
-		return xq;
-	}
-	public void setXq(int xq) {
-		this.xq = xq;
-	}
-	public int getQzqm() {
-		return qzqm;
-	}
-	public void setQzqm(int qzqm) {
-		this.qzqm = qzqm;
 	}
 	public int getStatus() {
 		return status;
@@ -128,6 +65,12 @@ public class RwBean extends JdbcBean {
 	public void setMaxNum(int maxNum) {
 		this.maxNum = maxNum;
 	}
+	public long getRwCount() {
+		return rwCount;
+	}
+	public void setRwCount(long rwCount) {
+		this.rwCount = rwCount;
+	}
 	public String getInsertTime() {
 		return insertTime;
 	}
@@ -139,12 +82,6 @@ public class RwBean extends JdbcBean {
 	}
 	public void setModifyTime(String modifyTime) {
 		this.modifyTime = modifyTime;
-	}
-	public int getUserStatus() {
-		return userStatus;
-	}
-	public void setUserStatus(int userStatus) {
-		this.userStatus = userStatus;
 	}
 
 }

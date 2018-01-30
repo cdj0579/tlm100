@@ -170,7 +170,12 @@ public class ZsService {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<ZsdBean> queryZsd(String dqId, final int kmId, final int njId, final int xq, String userNo) throws Exception{
+	public List<ZsdBean> queryZsd(String dqId, int kmId, int njId, int xq,int zjId, String userNo) throws Exception{
+		return (List<ZsdBean>)new ZsdDao().query(dqId, kmId, njId, xq, zjId, userNo);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ZsdBean> queryZsd(String dqId, int kmId, int njId, int xq, String userNo) throws Exception{
 		return (List<ZsdBean>)new ZsdDao().query(dqId, kmId, njId, xq, userNo);
 	}
 	
@@ -375,7 +380,7 @@ public class ZsService {
 			conn = DBFactory.getConn();
 			String userNo = user.getUserNo();
 			String sql = "select a.id,a.name,a.yyfs,a.user_no,a.is_share,a.is_original,"
-					+ "if(a.user_no='"+userNo+"', 0, 1) as isCollected,c.name as pName "
+					+ "if(a.user_no='"+userNo+"', 0, 1) as collected,c.name as pName "
 							+ "from zt_content as a left join user_collections b on (b.user_no='"+userNo+"' and b.type='zt' and b.cid = a.id) left join zt_main as c on(a.pid = c.id) "
 					+ "where (a.user_no=? or b.id is not null) and c.km_id=? and c.nj_id=? and c.xq=? and c.qzqm=?";
 			stmt = conn.prepareStatement(sql);
@@ -403,7 +408,7 @@ public class ZsService {
 			StringBuffer sql = new StringBuffer();
 			sql.append("select a.id,a.name,a.yyfs,a.user_no,a.is_share,a.is_original,if(a.id in (");
 			sql.append(" select cid from user_collections where user_no = '"+userNo+"' and type='zt'");
-			sql.append("), 1, 0) as isCollected,b.name as userName,c.name as pName ");
+			sql.append("), 1, 0) as collected,b.name as userName,c.name as pName ");
 			sql.append("from zt_content a left join teacher_info b on (a.user_no = b.user_no)");
 			sql.append("left join zt_main c on (a.pid = c.id)");
 			sql.append(" where a.user_no <> '"+userNo+"' and a.is_share=1 and c.km_id="+kmId+" and c.nj_id="+njId+" and c.xq="+xq+" and c.qzqm="+qzqm+" ");
@@ -454,8 +459,8 @@ public class ZsService {
 						list = Lists.newArrayList();
 					}
 					ZtContentBean bean = ResultSetHandler.rsToBean(rs, ZtContentBean.class, md);
-					if(ResultSetHandler.hasColumn("isCollected", md)){
-						int isCollected = rs.getInt("isCollected");
+					if(ResultSetHandler.hasColumn("collected", md)){
+						int isCollected = rs.getInt("collected");
 						bean.setCollected(isCollected==1);
 					}
 					if(ResultSetHandler.hasColumn("userName", md)){

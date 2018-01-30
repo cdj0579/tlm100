@@ -1,24 +1,30 @@
 package com.unimas.tlm.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.SecurityUtils;
+import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.unimas.common.util.json.JSONUtils;
 import com.unimas.tlm.bean.datamodal.AjaxDataModal;
 import com.unimas.tlm.bean.datamodal.DataTableDM;
-import com.unimas.tlm.bean.jfrw.RwBean;
 import com.unimas.tlm.bean.jfrw.RwListBean;
+import com.unimas.tlm.bean.jfrw.RwMainBean;
+import com.unimas.tlm.bean.jfrw.UserFulfilRwBean;
 import com.unimas.tlm.bean.user.TeacherInfo;
 import com.unimas.tlm.exception.UIException;
 import com.unimas.tlm.service.MenuManage.PageView;
 import com.unimas.tlm.service.jfrw.RwService;
+import com.unimas.tlm.service.zs.ZsService;
 import com.unimas.web.auth.AuthRealm.ShiroUser;
 import com.unimas.web.utils.PageUtils;
 
@@ -32,6 +38,8 @@ public class JfrwController {
 	
 	@Autowired
 	RwService rwService;
+	@Autowired
+	ZsService zsService;
 	
 	/**
      * 发布任务页面
@@ -82,29 +90,19 @@ public class JfrwController {
     public Object saveRw(HttpServletRequest request) {
     	try {
     		String name = PageUtils.getParamAndCheckEmpty(request, "name", "任务名称不能为空！");
-    		int type = PageUtils.getIntParamAndCheckEmpty(request, "type", "错误的任务类型！");
     		int jf = PageUtils.getIntParamAndCheckEmpty(request, "jf", "积分不能为空！");
     		int maxNum = PageUtils.getIntParamAndCheckEmpty(request, "maxNum", "请设置任务最大完成次数！");
     		String desc = PageUtils.getParamAndCheckEmpty(request, "desc", "任务描述不能为空！");
-			int kmId = PageUtils.getIntParamAndCheckEmpty(request, "kmId", "错误的科目！");
-			int njId = PageUtils.getIntParamAndCheckEmpty(request, "njId", "错误的年级！");
-			int xq = -1;
-			int qzqm = -1;
-			String dqId = null;
-			if(type == 2){
-				dqId = PageUtils.getParamAndCheckEmpty(request, "dqId", "地区不能为空！");
-				xq = PageUtils.getIntParamAndCheckEmpty(request, "xq", "未选择正确的上下学期！");
-			} else if(type == 3){
-				qzqm = PageUtils.getIntParamAndCheckEmpty(request, "qzqm", "未选择的期中期末！");
-			}
-			rwService.fbrw(name, type, jf, maxNum, desc, kmId, njId, dqId, xq, qzqm);
+    		String _listObj = PageUtils.getParamAndCheckEmpty(request, "list", "任务详细信息不能为空！");
+    		List<Map<String, Object>> list = JSONUtils.getObjFromFile(_listObj, new TypeReference<ArrayList<Map<String, Object>>>() {});
+			rwService.fbrw(name, jf, maxNum, desc, list);
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;
 			if(e instanceof UIException){
 				uiex = (UIException)e;
 			} else {
-				uiex = new UIException("添加任务失败！", e);
+				uiex = new UIException("发布任务失败！", e);
 			}
 			return uiex.toDM();
 		}
@@ -132,15 +130,83 @@ public class JfrwController {
 		}
     }
     
+    /**
+     * 领取任务
+     * @return
+     */
+    @RequestMapping(value="rw/lqrw")
+    @ResponseBody
+    public Object lqrw(HttpServletRequest request) {
+    	try {
+    		int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的任务ID！");
+    		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+			rwService.lqrw(id, user);
+			return new AjaxDataModal(true);
+		}  catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("领取任务失败！", e);
+			}
+			return uiex.toDM();
+		}
+    }
+    
+    /**
+    * 放弃任务
+    * @return
+    */
+   @RequestMapping(value="rw/fqrw")
+   @ResponseBody
+   public Object fqrw(HttpServletRequest request) {
+   	try {
+	   		int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的任务ID！");
+			rwService.fqrw(id);
+			return new AjaxDataModal(true);
+		}  catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("放弃任务失败！", e);
+			}
+			return uiex.toDM();
+		}
+   }
+    
     @RequestMapping(value="rw/list")
 	@ResponseBody
 	public AjaxDataModal getRwList(HttpServletRequest request) {
 		try {
 			DataTableDM dm = new DataTableDM(0, true);
-			int kmId = PageUtils.getIntParam(request, "kmId");
-			int njId = PageUtils.getIntParam(request, "njId");
 			int status = PageUtils.getIntParam(request, "status");
-			List<RwBean> list = rwService.search(status, kmId, njId);
+			List<RwMainBean> list = rwService.search(status);
+			dm.putDatas(list);
+			return dm;
+		} catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("查询任务列表失败！", e);
+			}
+			return uiex.toDM();
+		}
+	}
+    
+    @RequestMapping(value="rw/dlqrw")
+	@ResponseBody
+	public AjaxDataModal dlqrw(HttpServletRequest request) {
+		try {
+			DataTableDM dm = new DataTableDM(0, true);
+			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+			int kmId = 9999;
+			if("teacher".equals(user.getRole()) && user.getInfo() != null){
+				TeacherInfo info = (TeacherInfo)user.getInfo();
+				kmId = info.getKmId();
+			}
+			List<RwListBean> list = rwService.dlqrw(0, kmId, user);
 			dm.putDatas(list);
 			return dm;
 		} catch (Exception e) {
@@ -160,32 +226,7 @@ public class JfrwController {
 		try {
 			DataTableDM dm = new DataTableDM(0, true);
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-			int kmId = 9999;
-			if("teacher".equals(user.getRole()) && user.getInfo() != null){
-				TeacherInfo info = (TeacherInfo)user.getInfo();
-				kmId = info.getKmId();
-			}
-			List<RwBean> list = rwService.dwcrw(1, kmId, user);
-			dm.putDatas(list);
-			return dm;
-		} catch (Exception e) {
-			UIException uiex = null;
-			if(e instanceof UIException){
-				uiex = (UIException)e;
-			} else {
-				uiex = new UIException("查询任务列表失败！", e);
-			}
-			return uiex.toDM();
-		}
-	}
-    
-    @RequestMapping(value="rw/ywcrw")
-	@ResponseBody
-	public AjaxDataModal ywcrw(HttpServletRequest request) {
-		try {
-			DataTableDM dm = new DataTableDM(0, true);
-			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-			List<RwBean> list = rwService.ywcrw(user);
+			List<UserFulfilRwBean> list = rwService.dwcrw(user);
 			dm.putDatas(list);
 			return dm;
 		} catch (Exception e) {
@@ -205,7 +246,7 @@ public class JfrwController {
 		try {
 			DataTableDM dm = new DataTableDM(0, true);
 			int status = PageUtils.getIntParam(request, "status");
-			List<RwListBean> list = rwService.dshrw(status);
+			List<UserFulfilRwBean> list = rwService.dshrw(status);
 			dm.putDatas(list);
 			return dm;
 		} catch (Exception e) {
@@ -227,30 +268,7 @@ public class JfrwController {
 			int id = PageUtils.getIntParamAndCheckEmpty(request, "id", null);
 			int status = PageUtils.getIntParamAndCheckEmpty(request, "status", "审核状态不能为空！");
 			String shyj = PageUtils.getParamAndCheckEmpty(request, "shyj", "审核意见不能为空！");
-			String userNo = PageUtils.getParamAndCheckEmpty(request, "userNo", "审核意见不能为空！");
-			int rwJf = PageUtils.getIntParamAndCheckEmpty(request, "rwJf", null);
-			rwService.shyj(id, status, shyj, rwJf, userNo);
-			return dm;
-		} catch (Exception e) {
-			UIException uiex = null;
-			if(e instanceof UIException){
-				uiex = (UIException)e;
-			} else {
-				uiex = new UIException("查询任务列表失败！", e);
-			}
-			return uiex.toDM();
-		}
-	}
-    
-    @RequestMapping(value="rw/content")
-	@ResponseBody
-	public AjaxDataModal getRwContent(HttpServletRequest request) {
-		try {
-			AjaxDataModal dm = new AjaxDataModal(true);
-			int contentId = PageUtils.getIntParamAndCheckEmpty(request, "contentId", null);
-			int type = PageUtils.getIntParamAndCheckEmpty(request, "type", null);
-			Object o = rwService.getRwContent(contentId, type);
-			dm.put("data", o);
+			rwService.shyj(id, status, shyj);
 			return dm;
 		} catch (Exception e) {
 			UIException uiex = null;

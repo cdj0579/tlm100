@@ -54,7 +54,7 @@
                                     <div class="portlet light ">
                                         <div class="portlet-title">
                                             <div class="caption font-red">
-                                                未完成任务
+                                                未领取任务
                                             </div>
                                             <div class="actions">
                                                 <a class="btn btn-circle green btn-outline btn-sm reload1">
@@ -70,7 +70,7 @@
                                     <div class="portlet light ">
                                         <div class="portlet-title">
                                             <div class="caption font-red">
-                                                已完成任务
+                                                待完成任务
                                             </div>
                                              <div class="actions">
                                                 <a class="btn btn-circle green btn-outline btn-sm reload2">

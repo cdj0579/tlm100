@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.collect.Lists;
+import com.unimas.common.util.StringUtils;
 import com.unimas.common.util.json.JSONUtils;
 import com.unimas.tlm.bean.datamodal.AjaxDataModal;
 import com.unimas.tlm.bean.datamodal.DataTableDM;
@@ -134,6 +135,32 @@ public class ZsglController {
     public String xt(HttpServletRequest request) {
     	PageUtils.setPageView(request, PageView.XTGL);
         return  "zs/xt/index";
+    }
+    
+    @RequestMapping(value="selected/init")
+    @ResponseBody
+    public AjaxDataModal initSelectedWin(HttpServletRequest request) {
+    	try {
+    		AjaxDataModal json = new AjaxDataModal(true);
+    		String type = PageUtils.getParam(request, "type", "zsd");
+    		String ids = PageUtils.getParam(request, "ids", null);
+    		if(StringUtils.isNotEmpty(ids)){
+    			if("zsd".equals(type)){
+    				
+    			}
+    		}
+    		List<Map<String, Object>> list = new DicService().get("bb_dic", "id", "name", null, "type", "zj");
+			json.put("bbList", list);
+			return json;
+		}  catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("加载初始化信息失败！", e);
+			}
+			return uiex.toDM();
+		}
     }
     
     @RequestMapping(value="zsd/add",method = RequestMethod.POST)
@@ -360,7 +387,7 @@ public class ZsglController {
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
 			ZsdContentBean b = service.saveZsdContentOnUser(-1, pid, name, isOriginal, yyfs, isShare, content, user);
 			if(rwId > 0){
-				RwHandlerFactory.setRwInfo(rwId, b.getId(), user);
+				RwHandlerFactory.setRwInfo(rwId, b.getId());
 			}
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
@@ -410,7 +437,8 @@ public class ZsglController {
 			int kmId = PageUtils.getIntParamAndCheckEmpty(request, "kmId", "错误的科目！");
 			int njId = PageUtils.getIntParamAndCheckEmpty(request, "njId", "错误的年级！");
 			int xq = PageUtils.getIntParamAndCheckEmpty(request, "xq", "未选择正确的上下学期！");
-			List<ZsdBean> list = service.queryZsd(dqId, kmId, njId, xq, null);
+			int zjId = PageUtils.getIntParam(request, "zjId");
+			List<ZsdBean> list = service.queryZsd(dqId, kmId, njId, xq, zjId, null);
 			dm.putDatas(list);
 			return dm;
 		} catch (Exception e) {
@@ -461,7 +489,6 @@ public class ZsglController {
     
     @RequestMapping(value="zsd/select")
 	@ResponseBody
-	@RequiresRoles("teacher")
 	public AjaxDataModal selectZsd(HttpServletRequest request) {
 		try {
 			String dqId = PageUtils.getParamAndCheckEmpty(request, "dqId", "地区不能为空！");
@@ -603,7 +630,7 @@ public class ZsglController {
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
 			ZtContentBean b = service.saveZtContentOnUser(-1, pid, name,isOriginal, yyfs, isShare, content, user);
 			if(rwId > 0){
-				RwHandlerFactory.setRwInfo(rwId, b.getId(), user);
+				RwHandlerFactory.setRwInfo(rwId, b.getId());
 			}
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
@@ -871,7 +898,7 @@ public class ZsglController {
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
 			XtBean b = service.saveXt(-1, ndId, ztId, zsdIds, name, typeId,isOriginal, yyfs, isShare, content, answer, user);
 			if(rwId > 0){
-				RwHandlerFactory.setRwInfo(rwId, b.getId(), user);
+				RwHandlerFactory.setRwInfo(rwId, b.getId());
 			}
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {

@@ -380,38 +380,46 @@ public class BaseController {
    		}
    	}
     
+    /**
+     * 用于显示知识体系树
+     * @param request
+     * @return
+     */
     @RequestMapping(value="zj/bb/tree")
    	@ResponseBody
    	public AjaxDataModal getZjTreeListByBbId(HttpServletRequest request) {
    		try {
    			int bbId = PageUtils.getIntParam(request, "bbId");
+   			String loadZsd = PageUtils.getParam(request, "loadZsd", "true");
    			String dqId = PageUtils.getParamAndCheckEmpty(request, "dqId", "地区不能为空！");
        		int kmId = PageUtils.getIntParamAndCheckEmpty(request, "kmId", "错误的学科ID！");
    			int njId = PageUtils.getIntParamAndCheckEmpty(request, "njId", "错误的年级ID！");
    			int xq = PageUtils.getIntParamAndCheckEmpty(request, "xq", "未选择正确的上下学期！");
    			DataTableDM dm = new DataTableDM(0, true);
    			List<ZjBean> list = service.queryZjList(bbId, dqId, kmId, njId, xq);
-   			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-   			if("admin".equals(user.getRole())){
-   				String userNo = PageUtils.getParamAndCheckEmpty(request, "userNo", "userNo不能为空！");
-   				List<ZsdBean> zsdList = new ZsService().getZsdByZj(bbId, dqId, kmId, njId, xq, userNo);
-   				if(list != null){
-   					for(ZsdBean bean : zsdList){
-   						boolean isSelf = userNo.equals(bean.getUserNo());
-   						bean.setSelf(isSelf);
+   			if("true".equals(loadZsd)){
+   				ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+   				if("admin".equals(user.getRole())){
+   					String userNo = PageUtils.getParamAndCheckEmpty(request, "userNo", "userNo不能为空！");
+   					List<ZsdBean> zsdList = new ZsService().getZsdByZj(bbId, dqId, kmId, njId, xq, userNo);
+   					if(list != null){
+   						for(ZsdBean bean : zsdList){
+   							boolean isSelf = userNo.equals(bean.getUserNo());
+   							bean.setSelf(isSelf);
+   						}
    					}
-   				}
-   				dm.put("zsdList", zsdList);
-   			} else {
-   				List<ZsdBean> zsdList = new ZsService().getZsdByZj(bbId, dqId, kmId, njId, xq, user.getUserNo());
-   				if(list != null){
-   					for(ZsdBean bean : zsdList){
-   						String userNo = bean.getUserNo();
-   						boolean isSelf = user.getUserNo().equals(userNo);
-   						bean.setSelf(isSelf);
+   					dm.put("zsdList", zsdList);
+   				} else {
+   					List<ZsdBean> zsdList = new ZsService().getZsdByZj(bbId, dqId, kmId, njId, xq, user.getUserNo());
+   					if(list != null){
+   						for(ZsdBean bean : zsdList){
+   							String userNo = bean.getUserNo();
+   							boolean isSelf = user.getUserNo().equals(userNo);
+   							bean.setSelf(isSelf);
+   						}
    					}
+   					dm.put("zsdList", zsdList);
    				}
-   				dm.put("zsdList", zsdList);
    			}
    			dm.putDatas(list);
    			return dm;

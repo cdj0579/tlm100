@@ -108,6 +108,25 @@ public class BaseHandler {
 		return columns;
 	}
 	
+	/**
+	 * 从表对象类中获取表字段列表
+	 * @param c
+	 * @return
+	 */
+	public static List<Field> getColumnsFromClassContainIgnore(Class<?> c){
+		List<Field> columns = new ArrayList<Field>();
+		List<Field> fields = getFieldsFromClass(c);
+		if(fields != null && fields.size() > 0){
+			for(Field field : fields){
+				if(isChildren(field)){
+					continue;
+				}
+				columns.add(field);
+			}
+		}
+		return columns;
+	}
+	
 	@SuppressWarnings("rawtypes")
 	protected static void setFieldValue(Class clazz, Object t, String columnName, Object value) throws IllegalArgumentException, IllegalAccessException {
 		if(value == null) return;

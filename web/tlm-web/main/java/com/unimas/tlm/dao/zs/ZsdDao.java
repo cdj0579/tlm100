@@ -40,33 +40,50 @@ public class ZsdDao extends JdbcDao<ZsdBean> {
 		}
 	}
 	
-	public List<?> query(String dqId, final int kmId, final int njId, final int xq, String userNo) throws Exception{
+	public List<?> query(String dqId, int kmId, int njId, int xq, int zjId, String userNo) throws Exception{
 		Connection conn = null;
-		PreparedStatement stmt = null;
+		Statement stmt = null;
 		ResultSet rs = null;
 		try {
 			conn = DBFactory.getConn();
+			stmt = conn.createStatement();
 			String sql = "select a.*,b.name njName,c.name kmName,d.name zjName,e.name ndName from zsd_main a "
 					+ "left join nj_dic b on (a.nj_id = b.id) "
 					+ "left join km_dic c on (a.km_id = c.id) "
 					+ "left join zj d on (a.zj_id = d.id) "
 					+ "left join nd_dic e on (a.nd_id = e.id) "
-					+ "where a.dq_id=? and a.km_id=? and a.nj_id=? and a.xq=?";
+					+ "where 1=1 ";
+			if(StringUtils.isNotEmpty(dqId)){
+				sql += " and a.dq_id='" + dqId + "'";
+			}
+			if(kmId > 0){
+				sql += " and a.km_id="+kmId;
+			}
+			if(njId > 0){
+				sql += " and a.nj_id="+njId;
+			}
+			if(xq > 0){
+				sql += " and a.xq="+xq;
+			}
+			if(zjId > 0){
+				rs = stmt.executeQuery("select queryChildrenZjInfo("+zjId+")");
+				String ids = ResultSetHandler.toString(rs);
+				sql += " and a.zj_id in ("+ids+")";
+			}
 			if(StringUtils.isNotEmpty(userNo)){
 				sql += " and (a.level = 0 or a.user_no = '" + userNo + "')";
 			} else {
 				sql += " and (a.level = 0 and a.user_no is null)";
 			}
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1, dqId);
-			stmt.setInt(2, kmId);
-			stmt.setInt(3, njId);
-			stmt.setInt(4, xq);
-			rs = stmt.executeQuery();
+			rs = stmt.executeQuery(sql);
 			return ResultSetHandler.listBean(rs, ZsdBean.class);
 		} finally {
 			DBFactory.close(conn, stmt, rs);
 		}
+	}
+	
+	public List<?> query(String dqId, int kmId, int njId, int xq, String userNo) throws Exception{
+		return query(dqId, kmId, njId, xq, -1, userNo);
 	}
 	
 	public Map<String, Object> getmodifiedInfo(int id) throws Exception {

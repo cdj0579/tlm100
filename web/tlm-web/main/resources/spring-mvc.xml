@@ -12,6 +12,9 @@
         <mvc:annotation-driven/>
         
         <aop:aspectj-autoproxy proxy-target-class="true" />
+        
+        <bean id="initListener" class="com.unimas.web.InitListener"></bean>
+        
         <bean class="com.unimas.tlm.service.jfrw.aspect.RwAspect" />
         
         <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">  

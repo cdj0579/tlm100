@@ -36,7 +36,7 @@ public class JaglService {
 			stmt = conn.createStatement();
 			String userNo = user.getUserNo();
 			StringBuffer sql = new StringBuffer();
-			sql.append("select a.id,a.name,a.modify_time,a.insert_time,if(a.user_no='"+userNo+"', 0, 1) as isCollected ");
+			sql.append("select a.id,a.name,a.modify_time,a.insert_time,if(a.user_no='"+userNo+"', 0, 1) as collected ");
 			sql.append("from ja_list a left join user_collections b on (b.user_no='"+userNo+"' and b.type='ja' and b.cid = a.id) where (a.user_no='"+userNo+"' ");
 			if(dirId > 0){
 				sql.append("and a.dir_id="+dirId+"");
@@ -56,7 +56,7 @@ public class JaglService {
 						ResultSetMetaData md = rs.getMetaData();
 						while (rs.next()){
 							JaBean bean = ResultSetHandler.rsToBean(rs, JaBean.class, md);
-							int isCollected = rs.getInt("isCollected");
+							int isCollected = rs.getInt("collected");
 							bean.setCollected(isCollected==1);
 							list.add(bean);
 						}
@@ -80,7 +80,7 @@ public class JaglService {
 			StringBuffer sql = new StringBuffer();
 			sql.append("select a.id,a.name,a.yyfs,a.user_no,a.modify_time,a.insert_time,if(a.id in (");
 			sql.append(" select cid from user_collections where user_no = '"+userNo+"' and type='ja'");
-			sql.append("), 1, 0) as isCollected,b.name as userName ");
+			sql.append("), 1, 0) as collected,b.name as userName ");
 			sql.append("from ja_list a left join teacher_info b on (a.user_no = b.user_no)  where a.user_no <> '"+userNo+"' and a.is_share=1 ");
 			if(StringUtils.isNotEmpty(name)){
 				sql.append("and a.name like '%"+name+"%' ");
@@ -98,7 +98,7 @@ public class JaglService {
 						ResultSetMetaData md = rs.getMetaData();
 						while (rs.next()){
 							JaBean bean = ResultSetHandler.rsToBean(rs, JaBean.class, md);
-							int isCollected = rs.getInt("isCollected");
+							int isCollected = rs.getInt("collected");
 							bean.setCollected(isCollected==1);
 							bean.setUserName(rs.getString("userName"));
 							list.add(bean);

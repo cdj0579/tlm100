@@ -29,7 +29,7 @@ public class IndexService {
 			   .append("UNION ALL select  'userNum' as name , count(*) as count from  account where user_no!='admin'");
 		}else{
 			sql.append("select  'jfNum' as name , jf as count from teacher_info where  user_no= ? ")
-			   .append("UNION ALL select  'wcrwNum' as name , count(*) as count from rw_list where user_no= ? ")
+			   .append("UNION ALL select  'wcrwNum' as name , count(*) as count from rw_user_list where user_no= ? and status=2 ")
 			   .append("UNION ALL select  'xtNum' as name , count(*) as count from xt_main where user_no= ? ")
 			   .append("UNION ALL select  'jaNum' as name , count(*) as count from ja_list where user_no= ? ");
 		}

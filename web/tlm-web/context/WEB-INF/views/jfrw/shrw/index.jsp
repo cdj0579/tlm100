@@ -23,8 +23,9 @@
 				                    	<i class="fa"></i>
 				                     	<select name="status" class="form-control" validate="{required:true}">
 				                     		<option value="-1" selected="selected">全部</option>
-				                     		<option value="0">待审核</option>
-				                     		<option value="1">已审核</option>
+				                     		<option value="1">待审核</option>
+				                     		<option value="2">审核通过</option>
+				                     		<option value="3">审核不通过</option>
 				                     	</select>
 				                    </div>
 				                </div>

@@ -10,82 +10,115 @@ define(['assets/common/config'], function(config) {
 	require.config(config.require);
 	require.config({
 		paths: {
-			"RememberBaseInfo": "assets/base/cookie/rememberBaseInfo"
+			"RememberBaseInfo": "assets/base/cookie/rememberBaseInfo",
+			"selectZsd": "assets/zs/zsd/selectZsd/selectZsd"
 		},shim: {
 		}
 	});
 	
 	require(['app','layout','demo']);
-	require(['domready!', 'app', 'RememberBaseInfo', "select3", "ztree.select"], function (doc, App, RememberBaseInfo){
+	require(['domready!', 'app', "selectZsd", 'datatables.bt', "select3", "ztree.select"], function (doc, App, SelectZsd){
 		var $form = $('form');
+		var $zsdDisplay = $form.find('span.display-zsd');
+		var $ztDisplay = $form.find('span.display-zt');
 		
-		var o = RememberBaseInfo.load();
-		var _data = $.extend({}, o);
+		var showSelectZsd = function(){
+			var params = {};
+			var zsdes = $zsdDisplay.data("datas") || [];
+			SelectZsd.init({
+				onSelected: function(selected){
+					$zsdDisplay.html(selected.length);
+					$zsdDisplay.data("datas", selected);
+				},
+				selected: zsdes
+			});
+		};
 		
-		$form.find('select[name="type"]').select2({
-    		placeholder: "请选择"
-    	}).on("change", function(){
-    		var type = $(this).val();
-    		$form.hideOrShowFormItem(['dqId', 'xq', 'qzqm'], false);
-    		if("2" == type){
-    			$form.hideOrShowFormItem(['dqId', 'xq'], true);
-    		} else if("3" == type){
-    			$form.hideOrShowFormItem(['qzqm'], true);
-    		}
-    	});
-		$form.find('select[name="dqId"]').select3({
-    		placeholder: "请选择",
-    		autoLoad: true,
-    		value: _data.dqId || null,
-    		tableName: "xzqh",
-    		idField: "code",
-			nameField: "name",
-			typeField: "pid",
-			typeVelue: "330500"
-    	});
-		$form.find('select[name="kmId"]').select3({
-    		placeholder: "请选择",
-    		autoLoad: true,
-    		tableName: "km_dic",
-    		value: _data.kmId || null,
-    		idField: "id",
-			nameField: "name"
-    	});
-		$form.find('select[name="njId"]').select3({
-    		placeholder: "请选择",
-    		autoLoad: true,
-    		tableName: "nj_dic",
-    		value: _data.njId || null,
-    		idField: "id",
-			nameField: "name"
-    	});
-		$form.find('select[name="xq"]').select2({
-    		placeholder: "请选择"
-    	});
-		$form.find('select[name="qzqm"]').select2({
-    		placeholder: "请选择"
-    	});
-		$form.find('select[name="ndId"]').select3({
-    		placeholder: "请选择",
-    		autoLoad: true,
-    		tableName: "nd_dic",
-    		idField: "id",
-			nameField: "name",
-			typeField: "dic_type",
-			typeVelue: "zsdnd"
-    	});
+		var showSelectZt = function(){
+			var params = {};
+			var ztes = $ztDisplay.data("datas") || [];
+			SelectZsd.init({
+				type: "zt",
+				onSelected: function(selected){
+					$ztDisplay.html(selected.length);
+					$ztDisplay.data("datas", selected);
+				},
+				selected: ztes
+			});
+		};
 		
-		RememberBaseInfo.init($form);
-		$form.loadForm(_data);
-		if(_data.xq > 0)$form.find('select[name="xq"]').trigger('change');
-		if(_data.qzqm > 0)$form.find('select[name="qzqm"]').trigger('change');
+		var getTypes = function(){
+			var types = [];
+        	$form.find('input[name="type"]:checked').each(function(){
+        		types.push($(this).val());
+        	});
+        	return types;
+		};
+		
+		var hasType = function(type){
+			var types = getTypes();
+			return $.inArray(type, types) != -1;
+		};
+		
+		$form.find('input[name="type"]').on("click", function(){
+			if(hasType("2")){
+				$("#select_zt_item").removeClass("hide");
+			} else {
+				$("#select_zt_item").addClass("hide");
+			}
+			if(hasType("0") || hasType("1")){
+				$("#select_zsd_item").removeClass("hide");
+			} else {
+				$("#select_zsd_item").addClass("hide");
+			}
+		});
 		
 		$form.validateB({
             submitHandler: function () {
+            	var types = getTypes();
+            	var zsdes = $zsdDisplay.data("datas");
+            	var ztes = $ztDisplay.data("datas");
+            	var list = [];
+            	if(types.length > 0){
+            		for(var i=0;i<types.length;i++){
+            			var type = types[i];
+            			if(type == "2"){
+        					if(ztes && ztes.length > 0){
+        						for(var j=0;j<ztes.length;j++){
+        							list.push({
+        								type: type,
+        								sid: ztes[j].id
+        							});
+        						}
+        					} else {
+        						App.getAlert().error("请先选择要发布任务的专题!", "提示");
+        	            		return;
+        					}
+        				}else if(type == "0" || type == "1"){
+        					if(zsdes && zsdes.length > 0){
+        						for(var j=0;j<zsdes.length;j++){
+        							list.push({
+        								type: type,
+        								sid: zsdes[j].id
+        							});
+        						}
+        					} else {
+        						App.getAlert().error("请先选择要发布任务的知识点!", "提示");
+        	            		return;
+        					}
+        				}
+            		}
+            	} else {
+            		App.getAlert().error("请先选择要发布的任务类型!", "提示");
+            		return;
+            	}
             	$form.ajaxSubmit({
             		url: basePath+"jfrw/fbrw",
             		type: "POST",
             		dataType: "json",
+            		data: {
+            			list: window.JSON.stringify(list)
+            		},
             		success: function(result){
             			App.handlerAjaxJson(result, function(){
             				App.confirm({
@@ -103,6 +136,15 @@ define(['assets/common/config'], function(config) {
             	});
             }
         });
+		
+		$form.find('.btn.select-zt').on('click', function(){
+			showSelectZt();
+		});
+		
+		$form.find('.btn.select-zsd').on('click', function(){
+			showSelectZsd();
+		});
+		
 		$('.btn.save').on("click",function(){
 			$form.submit();
 		});

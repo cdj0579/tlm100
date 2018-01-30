@@ -7,6 +7,7 @@ define(["validate.additional", "select3", 'RememberBaseInfo'], function(a, b, Re
 	var dt = null;
 	var selected = [];
 	var baseParams = {};
+	var rwData = null;
 	
 	var o = null;
 	
@@ -86,7 +87,11 @@ define(["validate.additional", "select3", 'RememberBaseInfo'], function(a, b, Re
 			},
             columns: [
 					{ title: '<input type="checkbox" class="group-checkable"/>', className: "center", width: "8%", data: "id", render: function(data, type, full){
-						return '<input type="checkbox" class="checkboxes" value="'+data+'"/>';
+						if(rwData && rwData.zsdId == data){
+							return '<i class="fa fa-check-circle font-green"></i>';
+						} else {
+							return '<input type="checkbox" class="checkboxes" value="'+data+'"/>';
+						}
 					}, createdCell: function(td){
 					  $(td).attr("align", "center");
 					}},
@@ -135,14 +140,11 @@ define(["validate.additional", "select3", 'RememberBaseInfo'], function(a, b, Re
 			$table = modal.$element.find('table');
 			$search = modal.$element.find('#searchInp');
 			$form = modal.$element.find('form');
+			rwData = _data;
 			dt = null;
 			
 			o = RememberBaseInfo.load();
-			if(_data){
-				$.extend(o, _data);
-				$form.find('select[name="kmId"]').attr("disabled", "disabled");
-				$form.find('select[name="njId"]').attr("disabled", "disabled");
-			}
+			
 			setBaseParams(o);
 		
 			$form.find('select[name="dqId"]').select3({
@@ -178,7 +180,7 @@ define(["validate.additional", "select3", 'RememberBaseInfo'], function(a, b, Re
 			modal.$element.find('.btn.save').on('click', function(){
 				if($.isFunction(onSelected)){
 					var datas = dt.api().rows(['.checked']).data();
-					if(datas.length == 0){
+					if(datas.length == 0 && !rwData){
 						App.getAlert().warning("请至少选择一个知识点！", "提示");
 						return false;
 					}
@@ -186,6 +188,9 @@ define(["validate.additional", "select3", 'RememberBaseInfo'], function(a, b, Re
 					$.each(datas, function(){
 						ids.push(this.id);
 					});
+					if(rwData){
+						ids.push(rwData.zsdId);
+					}
 					onSelected(ids);
 				}
 				modal.hide();

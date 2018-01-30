@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.unimas.tlm.bean.datamodal.AjaxDataModal;
 import com.unimas.tlm.bean.datamodal.DataTableDM;
-import com.unimas.tlm.bean.jfrw.RwBean;
+import com.unimas.tlm.bean.jfrw.RwMainBean;
 import com.unimas.tlm.bean.user.TeacherInfo;
 import com.unimas.tlm.exception.UIException;
 import com.unimas.tlm.service.IndexService;

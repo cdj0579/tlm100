@@ -4,16 +4,14 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.google.common.collect.Maps;
 import com.unimas.jdbc.DBFactory;
-import com.unimas.tlm.bean.jfrw.RwBean;
 import com.unimas.tlm.bean.jfrw.RwListBean;
+import com.unimas.tlm.bean.jfrw.RwMainBean;
+import com.unimas.tlm.bean.jfrw.UserFulfilRwBean;
 import com.unimas.tlm.bean.user.TeacherInfo;
-import com.unimas.tlm.bean.zs.XtBean;
-import com.unimas.tlm.bean.zs.ZsdContentBean;
-import com.unimas.tlm.bean.zs.ZtContentBean;
 import com.unimas.tlm.dao.JdbcDao;
 import com.unimas.tlm.dao.jfrw.RwDao;
 import com.unimas.tlm.service.user.UserService;
@@ -22,50 +20,48 @@ import com.unimas.web.auth.AuthRealm.ShiroUser;
 @Service
 public class RwService {
 	
-	public void fbrw(String name, int type, int jf, int maxNum, String desc, int kmId, int njId, String dqId, int xq, int qzqm) throws Exception{
-		RwBean bean = new RwBean();
-		bean.setId(-1);
-		bean.setName(name);
-		bean.setType(type);
-		bean.setJf(jf);
-		bean.setMaxNum(maxNum);
-		bean.setDesc(desc);
-		bean.setKmId(kmId);
-		bean.setNjId(njId);
-		bean.setDqId(dqId);
-		bean.setXq(xq);
-		bean.setQzqm(qzqm);
-		bean.setStatus(1);
-		new RwDao().save(bean);
-	}
+	private static final Logger logger = Logger.getLogger(RwService.class);
 	
-	public void close(int id) throws Exception{
-		RwBean bean = new RwBean();
-		bean.setId(id);
-		bean.setStatus(3);
-		new RwDao().save(bean);
-	}
+	/**
+	 * 领取任务后未完成的超时时间
+	 */
+	public static final long TIMEOUT_CSWWC = 24*60*60;
+	/**
+	 * 超时未完成时，扣取的积分数
+	 */
+	public static final int KF_CSWWC = 1;
+	/**
+	 * 审核不通过时，扣取的积分数
+	 */
+	public static final int KF_SHBTG = KF_CSWWC;
 	
-	public void wcrw(RwListBean bean) throws Exception{
+	
+	public void fbrw(String name, int jf, int maxNum, String desc, List<Map<String, Object>> list) throws Exception{
 		Connection conn = null;
 		try {
 			conn = DBFactory.getConn();
 			conn.setAutoCommit(false);
-			int rwId = bean.getRwId();
+			RwMainBean bean = new RwMainBean();
+			bean.setName(name);
+			bean.setJf(jf);
+			bean.setMaxNum(maxNum);
+			bean.setStatus(0);
+			bean.setDesc(desc);
 			RwDao dao = new RwDao();
-			RwBean rw = (RwBean)dao.getById(conn, rwId, RwBean.class);
-			int maxNum = rw.getMaxNum();
-			int fulfilNum = rw.getFulfilNum();
-			if(rw.getStatus() == 1 && maxNum > fulfilNum){
-				dao.save(conn, bean);
-				RwBean updateRw = new RwBean();
-				fulfilNum++;
-				updateRw.setId(rwId);
-				updateRw.setFulfilNum(fulfilNum);
-				if(fulfilNum == maxNum){
-					updateRw.setStatus(2);
+			dao.save(conn, bean);
+			if(list != null && list.size() > 0){
+				int rwId = bean.getId();
+				for(Map<String, Object> map : list){
+					int sid = Integer.parseInt(String.valueOf(map.get("sid")));
+					int type = Integer.parseInt(String.valueOf(map.get("type")));
+					RwListBean sBean = new RwListBean();
+					sBean.setPid(rwId);
+					sBean.setSid(sid);
+					sBean.setType(type);
+					dao.save(conn, sBean);
 				}
-				dao.save(conn, updateRw);
+			} else {
+				throw new Exception("保存任务失败，没有任务详细信息！");
 			}
 			conn.commit();
 		} catch(Exception e){
@@ -80,39 +76,104 @@ public class RwService {
 		}
 	}
 	
-	public List<RwBean> search(int status, int kmId, int njId) throws Exception{
-		return new RwDao().search(status, kmId, njId);
+	public void close(int id) throws Exception{
+		RwMainBean bean = new RwMainBean();
+		bean.setId(id);
+		bean.setStatus(2);
+		new RwDao().save(bean);
 	}
 	
-	public List<RwBean> dwcrw(int status, int kmId, ShiroUser user) throws Exception{
-		return new RwDao().dwcrw(status, kmId, user.getUserNo());
+	public void lqrw(int rwId, ShiroUser user) throws Exception{
+		UserFulfilRwBean bean = new UserFulfilRwBean();
+		bean.setRwId(rwId);
+		bean.setUserNo(user.getUserNo());
+		bean.setStatus(0);
+		new RwDao().save(bean);
 	}
 	
-	public List<RwBean> ywcrw(ShiroUser user) throws Exception{
-		return new RwDao().ywcrw(user.getUserNo());
+	public void fqrw(int id) throws Exception{
+		UserFulfilRwBean bean = new UserFulfilRwBean();
+		bean.setId(id);
+		bean.setStatus(5);
+		new RwDao().save(bean);
 	}
 	
-	public List<RwListBean> dshrw(int status) throws Exception{
+	public void wcrw(UserFulfilRwBean bean) throws Exception{
+		Connection conn = null;
+		try {
+			conn = DBFactory.getConn();
+			RwDao dao = new RwDao();
+			bean.setStatus(1);
+			dao.save(conn, bean);
+		} finally {
+			DBFactory.close(conn, null, null);
+		}
+	}
+	
+	public List<RwMainBean> search(int status) throws Exception{
+		return new RwDao().search(status);
+	}
+	
+	public List<RwListBean> dlqrw(int status, int kmId, ShiroUser user) throws Exception{
+		return new RwDao().dlqrw(status, kmId, user.getUserNo());
+	}
+	
+	public List<UserFulfilRwBean> dwcrw(ShiroUser user) throws Exception{
+		return new RwDao().dwcrw(user.getUserNo());
+	}
+	
+	public List<UserFulfilRwBean> dshrw(int status) throws Exception{
 		return new RwDao().dshrw(status);
 	}
 	
-	public void shyj(int id, int status, String shyj, int rwJf, String userNo) throws Exception {
+	public void shyj(int id, int status, String shyj) throws Exception {
 		Connection conn = null;
 		try {
 			conn = DBFactory.getConn();
 			conn.setAutoCommit(false);
 			RwDao dao = new RwDao();
-			RwListBean bean = new RwListBean();
+			UserFulfilRwBean bean = new UserFulfilRwBean();
 			bean.setId(id);
 			bean.setStatus(status);
 			bean.setShyj(shyj);
 			dao.save(conn, bean);
-			if(status == 1){
-				TeacherInfo info = new UserService().getTeacherByUserNo(conn, userNo);
-				TeacherInfo updateInfo = new TeacherInfo();
-				updateInfo.setId(info.getId());
-				updateInfo.setJf(rwJf+info.getJf());
-				new JdbcDao<TeacherInfo>().save(conn, updateInfo);
+			bean = (UserFulfilRwBean) new JdbcDao<UserFulfilRwBean>().getById(conn, id, UserFulfilRwBean.class);
+			String userNo = bean.getUserNo();
+			TeacherInfo info = new UserService().getTeacherByUserNo(conn, userNo);
+			if(status == 2){
+				RwListBean rwListBean = (RwListBean) new JdbcDao<RwListBean>().getById(conn, bean.getRwId(), RwListBean.class);
+				RwMainBean rwBean = dao.getFullBeanById(conn, rwListBean.getPid());
+				
+				//审核通过用户获取积分
+				int rwJf = rwBean.getJf();
+				TeacherInfo updateUser = new TeacherInfo();
+				updateUser.setId(info.getId());
+				updateUser.setJf(rwJf+info.getJf());
+				new JdbcDao<TeacherInfo>().save(conn, updateUser);
+				
+				//任务子表中已经完成次数累加
+				RwListBean updateRwListBean = new RwListBean();
+				updateRwListBean.setId(rwListBean.getId());
+				updateRwListBean.setFulfilNum(1+rwListBean.getFulfilNum());
+				new JdbcDao<RwListBean>().save(conn, updateRwListBean);
+				
+				//任务主表中已经完成次数累加，若完成次数已达上限则修改状态为已完成
+				int fulfilNum = rwListBean.getFulfilNum();
+				fulfilNum++;
+				RwMainBean updateRwBean = new RwMainBean();
+				updateRwBean.setId(rwBean.getId());
+				updateRwBean.setFulfilNum(fulfilNum);
+				if(fulfilNum == (rwBean.getMaxNum()*rwBean.getRwCount())){
+					updateRwBean.setStatus(1);
+				}
+				new JdbcDao<RwMainBean>().save(conn, updateRwBean);
+			} else { //审核不通过时扣分
+				TeacherInfo updateUser = new TeacherInfo();
+				int jf = info.getJf()-KF_SHBTG;
+				if(jf < 0) jf = 0;
+				updateUser.setId(info.getId());
+				updateUser.setJf(jf);
+				new JdbcDao<TeacherInfo>().save(conn, updateUser);
 			}
 			conn.commit();
 		} catch(Exception e){
@@ -127,15 +188,51 @@ public class RwService {
 		}
 	}
 	
-	public Object getRwContent(int contentId, int type) throws Exception {
-		if(type == 1){
-			return new JdbcDao<XtBean>().getById(contentId, XtBean.class);
-		} else if(type == 2){
-			return new JdbcDao<ZsdContentBean>().getById(contentId, ZsdContentBean.class);
-		} else if(type == 3){
-			return new JdbcDao<ZtContentBean>().getById(contentId, ZtContentBean.class);
+	/**
+	 * 清理超时未完成的任务
+	 * @throws Exception
+	 */
+	public void clearCswwcRw() throws Exception {
+		//KF_CSWWC
+		System.out.println("############任务开始执行了--------------");
+		Connection conn = null;
+		try {
+			conn = DBFactory.getConn();
+			RwDao dao = new RwDao();
+			List<UserFulfilRwBean> list = dao.cswwcRw(conn, TIMEOUT_CSWWC);
+			if(list != null && list.size() > 0){
+				logger.info("------检测到【"+list.size()+"】个用户领取的任务已经超时未完成------");
+				conn.setAutoCommit(false);
+				for(UserFulfilRwBean bean : list){
+					UserFulfilRwBean updateBean = new UserFulfilRwBean();
+					updateBean.setId(bean.getId());
+					updateBean.setStatus(4);
+					dao.save(conn, updateBean);
+					
+					String userNo = bean.getUserNo();
+					TeacherInfo info = new UserService().getTeacherByUserNo(conn, userNo);
+					TeacherInfo updateUser = new TeacherInfo();
+					int jf = info.getJf()-KF_CSWWC;
+					if(jf < 0) jf = 0;
+					updateUser.setId(info.getId());
+					updateUser.setJf(jf);
+					new JdbcDao<TeacherInfo>().save(conn, updateUser);
+				}
+				conn.commit();
+				logger.info("------已将【"+list.size()+"】个用户领取的任务设置为超时未完成，且扣取积分------");
+			} else {
+				logger.info("------没有检测到超时未完成的任务------");
+			}
+		} catch(Exception e){
+			if(conn != null){
+				try {
+					conn.rollback();
+				} catch(Exception t){}
+			}
+			throw e;
+		} finally {
+			DBFactory.close(conn, null, null);
 		}
-		return null;
 	}
 
 }

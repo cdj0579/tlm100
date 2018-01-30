@@ -1,0 +1,126 @@
+<style>
+.shoping-car .btn.green:not(.btn-outline) {
+	position: relative;
+}
+.shoping-car .btn.green:not(.btn-outline) span.badge {
+	font-family: "Open Sans",sans-serif;
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    font-weight: 300;
+    padding: 3px 6px;
+    background-color: #f36a5a;
+    color: #fff;
+}
+body.page-quick-sidebar-open .page-quick-sidebar-wrapper {
+	display: block;
+}
+.page-quick-sidebar-wrapper {
+	display: none;
+}
+.page-quick-sidebar-wrapper .page-quick-sidebar .page-quick-sidebar-alerts .page-quick-sidebar-alerts-list .feeds li a {
+    color: #fff;
+    margin-left: 10px;
+}
+</style>
+<div class="modal-header">
+    <h4 class="modal-title" id="title">选择知识点</h4>
+</div>
+<div class="modal-body">
+	<form action="#" class="form-horizontal " id="form_remark">
+    	<div class="form-body">
+    		<div class="row">
+    			<div class="col-md-4">
+    				<select name="bbId" class="form-control input-medium" data-style="blue">
+		          		<option value="-1">默认版本</option>
+		           	</select>
+    			</div>
+    			<div class="col-md-2">
+    				<div class="form-group">
+		           		<label class="control-label col-md-4">地区: </label> 
+		           		<div class="col-md-8">
+		                	<div class="input-icon right">
+		                    	<i class="fa"></i>
+		                     	<select name="dqId" class="form-control" validate="{required:true}"></select>
+		                    </div>
+		                </div>
+		       		</div>
+    			</div>
+    			<div class="col-md-2">
+    				<div class="form-group">
+		           		<label class="control-label col-md-4">科目: </label>
+		           		<div class="col-md-8">
+		                	<div class="input-icon right">
+		                    	<i class="fa"></i>
+		                     	<select name="kmId" class="form-control" validate="{required:true}"></select>
+		                    </div>
+		                </div>
+		       		</div>
+    			</div>
+    			<div class="col-md-2">
+    				<div class="form-group">
+		           		<label class="control-label col-md-4">年级: </label>
+		           		<div class="col-md-8">
+		                	<div class="input-icon right">
+		                    	<i class="fa"></i>
+		                     	<select name="njId" class="form-control" validate="{required:true}"></select>
+		                    </div>
+		                </div>
+		       		</div>
+    			</div>
+    			<div class="col-md-2">
+    				<div class="form-group">
+		           		<label class="control-label col-md-4">学期: </label>
+		           		<div class="col-md-8">
+		                	<div class="input-icon right">
+		                    	<i class="fa"></i>
+		                     	<select name="xq" class="form-control" validate="{required:true}">
+		                     		<option value="1" selected="selected">上学期</option>
+		                     		<option value="2">下学期</option>
+		                     	</select>
+		                    </div>
+		                </div>
+		       		</div>
+    			</div>
+    		</div>
+   		</div>
+	</form>
+    <div class="row">
+		<div class="col-md-4">
+			<div class="scroller" style="height: 450px;" data-always-visible="1" data-rail-visible1="0" data-handle-color="#337AB7">
+	        	<div class="ztree"></div>
+	       	</div>
+		</div>
+	   	<div class="col-md-8">
+	   		<div class="row">
+     			<div class="col-md-6 search-inp"></div>
+           		<div class="col-md-6">
+			   		<div class="pull-right btn-groups shoping-car" style="padding-bottom: 15px;">
+			   			<a class="btn green selected-car quick-sidebar-toggler"><i class="fa fa-opencart"></i> 已选择<span class="badge badge-default">0</span></a>
+			   		</div>
+           		</div>
+         	</div>
+	       	<table class="table table-striped table-hover"></table>
+	   	</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<div class="selected-contents pull-left" style="margin-left: 50px;"></div>
+    <button type="button" class="btn dark btn-outline close-btn">关闭</button>
+    <button type="submit" class="btn green sure">确定</button>
+</div>
+<a href="javascript:;" class="page-quick-sidebar-toggler">
+    <i class="icon-login"></i>
+</a>
+<div class="page-quick-sidebar-wrapper" data-close-on-body-click="false">
+    <div class="page-quick-sidebar">
+        <div class="page-quick-sidebar-alerts">
+            <div class="page-quick-sidebar-alerts-list">
+                <h3 class="list-heading">已选择的内容</h3>
+                <ul class="feeds list-items">
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
