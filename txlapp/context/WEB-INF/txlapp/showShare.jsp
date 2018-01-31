@@ -8,7 +8,11 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
-		<%PageUtils.initBasePath(request); %>
+		<%
+			PageUtils.initBasePath(request); 
+			request.setAttribute("host", request.getLocalAddr());
+			request.setAttribute("port", request.getLocalPort());
+		%>
 	    <script>
 			var basePath = "${basePath }";
 		</script>
@@ -156,8 +160,9 @@
 				self.location = basePath + "fx/${data.jgId }/${data.lryId }"
 			});
 			$(".share").click(function(){
-				//self.location = basePath + "fx/${data.jgId }/${data.lryId }/showShare"
-				console.info("分享");
+				var url = "share:${data.mainTitle }:${data.subTitle }:http://${host }:${port }"+ basePath + "fx/${data.jgId }/${data.lryId }/showShare"
+				//console.info(url);
+				self.location = url
 			});
 			var bar = $(".head-bar");
 			$(window.document).scroll(function(){

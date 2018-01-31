@@ -10,7 +10,11 @@
   	<head> 
 	    <title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<%PageUtils.initBasePath(request); %>
+		<%
+			PageUtils.initBasePath(request); 
+			request.setAttribute("host", request.getLocalAddr());
+			request.setAttribute("port", request.getLocalPort()); 
+		%>
 	    <script>
 			var basePath = "${basePath }";
 		</script>
@@ -98,7 +102,7 @@
 						<img alt="" src="${basePath }share/qrcode">
 					</div>
 					<div  class="share">
-					 <a href="${basePath }share/qrcode/download" class="btn blue download"><i class="fa fa-download"></i> 保存图片 </a>
+					 <a href="downloadImage:http://${host }:${port }${basePath }fx/${jgId }/${lryId }/qrcode" class="btn blue download"><i class="fa fa-download"></i> 保存图片 </a>
 					</div>
 			 	</c:otherwise>
 			 </c:choose>

@@ -75,6 +75,9 @@ public class ServicesController {
     	}else{
     		request.setAttribute("isnull", "0");
     	}
+    	int jgId = user.getJgId();
+    	request.setAttribute("jgId", jgId);
+		request.setAttribute("lryId", lryId);
     	return "app/share";
     }
 }
