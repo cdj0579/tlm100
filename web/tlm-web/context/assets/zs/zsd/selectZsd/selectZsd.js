@@ -44,6 +44,8 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'datatables.bt', 'bootstrap-se
 			return "zs/zt/list";
 		} else if(setting.type == "ztContent"){
 			return "zs/zt/content/list";
+		} else if(setting.type == "user"){
+			return "user/teacher/list";
 		} else {
 			return null;
 		}
@@ -97,6 +99,12 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'datatables.bt', 'bootstrap-se
 			        { title: "描述", width: "60%", data: "desc", render: function(data, type, full){
 			        	return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+data+'">'+data+'</div>';
 			        }});
+		} else if(setting.type == "user"){
+			columns.push({ title: "姓名", width: "120px", data: "name"},
+					{ title: "编号", width: "100px", data: "userNo"},
+			        { title: "学科", width: "80px", data: "kmName"},
+			        { title: "授课地址", data: "skdz"}
+			       	);
 		} else if(setting.type == "ztContent"){
 			columns.push({ title: "所属专题", data: "zt", render: function(data, type, full){
 		          	  return data.name;
@@ -207,43 +215,45 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'datatables.bt', 'bootstrap-se
 				tickIcon: 'fa-check'
 			}).on("change", setBaseParams);
 		}
-		$form.find('select[name="dqId"]').select3({
-			placeholder: "请选择",
-			autoLoad: true,
-			value: baseParams.dqId?baseParams.dqId:null,
-					tableName: "xzqh",
-					idField: "code",
-					nameField: "name",
-					typeField: "pid",
-					typeVelue: "330500"
-		}).on("select.select3", setBaseParams);
-		$form.find('select[name="kmId"]').select3({
-			placeholder: "请选择",
-			autoLoad: true,
-			zdLabelText: "科目",
-			openWin: true,
-			value: baseParams.kmId?baseParams.kmId:null,
-			tableName: "km_dic",
-			idField: "id",
-			nameField: "name"
-		}).on("select.select3", setBaseParams);
-		$form.find('select[name="kmId"]').closest('.form-group').find('.zd-add').addClass('col-md-2');
-		$form.find('select[name="njId"]').select3({
-			placeholder: "请选择",
-			autoLoad: true,
-			value: baseParams.njId?baseParams.njId:null,
-			tableName: "nj_dic",
-			idField: "id",
-			nameField: "name"
-		}).on("select.select3", setBaseParams);
-		$form.find('select[name="xq"]').select2({
-			placeholder: "请选择"
-		}).on("change", setBaseParams);
-		$form.find('select[name="qzqm"]').select2({
-    		placeholder: "请选择"
-    	}).on("change", setBaseParams);
-		
-		RememberBaseInfo.init($form);
+		if(setting.type != 'user'){
+			$form.find('select[name="dqId"]').select3({
+				placeholder: "请选择",
+				autoLoad: true,
+				value: baseParams.dqId?baseParams.dqId:null,
+						tableName: "xzqh",
+						idField: "code",
+						nameField: "name",
+						typeField: "pid",
+						typeVelue: "330500"
+			}).on("select.select3", setBaseParams);
+			$form.find('select[name="kmId"]').select3({
+				placeholder: "请选择",
+				autoLoad: true,
+				zdLabelText: "科目",
+				openWin: true,
+				value: baseParams.kmId?baseParams.kmId:null,
+						tableName: "km_dic",
+						idField: "id",
+						nameField: "name"
+			}).on("select.select3", setBaseParams);
+			$form.find('select[name="kmId"]').closest('.form-group').find('.zd-add').addClass('col-md-2');
+			$form.find('select[name="njId"]').select3({
+				placeholder: "请选择",
+				autoLoad: true,
+				value: baseParams.njId?baseParams.njId:null,
+						tableName: "nj_dic",
+						idField: "id",
+						nameField: "name"
+			}).on("select.select3", setBaseParams);
+			$form.find('select[name="xq"]').select2({
+				placeholder: "请选择"
+			}).on("change", setBaseParams);
+			$form.find('select[name="qzqm"]').select2({
+				placeholder: "请选择"
+			}).on("change", setBaseParams);
+			
+			RememberBaseInfo.init($form);
+		}
 	};
 	
 	var reloadTree = function(obj){
@@ -315,7 +325,9 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'datatables.bt', 'bootstrap-se
 				}
 			}
 		}
-		
+		if(setting.type == "user"){
+			reload();
+		}else 
 		if(baseParams.kmId && baseParams.kmId > 0 
 			&& baseParams.njId && baseParams.njId > 0
 			&& baseParams.dqId
@@ -325,6 +337,7 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'datatables.bt', 'bootstrap-se
 			currentNode = null;
 			reloadTree();
 		}
+		
 		inited = true;
 	};
 	
@@ -353,16 +366,18 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'datatables.bt', 'bootstrap-se
 		}
 	};
 	
-	var initModal = function(){
+	var initModal = function(_modal){
 		inited = false;
 		initTree = false;
 		dt = null;
-		$tree = modal.$element.find('div.ztree');
+		modal = _modal;
 		$table = modal.$element.find('table');
+		$tree = modal.$element.find('div.ztree');
 		$search = modal.$element.find('.search-inp');
 		$form = modal.$element.find('form');
 		$selectedContents = modal.$element.find('.btn.selected-car');
-		
+		console.info($table);
+		console.info($form);
 		var $title = modal.$element.find('.modal-title');
 		if(setting.title){
 			$title.html(setting.title);
@@ -375,6 +390,8 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'datatables.bt', 'bootstrap-se
 				$title.html("选择知识内容");
 			} else if(setting.type == 'ztContent'){
 				$title.html("选择专题内容");
+			} else if(setting.type == 'user'){
+				$title.html("选择发布对象");
 			}
 		}
 		
@@ -427,6 +444,9 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'datatables.bt', 'bootstrap-se
 		} else if(setting.type == "zt" || setting.type == "ztContent"){
 			setting.width = 950;
 			return "assets/zs/zsd/selectZsd/selectZt.html";
+		} else if(setting.type == "user"){
+			setting.width = 950;
+			return "assets/zs/zsd/selectZsd/selectUser.html";	
 		} else {
 			return null;
 		}
@@ -445,8 +465,7 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'datatables.bt', 'bootstrap-se
 					referer: setting.referer,
 					remote: basePath+htmlUrl,
 					callback: function(_modal, args){
-						modal = _modal;
-						initModal();
+						initModal(_modal);
 					}
 				});
     		};

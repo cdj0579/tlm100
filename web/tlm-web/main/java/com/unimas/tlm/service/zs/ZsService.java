@@ -356,8 +356,8 @@ public class ZsService {
 			conn.setAutoCommit(false);
 			
 			for(Map<String, Object> map : list){
-				int id = (int)map.get("id");
-				int jf = (int)map.get("yyfs");
+				int id = (Integer)map.get("id");
+				int jf = (Integer)map.get("yyfs");
 				String userNo = (String)map.get("userNo");
 				UserCollections uc = new UserCollections();
 				uc.setCid(id);

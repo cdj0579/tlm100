@@ -21,6 +21,7 @@ define(['assets/common/config'], function(config) {
 		var $form = $('form');
 		var $zsdDisplay = $form.find('span.display-zsd');
 		var $ztDisplay = $form.find('span.display-zt');
+		var $userDisplay = $form.find('span.display-user');
 		
 		var showSelectZsd = function(){
 			var params = {};
@@ -44,6 +45,19 @@ define(['assets/common/config'], function(config) {
 					$ztDisplay.data("datas", selected);
 				},
 				selected: ztes
+			});
+		};
+		
+		var showSelectUser = function(){
+			var params = {};
+			var useres = $userDisplay.data("datas") || [];
+			SelectZsd.init({
+				type: "user",
+				onSelected: function(selected){
+					$userDisplay.html(selected.length);
+					$userDisplay.data("datas", selected);
+				},
+				selected: useres
 			});
 		};
 		
@@ -78,6 +92,16 @@ define(['assets/common/config'], function(config) {
             	var types = getTypes();
             	var zsdes = $zsdDisplay.data("datas");
             	var ztes = $ztDisplay.data("datas");
+            	var useres = $userDisplay.data("datas");
+            	var userList = [];
+            	if(useres && useres.length > 0){
+            		for(var j=0;j<useres.length;j++){
+            			userList.push(useres[j].userNo);
+					}
+            	}else {
+					App.getAlert().error("请先选择发布任务的发布对象!", "提示");
+            		return;
+				}
             	var list = [];
             	if(types.length > 0){
             		for(var i=0;i<types.length;i++){
@@ -117,6 +141,7 @@ define(['assets/common/config'], function(config) {
             		type: "POST",
             		dataType: "json",
             		data: {
+            			userList: window.JSON.stringify(userList),
             			list: window.JSON.stringify(list)
             		},
             		success: function(result){
@@ -143,6 +168,9 @@ define(['assets/common/config'], function(config) {
 		
 		$form.find('.btn.select-zsd').on('click', function(){
 			showSelectZsd();
+		});
+		$form.find('.btn.select-user').on('click', function(){
+			showSelectUser();
 		});
 		
 		$('.btn.save').on("click",function(){

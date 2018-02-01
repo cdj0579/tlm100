@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.unimas.jdbc.DBFactory;
+import com.unimas.tlm.bean.jfrw.RwFbdxListBean;
 import com.unimas.tlm.bean.jfrw.RwListBean;
 import com.unimas.tlm.bean.jfrw.RwMainBean;
 import com.unimas.tlm.bean.jfrw.UserFulfilRwBean;
@@ -35,8 +36,17 @@ public class RwService {
 	 */
 	public static final int KF_SHBTG = KF_CSWWC;
 	
-	
-	public void fbrw(String name, int jf, int maxNum, String desc, List<Map<String, Object>> list) throws Exception{
+	/**
+	 * 
+	 * @param name
+	 * @param jf
+	 * @param maxNum
+	 * @param desc
+	 * @param list
+	 * @param userList 发布对象的列表
+	 * @throws Exception
+	 */
+	public void fbrw(String name, int jf, int maxNum, String desc, List<Map<String, Object>> list,List<Object> userList) throws Exception{
 		Connection conn = null;
 		try {
 			conn = DBFactory.getConn();
@@ -49,8 +59,8 @@ public class RwService {
 			bean.setDesc(desc);
 			RwDao dao = new RwDao();
 			dao.save(conn, bean);
+			int rwId = bean.getId();
 			if(list != null && list.size() > 0){
-				int rwId = bean.getId();
 				for(Map<String, Object> map : list){
 					int sid = Integer.parseInt(String.valueOf(map.get("sid")));
 					int type = Integer.parseInt(String.valueOf(map.get("type")));
@@ -62,6 +72,14 @@ public class RwService {
 				}
 			} else {
 				throw new Exception("保存任务失败，没有任务详细信息！");
+			}
+			if(userList != null && userList.size() > 0){
+				for(Object userNo: userList){
+					RwFbdxListBean fbdxBean = new RwFbdxListBean();
+					fbdxBean.setRwId(rwId);
+					fbdxBean.setUserNo(String.valueOf(userNo).trim());
+					dao.save(conn, fbdxBean);
+				}
 			}
 			conn.commit();
 		} catch(Exception e){

@@ -111,7 +111,7 @@ define(['assets/common/config'], function(config) {
 				drawCallback: function(){ App.handleTooltips();  },
 	            columns: [
 	                  { title: "任务名称", data: "rwName", render: function(data, type, full){
-	                      return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+full.rwDesc+'">'+data+'</div>';
+	                      return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+data+" : "+full.rwDesc+'">'+data+'</div>';
 	                  }},
 	                  { title: "任务类型", data: "type", render: function(data, type, full){
 	                	  if(data == 0){
@@ -123,6 +123,9 @@ define(['assets/common/config'], function(config) {
 	                	  } else {
 	                		  return "";
 	                	  }
+	                  }},
+	                  { title: "所属知识点/专题", data: "sourceName", render: function(data, type, full){
+	                      return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="'+data+'">'+data+'</div>';
 	                  }},
 	                  { title: "领取时间", data: "insertTime"},
 	    	          { title: "状态/操作", data: "status", render: function(data, type, full){

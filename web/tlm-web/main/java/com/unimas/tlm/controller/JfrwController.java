@@ -97,7 +97,9 @@ public class JfrwController {
     		String desc = PageUtils.getParamAndCheckEmpty(request, "desc", "任务描述不能为空！");
     		String _listObj = PageUtils.getParamAndCheckEmpty(request, "list", "任务详细信息不能为空！");
     		List<Map<String, Object>> list = JSONUtils.getObjFromFile(_listObj, new TypeReference<ArrayList<Map<String, Object>>>() {});
-			rwService.fbrw(name, jf, maxNum, desc, list);
+			String _listUsers = PageUtils.getParamAndCheckEmpty(request, "userList", "任务发布对象不能为空！");
+    		List<Object> userList = JSONUtils.getObjFromFile(_listUsers, new TypeReference<ArrayList<Object>>() {});
+    		rwService.fbrw(name, jf, maxNum, desc, list,userList);
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;

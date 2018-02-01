@@ -65,7 +65,7 @@ public class RwDao extends JdbcDao<RwMainBean> {
 			sql.append("select ");
 			sql.append("	a.*,ifnull(d.count, 0) lqcs,b.max_num,b.name,b.desc,c.km_id,c.type stype,c.name sname ");
 			sql.append("from rw_list a ");
-			sql.append("LEFT JOIN rw_main b on(a.pid = b.id) ");
+			sql.append("LEFT JOIN (	select e.* from rw_main e right JOIN rw_fbdx_list f on f.rw_id = e.id where f.user_no=? ) b on(a.pid = b.id) ");
 			sql.append("LEFT JOIN (");
 			sql.append("	select id,'zsd' type,km_id,name from zsd_main ");
 			sql.append("  UNION ");
@@ -74,17 +74,17 @@ public class RwDao extends JdbcDao<RwMainBean> {
 			sql.append("LEFT JOIN (");
 			sql.append("select count(*) count,rw_id from rw_user_list where status in (0, 1, 2) GROUP BY rw_id ");
 			sql.append(") d on (a.id = d.rw_id)");
-			sql.append("where 1=1 ");
-			sql.append("and b.status=? ");
+			sql.append("where b.status=? ");
 			sql.append("and b.max_num > ifnull(d.count, 0) ");
 			sql.append("and c.km_id=? ");
 			sql.append("and a.id not in(select rw_id from rw_user_list where user_no=? and status in (0, 1)) ");
 			sql.append("order by a.modify_time desc ");
 			conn = DBFactory.getConn();
 			stmt = conn.prepareStatement(sql.toString());
-			stmt.setInt(1, status);
-			stmt.setInt(2, kmId);
-			stmt.setString(3, userNo);
+			stmt.setString(1, userNo);
+			stmt.setInt(2, status);
+			stmt.setInt(3, kmId);
+			stmt.setString(4, userNo);
 			rs = stmt.executeQuery();
 			return ResultSetHandler.listBean(rs, RwListBean.class);
 		} finally {

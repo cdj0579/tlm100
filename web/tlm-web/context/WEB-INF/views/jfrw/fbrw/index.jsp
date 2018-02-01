@@ -4,6 +4,9 @@
 .portlet .actions .form-group {
 	margin-bottom: 0;
 }
+.input-group {
+	border: 1px solid #c2cad9;
+}
 </style>
 <div class="portlet light">
 	<div class="portlet-title">
@@ -71,9 +74,9 @@
 					<div class="col-md-4">
 						<div class="input-icon right">
 							<i class="fa"></i> 
-							<input type="number" name="jf" class="form-control" validate="{required:true, max: 10, min:1}" />
+							<input type="number" name="jf" class="form-control" validate="{required:true, max: 100, min:1}" />
 						</div>
-						<span class="help-block">请设置单次完成任务可以获取的积分值。</span>
+						<span class="help-block">知识点或习题建议10分以下</span>
 					</div>
 				</div>
 				<div class="form-group">
@@ -84,6 +87,18 @@
 							<input type="number" name="maxNum" class="form-control" validate="{required:true, max: 10, min:1}" />
 						</div>
 						<span class="help-block">请设置任务可以被完成的次数。</span>
+					</div>
+				</div>
+				<div class="form-group" id="select_user_item">
+					<label class="control-label col-md-3">发布对象: <span class="required">*</span></label>
+					<div class="col-md-4">
+						<div class="input-icon left input-group">
+		                    <span class="control-label display-user" style="padding: 0 15px;">0</span>
+		                    <span class="input-group-btn" style="vertical-align: inherit;font-size: inherit;">
+			                	<a class="btn blue select-user"> 选择</a>
+			               	</span>
+	                    </div>
+						<span class="help-block">请选择该任务可以由哪些人去完成</span>
 					</div>
 				</div>
 				<div class="form-group">
