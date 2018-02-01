@@ -135,7 +135,7 @@ define(['assets/common/config'], function(config) {
 	    	        		  //return '<span class="font-grey-cascade">已获取积分<span class="font-blue">'+full.jf+'</span>。</span>';
 	    	        		  return '<span class="badge badge-success badge-roundless">审核通过</span>';
 	    	        	  } else if(data == 3){
-	    	        		  return '<span class="badge badge-danger badge-roundless">审核不通过</span>';
+	    	        		  return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="原因：'+full.shyj+'"><span class="badge badge-danger badge-roundless">审核不通过</span></div>';
 	    	        	  } else if(data == 4){
 	    	        		  return '<span class="badge badge-danger badge-roundless">超时未完成</span>';
 	    	        	  } else if(data == 5){
