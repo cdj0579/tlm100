@@ -155,7 +155,8 @@
                 <div class="form-group">
                     <label class="control-label visible-ie8 visible-ie9">确认密码</label>
                     <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="重新输入密码" name="rpassword" /> </div>
-                <div class="form-group margin-top-20 margin-bottom-20">
+               <%-- 
+               <div class="form-group margin-top-20 margin-bottom-20">
                     <label class="check">
                         <input type="checkbox" name="tnc" />
                         <span class="loginblue-font">我同意 </span>
@@ -165,9 +166,10 @@
                     </label>
                     <div id="register_tnc_error"> </div>
                 </div>
+                --%>
                 <div class="form-actions">
                     <button type="button" id="register-back-btn" class="btn btn-default">返回</button>
-                    <button type="submit" id="register-submit-btn" disabled="disabled" class="btn red uppercase pull-right">提交</button>
+                    <button type="submit" id="register-submit-btn" class="btn red uppercase pull-right">提交</button>
                 </div>
             </form>
             <!-- END REGISTRATION FORM -->

@@ -12,14 +12,14 @@ define(['assets/common/config'], function(config) {
 	});
 	
 	require(['domready!', 'app', 'validate.additional'], function (doc, App){
-		$("input[name='tnc']").click(function(){
+		/*$("input[name='tnc']").click(function(){
 			var _this = $(this);
 			if( _this.prop('checked')){
 				$("#register-submit-btn").attr("disabled",false); 
 			}else{
 				$("#register-submit-btn").attr("disabled",true); 
 			}
-		})
+		})*/
 		//console.info($("input[name='tnc']"))
 		var handleLogin = function(){
 			

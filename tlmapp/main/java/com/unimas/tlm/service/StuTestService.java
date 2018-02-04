@@ -20,7 +20,7 @@ import com.unimas.tlm.bean.datamodal.AjaxDataModal;
 
 @Service
 public class StuTestService {
-	private int testNumLimit  = 2;
+	private int testNumLimit  = 20;
 	
 	public Map<String, Object> loadStuTestPage( int njId , int kmId ){
 		Map<String, Object> result = new HashMap<String, Object>();
