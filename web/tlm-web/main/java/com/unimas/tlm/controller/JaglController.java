@@ -168,7 +168,8 @@ public class JaglController {
 			String name = PageUtils.getParamAndCheckEmpty(request, "name", "教案名称不能为空！");
 			String content = PageUtils.getParamAndCheckEmpty(request, "content", "教案内容不能为空！");
 			int isOriginal = PageUtils.getIntParamAndCheckEmpty(request, "isOriginal", "请选择是否原创！");
-			int yyfs = PageUtils.getIntParamAndCheckEmpty(request, "yyfs", "请填写消耗积分数！");
+			//int yyfs = PageUtils.getIntParamAndCheckEmpty(request, "yyfs", "请填写消耗积分数！");
+			int yyfs = 1;
 			int isShare = PageUtils.getIntParamAndCheckEmpty(request, "isShare", "请选择是否隐藏！");
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
 			service.saveJa(id, dirId, name, content, isOriginal, yyfs, isShare, user);
@@ -230,7 +231,8 @@ public class JaglController {
 			String name = PageUtils.getParamAndCheckEmpty(request, "name", "教案名称不能为空！");
 			String content = PageUtils.getParamAndCheckEmpty(request, "content", "教案内容不能为空！");
 			int isOriginal = PageUtils.getIntParamAndCheckEmpty(request, "isOriginal", "请选择是否原创！");
-			int yyfs = PageUtils.getIntParamAndCheckEmpty(request, "yyfs", "请填写消耗积分数！");
+			//int yyfs = PageUtils.getIntParamAndCheckEmpty(request, "yyfs", "请填写消耗积分数！");
+			int yyfs = 1;
 			int isShare = PageUtils.getIntParamAndCheckEmpty(request, "isShare", "请选择是否隐藏！");
 			boolean isAdd = PageUtils.getBooleanParam(request, "isAdd");
 			if(isAdd){

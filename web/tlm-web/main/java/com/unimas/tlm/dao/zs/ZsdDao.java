@@ -11,6 +11,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.unimas.common.util.StringUtils;
+import com.unimas.common.util.json.JSONUtils;
 import com.unimas.jdbc.DBFactory;
 import com.unimas.jdbc.handler.ResultSetHandler;
 import com.unimas.tlm.bean.user.TeacherInfo;
@@ -196,18 +197,134 @@ public class ZsdDao extends JdbcDao<ZsdBean> {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param conut
+	 * @return
+	 */
+	/**
+	 * 计算积分
+	 * @param count     收藏次数
+	 * @param c         增长速率，越小增长越快
+	 * @param d         最大积分
+	 * @return
+	 */
+	public static int loge(int count, double c, double d){
+		return (int)Math.min(Math.ceil(Math.log((count/c+1))), d);
+	}
+	
+	public static int getJf(Connection conn, int id, String type) throws Exception {
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			double c = 0.6;
+			double d = 15;
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("select count(*) from user_collections where cid="+id+" and type='"+type+"'");
+			int count = ResultSetHandler.toInt(rs);
+			Map<String, Double> config = getJfgzConfig(conn);
+			c = config.get("zzsl");
+			d = config.get("jfsx");
+			int jf = loge(count, c, d);
+			System.out.println("ID["+id+"],TYPE["+type+"],收藏次数："+count+",获取积分："+jf);
+			return jf;
+		} finally {
+			DBFactory.close(null, stmt, rs);
+		}
+	}
+	
+	public Map<String, Double> getJfgz() throws Exception{
+		Connection conn = null;
+		try {
+			conn = DBFactory.getConn();
+			return getJfgzConfig(conn);
+		} finally {
+			DBFactory.close(conn, null, null);
+		}
+	}
+	
+	public void saveJfgz(double zzsl, double jfsx) throws Exception{
+		Connection conn = null;
+		Statement stmt = null;
+		try {
+			conn = DBFactory.getConn();
+			conn.setAutoCommit(false);
+			stmt = conn.createStatement();
+			stmt.executeUpdate("update config set value="+jfsx+" where name='collect_max_jf'");
+			stmt.executeUpdate("update config set value="+zzsl+" where name='collect_zzsl'");
+			conn.commit();
+		} catch(Exception e){
+			try {
+				if(conn != null){
+					conn.rollback();
+				}
+			} catch(Exception e1){}
+			throw e;
+		} finally {
+			DBFactory.close(conn, stmt, null);
+		}
+	}
+	
+	public static List<Map<String, Integer>> reviewJfgz(double zzsl, double jfsx) {
+		List<Map<String, Integer>> list = Lists.newArrayList();
+		int count = 0;
+		int jf = -1;
+		while(true){
+			int newjf = loge(count, zzsl, jfsx);
+			if(jf != newjf){
+				jf = newjf;
+				Map<String, Integer> map = Maps.newHashMap();
+				map.put("count", count);
+				map.put("jf", jf);
+				list.add(map);
+			}
+			if(newjf == jfsx){
+				break;
+			}
+			count++;
+		}
+		return list;
+	}
+	
+	public static void main(String[] args) throws Exception {
+		List<Map<String, Integer>> list = reviewJfgz(0.5, 15);
+		System.out.println(JSONUtils.toJson(list, true));
+	}
+	
+	public static Map<String, Double> getJfgzConfig(Connection conn) throws Exception{
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			double c = 0.6;
+			double d = 15;
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("select value from config where name='collect_max_jf'");
+			d = Double.parseDouble(ResultSetHandler.toString(rs));
+			rs = stmt.executeQuery("select value from config where name='collect_zzsl'");
+			c = Double.parseDouble(ResultSetHandler.toString(rs));
+			Map<String, Double> config = Maps.newHashMap();
+			config.put("zzsl", c);
+			config.put("jfsx", d);
+			return config;
+		} finally {
+			DBFactory.close(null, stmt, rs);
+		}
+	}
+	
 	public void collect(int id, String type, String userNo) throws Exception {
 		Connection conn = null;
 		try {
 			conn = DBFactory.getConn();
 			conn.setAutoCommit(false);
-			int yyfs = -1;
+			int yyfs = getJf(conn, id, type);
 			String sUserNo = null;
 			if("zsd".equals(type)){
 				ZsdContentBean g = new ZsdContentBean();
 				g.setId(id);
 				ZsdContentBean b = (ZsdContentBean)getById(conn, g);
-				yyfs = b.getYyfs();
+				if(b.getIsOriginal() == 2){ //非原创
+					yyfs = 1;
+				}
 				sUserNo = b.getUserNo();
 				ZsdContentBean s = new ZsdContentBean();
 				s.setId(b.getId());
@@ -217,14 +334,16 @@ public class ZsdDao extends JdbcDao<ZsdBean> {
 				XtBean g = new XtBean();
 				g.setId(id);
 				XtBean b = (XtBean)getById(conn, g);
-				yyfs = b.getYyfs();
+				if(b.getIsOriginal() == 2){ //非原创
+					yyfs = 1;
+				}
 				sUserNo = b.getUserNo();
 				XtBean s = new XtBean();
 				s.setId(b.getId());
 				s.setLjjf(yyfs+b.getLjjf());
 				save(conn, s);
 			}
-			if(yyfs > 0){
+			if(yyfs >= 0){
 				UserCollections b = new UserCollections();
 				b.setCid(id);
 				b.setType(type);
@@ -332,7 +451,7 @@ public class ZsdDao extends JdbcDao<ZsdBean> {
 		}
 	}
 	
-	public List<Map<String, Object>> searchZsdContents(String type, int id, String userNo, String stype, boolean loadAll) throws Exception{
+	public List<Map<String, Object>> searchZsdContents(String type, int id, String userNo, String stype, boolean loadAll, boolean sortByLastest) throws Exception{
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -395,7 +514,11 @@ public class ZsdDao extends JdbcDao<ZsdBean> {
 			if(!loadAll){ //过滤掉未收藏的内容
 				sql.append(	" and (b.user_no is not null or a.user_no='"+userNo+"') ");
 			}
-			sql.append(	"ORDER BY a.ljjf desc");
+			if(sortByLastest){
+				sql.append(	"ORDER BY a.id desc");
+			} else {
+				sql.append(	"ORDER BY a.ljjf desc");
+			}
 			rs = stmt.executeQuery(sql.toString());
 			return ResultSetHandler.listMap(rs);
 		} finally {

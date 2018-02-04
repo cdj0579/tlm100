@@ -92,7 +92,22 @@
 			</div>
 		   	<div class="col-md-8">
 		   		<div class="row">
-       				<div class="col-md-6" id="searchInp">
+       				<div class="col-md-12">
+       					<div class="row">
+       						<div class="col-md-4" id="searchInp"></div>
+       						<div class="col-md-8">
+		             			<div class="btn-group btn-group-solid content-type">
+		             				<button type="button" class="btn btn-default blue" data-type="all">全部</button>
+		                            <button type="button" class="btn btn-default" data-type="zsdContent">知识内容</button>
+		                            <button type="button" class="btn btn-default" data-type="xt">习题</button>
+		                        </div>
+		                        
+		                        <div class="btn-group btn-group-solid sort-type" style="margin-left: 15px;">
+		                            <button type="button" class="btn btn-default" data-type="lastest"><i class="fa fa-clock-o"></i> 最新 <i class="fa fa-long-arrow-down"></i></button>
+		                            <button type="button" class="btn btn-default red" data-type="hot"><i class="fa fa-fire"></i> 最热 <i class="fa fa-long-arrow-down"></i></button>
+		                        </div>
+       						</div>
+       					</div>
              		</div>
            		</div>
 		       	<table class="table table-striped table-hover"></table>

@@ -51,7 +51,7 @@
 	                    </div>
 	                </div>
 	       		</div>
-	       		<div class="form-group <c:if test='${info.isOriginal!=1}'>hide</c:if>">
+	       		<%-- <div class="form-group <c:if test='${info.isOriginal!=1}'>hide</c:if>">
 					<label class="control-label col-md-2">消耗积分数: <span class="required">*</span></label>
 					<div class="col-md-3">
 						<div class="input-icon right">
@@ -59,7 +59,7 @@
 							<input type="number" name="yyfs" class="form-control" validate="{required:true, max: 10, min:1}" value="${empty info || empty info.yyfs?1:info.yyfs}"/>
 						</div>
 					</div>
-				</div>
+				</div> --%>
 				<div class="form-group">
 	           		<label class="control-label col-md-2">是否隐藏: </label>
 	           		<div class="col-md-3">

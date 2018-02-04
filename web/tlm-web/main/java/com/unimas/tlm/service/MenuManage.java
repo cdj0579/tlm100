@@ -108,6 +108,7 @@ public class MenuManage {
 			children.add(getMenuItem(PageView.MBXX));
 			children.add(getMenuItem(PageView.XKDW));
 			children.add(getMenuItem(PageView.ZJGL));
+			children.add(getMenuItem(PageView.JFGZ));
 			
 			Map<String, Object> yhgl = getMenuItem(PageView.YHGL);
 			children = new ArrayList<Map<String, Object>>();
@@ -197,6 +198,10 @@ public class MenuManage {
 		 * 积分任务
 		 */
 		JFRWGL(null, "积分任务", "icon-bulb", null, Lists.newArrayList(HOME)),
+		/**
+		 * 积分规则配置
+		 */
+		JFGZ("jfgz", "积分规则", null, null, Lists.newArrayList(HOME)),
 		/**
 		 * 任务管理
 		 */

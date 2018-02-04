@@ -102,6 +102,9 @@ define(['assets/common/config'], function(config) {
 			data.id = id;
 			data.type = type;
 			data.userNo = userNo;
+			data.stype = getContentType();
+			data.sort = getSortType();
+			data.loadAll = true;
 			return data;
 		};
 		
@@ -143,6 +146,41 @@ define(['assets/common/config'], function(config) {
     	}).on("change", setBaseParams);
 		
 		RememberBaseInfo.init($form);
+		
+		var $contentTypes = $('.btn-group.content-type .btn');
+		$contentTypes.on("click", function(){
+			var self = this;
+			if(!$(this).hasClass("blue")){
+				$contentTypes.each(function(){
+					if(this != self){
+						$(this).removeClass("blue");
+					} else {
+						$(this).addClass("blue");
+					}
+				});
+			}
+			reload();
+		});
+		var getContentType = function(){
+			return $('.btn-group.content-type .btn.blue').data("type");
+		};
+		var $sortTypes = $('.btn-group.sort-type .btn');
+		$sortTypes.on("click", function(){
+			var self = this;
+			if(!$(this).hasClass("red")){
+				$sortTypes.each(function(){
+					if(this != self){
+						$(this).removeClass("red");
+					} else {
+						$(this).addClass("red");
+					}
+				});
+			}
+			reload();
+		});
+		var getSortType = function(){
+			return $('.btn-group.sort-type .btn.red').data("type");
+		};
 		
 		var initTable = function(){
 			dt = $table.dataTable( {

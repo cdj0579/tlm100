@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.unimas.tlm.bean.datamodal.AjaxDataModal;
 import com.unimas.tlm.bean.datamodal.DataTableDM;
-import com.unimas.tlm.bean.jfrw.RwMainBean;
-import com.unimas.tlm.bean.user.TeacherInfo;
 import com.unimas.tlm.exception.UIException;
 import com.unimas.tlm.service.IndexService;
 import com.unimas.tlm.service.MenuManage.PageView;
@@ -68,6 +66,10 @@ public class SystemController {
      */
     @RequestMapping(value = "/login",method = RequestMethod.GET)
     public String login(HttpServletRequest request) {
+    	if(SecurityUtils.getSubject().isAuthenticated()){
+    		SecurityUtils.getSubject().logout();
+    		//return "redirect:/";
+    	}
     	try {
     		List<Map<String, Object>> l = new DicService().get("km_dic", "id", "name", null, null, null);
 			request.setAttribute("kmList", l);
@@ -86,6 +88,17 @@ public class SystemController {
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public String handleLogin(HttpServletRequest request,@RequestParam(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM) String userName,@RequestParam(FormAuthenticationFilter.DEFAULT_PASSWORD_PARAM) String password) {
     	return "login";
+    }
+    
+    /**
+     * 积分规则页面的请求
+     *
+     * @return
+     */
+    @RequestMapping(value="/jfgz")
+    public String jfgz(Model model,HttpServletRequest request) {
+    	PageUtils.setPageView(request, PageView.JFGZ);
+    	return "jfgz/index";
     }
 	
 	/**

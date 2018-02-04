@@ -7,6 +7,7 @@ define(["validate.additional", "select3", "ztree.select"], function(){
 	var isAdd = true;
 	var addUrl = "base/cstk/add";
 	var updateUrl = "base/cstk/update";
+	var cstEditor = null;
 	var id = -1;
 	
 	var initValidHandler = function(modal){
@@ -29,6 +30,7 @@ define(["validate.additional", "select3", "ztree.select"], function(){
             		App.getAlert().warning("答案是不存在的选项！", "警告");
             		return false;
             	}
+            	$form.find('textarea[name="name"]').val(cstEditor.getData());
             	$form.ajaxSubmit({
             		url: basePath+url,
             		type: "POST",
@@ -172,12 +174,34 @@ define(["validate.additional", "select3", "ztree.select"], function(){
 			
 			if(isAdd){
 				initTable([]);
+				ininCke();
 			} else {
 				App.getJSON(basePath+'base/cstk/'+id, {}, function(result){
 					$form.loadForm(result.data);
 					initTable(result.data.options);
+					ininCke();
 				});
 			}
+			
+			var ininCke = function(){
+				$('#cke_cst_name').remove();
+				require(["ckeditor-ckfinder"], function(){
+					CKEDITOR.on( 'instanceCreated', function( event ) {
+						var editor = event.editor;
+						CKFinder.setupCKEditor(editor, basePath+'assets/global/plugins/ckfinder/');
+						editor.on('focus', function(){
+							$('.cke_button_icon.cke_button__jme_icon').css({
+								backgroundSize: "auto"
+							});
+						});
+						cstEditor = editor;
+					});
+					CKEDITOR.inline('cst_name', {
+						customConfig : basePath+'assets/jagl/inlineConfig.js',
+						extraPlugins: 'jme'
+					});
+				});
+			};
 			
 			initValidHandler(modal);
 			initSaveHandler(modal);

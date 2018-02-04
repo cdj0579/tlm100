@@ -97,7 +97,7 @@ define(['datatables.bt', "select3"], function(a, b, RememberBaseInfo){
 					$.each(datas, function(){
 						rows.push({
 							id: this.id,
-							yyfs: this.yyfs,
+							isOriginal: this.isOriginal,
 							userNo: this.userNo
 						});
 					});

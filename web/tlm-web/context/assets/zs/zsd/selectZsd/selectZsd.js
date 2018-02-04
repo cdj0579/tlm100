@@ -123,7 +123,7 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'datatables.bt', 'bootstrap-se
 		          		  return "非原创";
 		          	  }
 		            }},
-		            { title: "消耗积分数", data: "yyfs"},
+		            /*{ title: "消耗积分数", data: "yyfs"},*/
 		            { title: "是否隐藏", data: "isShare", render: function(data, type, full){
 		          	  if(data == 1){
 		          		  return "显示";
@@ -351,6 +351,8 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'datatables.bt', 'bootstrap-se
 			} else {
 				data.id = currentNode.id;
 			}
+		} else {
+			data.id = -9999;
 		}
 		if(setting.type == 'xt' || setting.type == 'zsdContent'){
 			data.stype = setting.type;

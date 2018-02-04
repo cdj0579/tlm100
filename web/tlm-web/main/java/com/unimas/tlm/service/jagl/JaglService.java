@@ -78,7 +78,7 @@ public class JaglService {
 			stmt = conn.createStatement();
 			String userNo = user.getUserNo();
 			StringBuffer sql = new StringBuffer();
-			sql.append("select a.id,a.name,a.yyfs,a.user_no,a.modify_time,a.insert_time,if(a.id in (");
+			sql.append("select a.id,a.name,a.yyfs,a.user_no,a.is_original,a.modify_time,a.insert_time,if(a.id in (");
 			sql.append(" select cid from user_collections where user_no = '"+userNo+"' and type='ja'");
 			sql.append("), 1, 0) as collected,b.name as userName ");
 			sql.append("from ja_list a left join teacher_info b on (a.user_no = b.user_no)  where a.user_no <> '"+userNo+"' and a.is_share=1 ");
@@ -120,16 +120,21 @@ public class JaglService {
 			conn = DBFactory.getConn();
 			conn.setAutoCommit(false);
 			
+			String type = "ja";
 			for(Map<String, Object> map : list){
 				int id = (Integer)map.get("id");
-				int jf = (Integer)map.get("yyfs");
+				int isOriginal = (Integer)map.get("isOriginal");
+				int jf = ZsdDao.getJf(conn, id, type);
+				if(isOriginal == 2){ //非原创
+					jf = 1;
+				}
 				String userNo = (String)map.get("userNo");
 				UserCollections uc = new UserCollections();
 				uc.setBzId1(dirId);
 				uc.setCid(id);
 				uc.setUserNo(user.getUserNo());
 				uc.setJf(jf);
-				uc.setType("ja");
+				uc.setType(type);
 				ZsdDao.collect(conn, uc, userNo);
 			}
 			

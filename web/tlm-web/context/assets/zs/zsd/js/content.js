@@ -63,7 +63,7 @@ define(['assets/common/config'], function(config) {
 	                		  return "非原创";
 	                	  }
 	                  }},
-	                  { title: "消耗积分数", data: "yyfs"},
+	                  /*{ title: "消耗积分数", data: "yyfs"},*/
 	                  { title: "是否隐藏", data: "isShare", render: function(data, type, full){
 	                	  if(data == 1){
 	                		  return "显示";

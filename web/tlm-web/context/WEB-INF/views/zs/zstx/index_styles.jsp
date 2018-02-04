@@ -14,4 +14,7 @@
 	border: 1px solid gray;
 	-webkit-appearance: textfield;
 }
+.dataTables_filter .input-small {
+	width: 95px!important;
+}
 </style>

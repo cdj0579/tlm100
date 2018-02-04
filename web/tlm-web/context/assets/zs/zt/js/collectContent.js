@@ -102,7 +102,7 @@ define(['datatables.bt', "select3", 'Viewer'], function(a, b, Viewer){
 					$.each(datas, function(){
 						rows.push({
 							id: this.id,
-							yyfs: this.yyfs,
+							isOriginal: this.isOriginal,
 							userNo: this.userNo
 						});
 					});

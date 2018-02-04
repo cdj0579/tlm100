@@ -120,6 +120,9 @@ define(['assets/common/config'], function(config) {
 			}
 			data.id = id;
 			data.type = type;
+			data.stype = getContentType();
+			data.sort = getSortType();
+			data.loadAll = true;
 			return data;
 		};
 		
@@ -161,6 +164,41 @@ define(['assets/common/config'], function(config) {
     	}).on("change", setBaseParams);
 		
 		RememberBaseInfo.init($form);
+		
+		var $contentTypes = $('.btn-group.content-type .btn');
+		$contentTypes.on("click", function(){
+			var self = this;
+			if(!$(this).hasClass("blue")){
+				$contentTypes.each(function(){
+					if(this != self){
+						$(this).removeClass("blue");
+					} else {
+						$(this).addClass("blue");
+					}
+				});
+			}
+			reload();
+		});
+		var getContentType = function(){
+			return $('.btn-group.content-type .btn.blue').data("type");
+		};
+		var $sortTypes = $('.btn-group.sort-type .btn');
+		$sortTypes.on("click", function(){
+			var self = this;
+			if(!$(this).hasClass("red")){
+				$sortTypes.each(function(){
+					if(this != self){
+						$(this).removeClass("red");
+					} else {
+						$(this).addClass("red");
+					}
+				});
+			}
+			reload();
+		});
+		var getSortType = function(){
+			return $('.btn-group.sort-type .btn.red').data("type");
+		};
 		
 		var initTable = function(){
 			dt = $table.dataTable( {
@@ -270,7 +308,7 @@ define(['assets/common/config'], function(config) {
 		var collect = function(data){
 			App.confirm({
 				title: '提示信息',
-				msg: '您确定要收藏'+(data.type=='zsd'?"知识内容":"习题")+'"'+data.name+'"吗？如果收藏需要消耗'+data.yyfs+'积分!',
+				msg: '您确定要收藏'+(data.type=='zsd'?"知识内容":"习题")+'"'+data.name+'"吗？如果收藏需要消耗积分!',
 				okFn: function(){
 					App.post(basePath+'zs/collect', {id: data.id, type: data.type}, function(){
 						reload();

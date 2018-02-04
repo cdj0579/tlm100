@@ -200,11 +200,11 @@ public class ZsService {
 	}
 	
 	public List<Map<String, Object>> searchZsdContents(String type, int id, String userNo) throws Exception{
-		return new ZsdDao().searchZsdContents(type, id, userNo, null, true);
+		return new ZsdDao().searchZsdContents(type, id, userNo, null, true, false);
 	}
 	
-	public List<Map<String, Object>> searchZsdContents(String type, int id, String userNo, String stype) throws Exception{
-		return new ZsdDao().searchZsdContents(type, id, userNo, stype, false);
+	public List<Map<String, Object>> searchZsdContents(String type, int id, String userNo, String stype, boolean loadAll, boolean sortByLastest) throws Exception{
+		return new ZsdDao().searchZsdContents(type, id, userNo, stype, loadAll, sortByLastest);
 	}
 	
 	public List<ZsdBean> getZsdByZj(int bbId, String dqId, int kmId, int njId, int xq, String onUserNo) throws Exception{
@@ -346,6 +346,17 @@ public class ZsService {
 		new JdbcDao<ZtContentBean>().delete(id, ZtContentBean.class);
 	}
 	
+	public Map<String, Double> loadJfgz() throws Exception {
+		return new ZsdDao().getJfgz();
+	}
+	
+	public List<Map<String, Integer>> reviewJfgz(double zzsl, double jfsx) {
+		return ZsdDao.reviewJfgz(zzsl, jfsx);
+	}
+	
+	public void saveJfgz(double zzsl, double jfsx) throws Exception {
+		new ZsdDao().saveJfgz(zzsl, jfsx);
+	}
 	
 	public void collectZtContent(List<Map<String, Object>> list, final ShiroUser user) throws Exception{
 		Connection conn = null;
@@ -355,15 +366,20 @@ public class ZsService {
 			conn = DBFactory.getConn();
 			conn.setAutoCommit(false);
 			
+			String type = "zt";
 			for(Map<String, Object> map : list){
 				int id = (Integer)map.get("id");
-				int jf = (Integer)map.get("yyfs");
+				int isOriginal = (Integer)map.get("isOriginal");
+				int jf = ZsdDao.getJf(conn, id, type);
+				if(isOriginal == 2){ //非原创
+					jf = 1;
+				}
 				String userNo = (String)map.get("userNo");
 				UserCollections uc = new UserCollections();
 				uc.setCid(id);
 				uc.setUserNo(user.getUserNo());
 				uc.setJf(jf);
-				uc.setType("zt");
+				uc.setType(type);
 				ZsdDao.collect(conn, uc, userNo);
 			}
 			
@@ -387,7 +403,7 @@ public class ZsService {
 		try {
 			conn = DBFactory.getConn();
 			String userNo = user.getUserNo();
-			String sql = "select a.id,a.name,a.yyfs,a.user_no,a.is_share,a.is_original,"
+			String sql = "select a.id,a.pid,a.name,a.yyfs,a.user_no,a.is_share,a.is_original,a.content,"
 					+ "if(a.user_no='"+userNo+"', 0, 1) as collected,c.name as pName "
 							+ "from zt_content as a left join user_collections b on (b.user_no='"+userNo+"' and b.type='zt' and b.cid = a.id) left join zt_main as c on(a.pid = c.id) "
 					+ "where (a.user_no=? or b.id is not null) and c.km_id=? and c.nj_id=? and c.xq=? and c.qzqm=?";
@@ -414,7 +430,7 @@ public class ZsService {
 			stmt = conn.createStatement();
 			String userNo = user.getUserNo();
 			StringBuffer sql = new StringBuffer();
-			sql.append("select a.id,a.name,a.yyfs,a.user_no,a.is_share,a.is_original,if(a.id in (");
+			sql.append("select a.id,a.pid,a.name,a.yyfs,a.user_no,a.is_share,a.is_original,if(a.id in (");
 			sql.append(" select cid from user_collections where user_no = '"+userNo+"' and type='zt'");
 			sql.append("), 1, 0) as collected,b.name as userName,c.name as pName ");
 			sql.append("from zt_content a left join teacher_info b on (a.user_no = b.user_no)");

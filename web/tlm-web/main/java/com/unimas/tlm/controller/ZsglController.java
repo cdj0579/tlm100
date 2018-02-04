@@ -406,7 +406,8 @@ public class ZsglController {
 			int rwId = PageUtils.getIntParam(request, "rwId");
 			String name = PageUtils.getParamAndCheckEmpty(request, "name", "知识点内容简介不能为空！");
 			int isOriginal = PageUtils.getIntParamAndCheckEmpty(request, "isOriginal", "请选择是否原创！");
-			int yyfs = PageUtils.getIntParamAndCheckEmpty(request, "yyfs", "请填写消耗积分数！");
+			//int yyfs = PageUtils.getIntParamAndCheckEmpty(request, "yyfs", "请填写消耗积分数！");
+			int yyfs = 1;
 			int isShare = PageUtils.getIntParamAndCheckEmpty(request, "isShare", "请选择是否隐藏！");
 			String content = PageUtils.getParamAndCheckEmpty(request, "content", "知识点内容不能为空！");
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
@@ -436,7 +437,8 @@ public class ZsglController {
     		int pid = PageUtils.getIntParamAndCheckEmpty(request, "pid", "错误的知识点ID！");
 			String name = PageUtils.getParamAndCheckEmpty(request, "name", "知识点内容简介不能为空！");
 			int isOriginal = PageUtils.getIntParamAndCheckEmpty(request, "isOriginal", "请选择是否原创！");
-			int yyfs = PageUtils.getIntParamAndCheckEmpty(request, "yyfs", "请填写消耗积分数！");
+			//int yyfs = PageUtils.getIntParamAndCheckEmpty(request, "yyfs", "请填写消耗积分数！");
+			int yyfs = 1;
 			int isShare = PageUtils.getIntParamAndCheckEmpty(request, "isShare", "请选择是否隐藏！");
 			String content = PageUtils.getParamAndCheckEmpty(request, "content", "知识点内容不能为空！");
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
@@ -487,23 +489,29 @@ public class ZsglController {
 			int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的ID！");
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
 			List<Map<String, Object>> list = null;
-			if("admin".equals(user.getRole())){
-				String userNo = PageUtils.getParamAndCheckEmpty(request, "userNo", "userNo不能为空！");
-				list = service.searchZsdContents(type, id, userNo);
+			String userNo = user.getUserNo();
+			if("admin".equals(user.getUserNo())){
+				userNo = PageUtils.getParamAndCheckEmpty(request, "userNo", "userNo不能为空！");
+			}
+			String stype = PageUtils.getParam(request, "stype", null);
+			if(StringUtils.isNotEmpty(stype)){
+				boolean loadAll = PageUtils.getBooleanParam(request, "loadAll");
+				String sort = PageUtils.getParam(request, "sort", null);
+				boolean sortByLastest = false;
+				if("lastest".equals(sort)){
+					sortByLastest = true;
+				}
+				if("all".equals(stype)){
+					stype = null;
+				}
+				list = service.searchZsdContents(type, id, userNo, stype, loadAll, sortByLastest);
 			} else {
-				String stype = PageUtils.getParam(request, "stype", null);
-				if(StringUtils.isNotEmpty(stype)){
-					list = service.searchZsdContents(type, id, user.getUserNo(), stype);
-				} else {
-					list = service.searchZsdContents(type, id, user.getUserNo());
-				}
-				if(list != null){
-					for(Map<String, Object> map : list){
-						String userNo = (String)map.get("userNo");
-						boolean isSelf = user.getUserNo().equals(userNo);
-						map.put("isSelf", isSelf);
-					}
-				}
+				list = service.searchZsdContents(type, id, userNo);
+			}
+			for(Map<String, Object> map : list){
+				String userNo1 = (String)map.get("userNo");
+				boolean isSelf = userNo.equals(userNo1);
+				map.put("isSelf", isSelf);
 			}
 			dm.putDatas(list);
 			return dm;
@@ -656,7 +664,8 @@ public class ZsglController {
 			int rwId = PageUtils.getIntParam(request, "rwId");
 			String name = PageUtils.getParamAndCheckEmpty(request, "name", "专题内容简介不能为空！");
 			int isOriginal = PageUtils.getIntParamAndCheckEmpty(request, "isOriginal", "请选择是否原创！");
-			int yyfs = PageUtils.getIntParamAndCheckEmpty(request, "yyfs", "请填写消耗积分数！");
+			//int yyfs = PageUtils.getIntParamAndCheckEmpty(request, "yyfs", "请填写消耗积分数！");
+			int yyfs = 1;
 			int isShare = PageUtils.getIntParamAndCheckEmpty(request, "isShare", "请选择是否隐藏！");
 			String content = PageUtils.getParamAndCheckEmpty(request, "content", "专题内容不能为空！");
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
@@ -686,7 +695,8 @@ public class ZsglController {
     		int pid = PageUtils.getIntParamAndCheckEmpty(request, "pid", "错误的专题ID！");
 			String name = PageUtils.getParamAndCheckEmpty(request, "name", "专题内容简介不能为空！");
 			int isOriginal = PageUtils.getIntParamAndCheckEmpty(request, "isOriginal", "请选择是否原创！");
-			int yyfs = PageUtils.getIntParamAndCheckEmpty(request, "yyfs", "请填写消耗积分数！");
+			//int yyfs = PageUtils.getIntParamAndCheckEmpty(request, "yyfs", "请填写消耗积分数！");
+			int yyfs = 1;
 			int isShare = PageUtils.getIntParamAndCheckEmpty(request, "isShare", "请选择是否隐藏！");
 			String content = PageUtils.getParamAndCheckEmpty(request, "content", "专题内容不能为空！");
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
@@ -885,6 +895,88 @@ public class ZsglController {
 		}
 	}
     
+    @RequestMapping(value="jfgz/load")
+	@ResponseBody
+	public AjaxDataModal laodJfgz(HttpServletRequest request) {
+		try {
+			AjaxDataModal json = new AjaxDataModal(true);
+			json.put("data", service.loadJfgz());
+			return json;
+		} catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("加载积分规则信息失败！", e);
+			}
+			return uiex.toDM();
+		}
+	}
+    
+    @RequestMapping(value="jfgz/save")
+	@ResponseBody
+	public AjaxDataModal saveJfgz(HttpServletRequest request) {
+		try {
+			String _zzsl = PageUtils.getParam(request, "zzsl", "增长速率不能为空！");
+			double zzsl = 0;
+			try {
+				zzsl = Double.parseDouble(_zzsl);
+			} catch(Exception e){
+				throw new UIException("错误的增长速率！", e);
+			}
+			String _jfsx = PageUtils.getParam(request, "jfsx", "积分上限不能为空！");
+			double jfsx = 0;
+			try {
+				jfsx = Double.parseDouble(_jfsx);
+			} catch(Exception e){
+				throw new UIException("错误的积分上限！", e);
+			}
+			service.saveJfgz(zzsl, jfsx);
+			return new AjaxDataModal(true);
+		} catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("保存积分规则信息失败！", e);
+			}
+			return uiex.toDM();
+		}
+	}
+    
+    @RequestMapping(value="jfgz/review")
+	@ResponseBody
+	public AjaxDataModal reviewJfgz(HttpServletRequest request) {
+		try {
+			String _zzsl = PageUtils.getParam(request, "zzsl", "增长速率不能为空！");
+			double zzsl = 0;
+			try {
+				zzsl = Double.parseDouble(_zzsl);
+			} catch(Exception e){
+				throw new UIException("错误的增长速率！", e);
+			}
+			String _jfsx = PageUtils.getParam(request, "jfsx", "积分上限不能为空！");
+			double jfsx = 0;
+			try {
+				jfsx = Double.parseDouble(_jfsx);
+			} catch(Exception e){
+				throw new UIException("错误的积分上限！", e);
+			}
+			AjaxDataModal json = new AjaxDataModal(true);
+			List<Map<String, Integer>> list = service.reviewJfgz(zzsl, jfsx);
+			json.put("list", list);
+			return json;
+		} catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("预览积分增长规则失败！", e);
+			}
+			return uiex.toDM();
+		}
+	}
+    
     @RequestMapping(value="xt/delete")
 	@ResponseBody
 	@RequiresRoles("teacher")
@@ -925,7 +1017,8 @@ public class ZsglController {
 			String name = PageUtils.getParamAndCheckEmpty(request, "name", "习题简介不能为空！");
 			int typeId = PageUtils.getIntParamAndCheckEmpty(request, "typeId", "请选择习题类型！");
 			int isOriginal = PageUtils.getIntParamAndCheckEmpty(request, "isOriginal", "请选择是否原创！");
-			int yyfs = PageUtils.getIntParamAndCheckEmpty(request, "yyfs", "请填写消耗积分数！");
+			//int yyfs = PageUtils.getIntParamAndCheckEmpty(request, "yyfs", "请填写消耗积分数！");
+			int yyfs = 1;
 			int isShare = PageUtils.getIntParamAndCheckEmpty(request, "isShare", "请选择是否隐藏！");
 			String content = PageUtils.getParamAndCheckEmpty(request, "content", "习题题目不能为空！");
 			String answer = PageUtils.getParamAndCheckEmpty(request, "answer", "习题详解不能为空！");
@@ -966,7 +1059,8 @@ public class ZsglController {
 			String name = PageUtils.getParamAndCheckEmpty(request, "name", "习题简介不能为空！");
 			int typeId = PageUtils.getIntParamAndCheckEmpty(request, "typeId", "请选择习题类型！");
 			int isOriginal = PageUtils.getIntParamAndCheckEmpty(request, "isOriginal", "请选择是否原创！");
-			int yyfs = PageUtils.getIntParamAndCheckEmpty(request, "yyfs", "请填写消耗积分数！");
+			//int yyfs = PageUtils.getIntParamAndCheckEmpty(request, "yyfs", "请填写消耗积分数！");
+			int yyfs = 1;
 			int isShare = PageUtils.getIntParamAndCheckEmpty(request, "isShare", "请选择是否隐藏！");
 			String content = PageUtils.getParamAndCheckEmpty(request, "content", "习题题目不能为空！");
 			String answer = PageUtils.getParamAndCheckEmpty(request, "answer", "习题详解不能为空！");
