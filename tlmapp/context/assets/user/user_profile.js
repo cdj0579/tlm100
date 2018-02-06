@@ -12,31 +12,18 @@ define(['assets/common/config'], function(config) {
 	});
 	
 	require(['domready!', 'app', 'validate.additional'], function (doc, App){
-		/*function load(){
-			App.post(App.remoteUrlPre + "getStuInfo", null,function(result){
-				var njList = result.nj_list;
-				var info = result.info;
-				var _form = $(".form-horizontal");
-				if(njList!=null){
-					var njSelect = _form.find("select[name='nj']");
-					$.each(njList, function(index, value, array) {
-						var selected = value.id == info.njId ? "selected" :"" ;
-						njSelect.append('<option value="'+ value.id +'" '+ selected +'>'+ value.name +'</option>');
-					});
-				}
-				_form.find("input[name='school']").val(info.school);
-				_form.find("input[name='xs_name']").val(info.studentName);					
-				_form.find("input[name='jz_name']").val(info.parentName);
-				_form.find("input[name='phone']").val(info.contact);
-				
-				
-			});
-		}
-		load();*/
-		
-		
+		var isSave = false;
 		$(".mui-icon").click(function(){
+			if(isFirst == 'true' ||isFirst == true){
+				if( isSave ){
+					location.href= App.remoteUrlPre +"index";
+				}else{
+					var alert = App.getAlert({positionClass:"toast-top-center"});
+					alert.warning("首次登陆请先保存完善个人信息", "提示");
+				}
+			}else{
 			location.href= App.remoteUrlPre +"grzy";
+			}
 		});
 		//判断大于0
 		jQuery.validator.addMethod("isMobile", function(value, element) {    
@@ -64,6 +51,9 @@ define(['assets/common/config'], function(config) {
                     required: true,
                     isMobile: true
                 },
+                dqId: {
+                	isIntGtZero: true
+                },
                 nj: {
                 	isIntGtZero: true
                 }
@@ -74,6 +64,9 @@ define(['assets/common/config'], function(config) {
                 },
                 phone: {
                 	required: "手机号码不能为空."
+                },
+                dqId: {
+                	isIntGtZero: "请选择所属区域."
                 },
                 nj: {
                 	isIntGtZero: "请选择所属年级."
@@ -98,6 +91,7 @@ define(['assets/common/config'], function(config) {
             		dataType: "json",
             		success: function(result){
             			App.handlerAjaxJson(result,function(){
+            				isSave = true;
             				var alert = App.getAlert({positionClass:"toast-top-center"});
         					alert.success("保存信息成功！", "提示");
             			});

@@ -41,6 +41,8 @@ public class StudentInfo extends JdbcBean implements java.io.Serializable {
 	private int zhcj = -1;*/
 	@Column(name="school")
 	private String school;
+	@Column(name="dq_id")
+	private String dqId;
 	
 	public String getUserNo() {
 		return userNo;
@@ -119,6 +121,12 @@ public class StudentInfo extends JdbcBean implements java.io.Serializable {
 	}
 	public void setSchool(String school) {
 		this.school = school;
+	}
+	public String getDqId() {
+		return dqId;
+	}
+	public void setDqId(String dqId) {
+		this.dqId = dqId;
 	}
 
 }

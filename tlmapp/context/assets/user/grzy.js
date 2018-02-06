@@ -27,7 +27,8 @@ define(['assets/common/config'], function(config) {
 		});*/
 		
 		$(".headImg").click(function(){
-			location.href=App.remoteUrlPre+"set_tx";
+			//location.href=App.remoteUrlPre+"set_tx";
+			location.href="upHeadImg:"+App.remoteUrlPre+"saveStuHeadImg2/"+userNo;
 		});
 		
 	});

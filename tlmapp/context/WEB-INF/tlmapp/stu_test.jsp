@@ -60,16 +60,22 @@
 				position:relative;
 				margin-left:0px
 			}
-			.text-justify{
-				text-indent:15px;
+			.question{
 				color:#000000;
 			}
-			
-			.text-justify > lable {
+			.question p {
+				color:#000000;
+				margin:0;
+			}
+			.question > label {
+				margin: 10px 0 0;
 				font-size: 16px;
 				font-style:oblique;
 				font-weight: bold;
 				color:#9a5b17;
+			}
+			.question>p:nth-child(2){
+				text-indent: 2em;
 			}
 		</style>
 	</head>
@@ -100,7 +106,10 @@
 			 	<div  id="wt1">
 			 		<div class="row">
 			 			<div class="col-xs-8 col-md-8">
-			 				<p class="text-justify " ><label>1：</label> ${data.name }</p>
+			 				<div class="question">
+			 					<label>第1题：</label>
+			 					${data.name }
+			 				</div>
 			 			</div>
 			 			<div style="margin-top: 40px;" class="col-xs-4 col-md-4 ">
 			 				<input type="hidden" name='zhuguan' value="0">

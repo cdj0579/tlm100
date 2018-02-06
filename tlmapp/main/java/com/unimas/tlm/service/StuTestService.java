@@ -193,11 +193,16 @@ public class StuTestService {
 	
 	public Map<String, Object> getTestResult(String user_no ) {
 		Map<String, Object> result = null;
-		String sql = "select unable_score as unable,unsure_score unsure ,sure_error_score sureError, all_score total,use_time from cs_result where user_no = ? order by id desc limit 1;";
+		String sql = "select id, unable_score as unable,unsure_score unsure ,sure_error_score sureError, all_score total,use_time from cs_result where user_no = ? order by id desc limit 1;";
 		result = queryLastTestResult(user_no, sql);
 		return result;
 	}
-
+	public Map<String, Object> getcstRecordByPid(String pid ) {
+		Map<String, Object> result = null;
+		String sql = "select * from csdt_rescord where pid = ?;";
+		result = queryLastTestResult(pid, sql);
+		return result;
+	}
 	private Map<String, Object> queryLastTestResult(String user_no, String sql) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		Connection conn = null;

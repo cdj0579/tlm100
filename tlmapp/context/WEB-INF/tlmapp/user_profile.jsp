@@ -11,6 +11,7 @@
 		<%PageUtils.initBasePath(request); %>
         <script>
 			var basePath = "${basePath }";
+			var isFirst = "${isFirst }";
 		</script>
 		<link href="${basePath }assets/global/plugins/font-opensans/Open-Sans.css" rel="stylesheet" type="text/css" />
 		<link href="${basePath }assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -43,7 +44,6 @@
 			    margin-bottom: 0;
 			    padding-top: 7px;
 			}
-			
 		</style>
 	</head>
 	<body > 
@@ -51,12 +51,12 @@
 			<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
 				<span class="mui-icon mui-icon-left-nav"></span>
 			</button>
-			<h1 class="mui-title">个人信息</h1>
+			<h1 class="mui-title">完善个人信息</h1>
 		</header>
 		<div class="container-fluid " style="margin-top: 55px;">
 		 	<form class="form-horizontal" action="" method="post">
 	            <div class="form-group">
-	                <label class="col-xs-4 col-sm-4 col-md-4 control-label ">学生姓名：</label>
+	                <label class="col-xs-4 col-sm-4 col-md-4 control-label ">学生姓名<span class="required">*</span>：</label>
 	                <div class="col-xs-8 col-sm-8 col-md-8">
 	                    <input class="form-control" type="text" placeholder="请输入学生姓名" value="${info.studentName }" name="xs_name"/> 
 	                </div>
@@ -68,7 +68,7 @@
 	            	</div>
 	            </div>
 	            <div class="form-group">
-	                <label class="col-xs-4 col-sm-4 col-md-4 control-label">手机号码：</label>
+	                <label class="col-xs-4 col-sm-4 col-md-4 control-label">手机号码<span class="required">*</span>：</label>
 	                <div class="col-xs-8 col-sm-8 col-md-8">
 	                	<input class="form-control " type="text" placeholder="请输入手机号码" value="${info.contact }" name="phone" /> 
 	            	</div>
@@ -80,7 +80,18 @@
 	            	</div>
 	            </div>
 	            <div class="form-group">
-	                <label class="col-xs-4 col-sm-4 col-md-4 control-label">所在年级：</label>
+	                <label class="col-xs-4 col-sm-4 col-md-4 control-label">所属地区<span class="required">*</span>：</label>
+	                <div class="col-xs-8 col-sm-8 col-md-8">
+	                	<select name="dqId" class="select2 form-control"  >
+	                		<option value="-1">请选择...</option>
+	                		<c:forEach var="dq" items="${dqList }">
+	                        	<option value="${dq['id'] }" ${dq['id'] == info.dqId?"selected":"" }>${dq['name'] }</option>
+							</c:forEach>
+	                    </select>
+	            	</div>
+	            </div>
+	            <div class="form-group">
+	                <label class="col-xs-4 col-sm-4 col-md-4 control-label">所在年级<span class="required">*</span>：</label>
 	                <div class="col-xs-8 col-sm-8 col-md-8">
 	                	<select name="nj" class="select2 form-control"  >
 	                		<option value="-1">请选择...</option>

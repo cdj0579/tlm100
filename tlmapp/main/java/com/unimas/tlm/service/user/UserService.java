@@ -238,7 +238,7 @@ public class UserService {
 	}
 	
 	public void saveStudentInfo(String studentName, String parentName, String contact, int mbxxId, 
-			int njId, ShiroUser user,String school) throws Exception {
+			int njId, ShiroUser user,String school,String dqId) throws Exception {
 		StudentInfo info = new StudentInfo();
 		info.setId(user.getUserId());
 		info.setStudentName(studentName);
@@ -248,6 +248,7 @@ public class UserService {
 		info.setMbxxId(mbxxId);
 		info.setNjId(njId);
 		info.setSchool(school);
+		info.setDqId(dqId);
 		new JdbcDao<StudentInfo>().save(info);
 		user.setInfo(info);
 	}
@@ -313,7 +314,19 @@ public class UserService {
 		}
 		return null;
 	}
-
+	public StudentInfo getStudentByUserNo(String userNo){
+		StudentInfo info = new StudentInfo();
+		Connection conn = null;
+		try {
+			conn = DBFactory.getConn();
+			info = getStudentByUserNo(conn , userNo);
+		}catch (Exception e) {
+			// TODO: handle exception
+		}finally{
+			DBFactory.close(conn, null, null);
+		}
+		return info;
+	}
 
 	@SuppressWarnings("unchecked")
 	public StudentInfo getStudentByUserNo(Connection conn, String userNo) throws Exception {

@@ -49,11 +49,19 @@ public class AppSystemController {
 	@Autowired
 	StuTestService testService ;
 	
+	private boolean isReloadTxImg = false;
+	
 	@RequestMapping(value="/")
     public String indexRoot(Model model,HttpServletRequest request) {
-		loadheader(request);
+		ShiroUser user = loadheader(request,false);
 		loadCheckTest(request);
-		return "index";
+		if(isFirstLogin((StudentInfo)user.getInfo())){
+			request.setAttribute("isFirst",true);
+			initUserInfoForPage(request, user);
+			return "user_profile";
+		}else{
+			return "index";
+		}
     }
 
 	private void loadCheckTest(HttpServletRequest request) {
@@ -62,18 +70,43 @@ public class AppSystemController {
 		request.setAttribute("check",data2);
 	}
 	
-	private void loadheader(HttpServletRequest request){
+	private ShiroUser loadheader(HttpServletRequest request,boolean isGrzy){
 		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
 		request.setAttribute("username",user.getLoginName());
 		request.setAttribute("realName",user.getRealName());
 		String tx = user.getTxImg();
+		if( isGrzy ){
+			String userNo = user.getUserNo();
+			request.setAttribute("userNo",userNo);
+			if(isReloadTxImg){
+				tx = new String(service.getStudentByUserNo(userNo).getTx());
+				user.setTxImg(tx);
+				isReloadTxImg = false;
+			}
+		}
 		request.setAttribute("tx",tx!=null?tx:"assets/layouts/layout2/img/avatar3_small.jpg");
+		return user;
 	}
+	
+	private boolean isFirstLogin(StudentInfo info){
+		boolean result = false;
+		if(info.getNjId() <= 0 || info.getDqId()== null || "" .equals(info.getDqId())){
+			result = true;
+		}
+		return result;
+	}
+	
 	@RequestMapping(value="/index")
     public String index(Model model,HttpServletRequest request) {
-		loadheader(request);
+		ShiroUser user = loadheader(request,false);
 		loadCheckTest(request);
-		return "index";
+		if(isFirstLogin((StudentInfo)user.getInfo())){
+			request.setAttribute("isFirst",true);
+			initUserInfoForPage(request, user);
+			return "user_profile";
+		}else{
+			return "index";
+		}
     }
 	
 	@RequestMapping(value = "/login",method = RequestMethod.GET)
@@ -122,7 +155,7 @@ public class AppSystemController {
 	 */
 	@RequestMapping(value = "/grzy")
     public String grzy(HttpServletRequest request) {
-		loadheader(request);
+		loadheader(request,true);
     	return "grzy";
     }
 	
@@ -199,19 +232,46 @@ public class AppSystemController {
 		}
     }
 	
+	@RequestMapping(value = "/saveStuHeadImg2/${userId}",method = RequestMethod.POST)
+	@ResponseBody
+    public Object saveStuHeadImg2(HttpServletRequest request,@PathVariable int userId) {
+		String txImg = PageUtils.getParam(request, "headImg", null);
+		try {
+			AjaxDataModal dm = new AjaxDataModal(true);
+			appService.saveStuTxImg(userId,txImg);
+			isReloadTxImg = true;
+            return dm;
+		} catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			}else{
+				uiex = new UIException("服务器异常！");
+			}
+			return uiex.toJson();
+		}
+    }
+	
 	@RequestMapping(value = "/user_profile" ,method = RequestMethod.GET)
     public String userProfilePage(HttpServletRequest request) {
 		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
+		initUserInfoForPage(request, user);
+    	return "user_profile";
+    }
+
+	private void initUserInfoForPage(HttpServletRequest request, ShiroUser user) {
 		request.setAttribute("info", user.getInfo());
 		DicService ds = new DicService();
 		List<Map<String, Object>> nj_list = null;
+		List<Map<String, Object>> dq_list = null;
 		try {
 			nj_list = ds.get("nj_dic", "id", "name", null, null, null);
+			dq_list = ds.get("xzqh", "code", "name", null, "pid", "330500");
 		} catch (Exception e) {
 		}
 		request.setAttribute("njList", nj_list);
-    	return "user_profile";
-    }
+		request.setAttribute("dqList", dq_list);
+	}
 	
 	@RequestMapping(value = "/saveStuInfo",method = RequestMethod.POST)
 	@ResponseBody
@@ -222,10 +282,11 @@ public class AppSystemController {
 			String phone = PageUtils.getParam(request, "phone", null);
 			String school = PageUtils.getParam(request, "school",null);
 			int nj = PageUtils.getIntParam(request, "nj");
+			String dqId = PageUtils.getParam(request, "dqId",null);
 
 			AjaxDataModal dm = new AjaxDataModal(true);
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-			service.saveStudentInfo(xs_name, jz_name, phone, -1, nj, user,school);
+			service.saveStudentInfo(xs_name, jz_name, phone, -1, nj, user,school,dqId);
 			user.setRealName(xs_name);
             return dm;
 		} catch (Exception e) {
@@ -277,16 +338,16 @@ public class AppSystemController {
 			if(!"1".equals(isReset)){
 				flag = appService.isSetSrfx(user.getUserNo());
 			}
+			StudentInfo info= (StudentInfo)user.getInfo();
 			if(flag){
-				StudentInfo info= (StudentInfo)user.getInfo();
 				Map<String,Object> data = appSrfxService.dealFxReasult(info.getNjId(), info.getMbxxId(), user.getUserNo(), 1);
 				request.setAttribute("data", data);
 			}else{
-				request.setAttribute("info", user.getInfo());
+				request.setAttribute("info", info);
 				DicService ds = new DicService();
 				List<Map<String, Object>> nj_list = ds.get("nj_dic", "id", "name", null, null, null);
 				request.setAttribute("njList", nj_list);
-				List<Map<String, Object>> school_list = ds.get("mbxx", "id", "name", null, null, null);
+				List<Map<String, Object>> school_list = ds.get("mbxx", "id", "name", null, "dq_id", info.getDqId());
 				request.setAttribute("mbxxList", school_list);
 			}
 		} catch (Exception e) {
@@ -445,8 +506,11 @@ public class AppSystemController {
 		ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
 		String userNo = user.getUserNo();
 		Map<String,Object> data = testService.getTestResult(userNo);
+		Map<String,Object> csdtRecord = testService.getcstRecordByPid(String.valueOf(data.get("id")));
 		if(data != null && data.size() > 0){
 			request.setAttribute("data", data);
+			request.setAttribute("csdtRecord", csdtRecord);
+			
 		}else{
 			request.setAttribute("msg", "error");
 		}

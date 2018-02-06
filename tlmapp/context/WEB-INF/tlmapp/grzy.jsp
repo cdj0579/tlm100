@@ -8,9 +8,13 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
-		<%PageUtils.initBasePath(request); %>
+		<%PageUtils.initBasePath(request);
+		request.setAttribute("host", request.getLocalAddr());
+		request.setAttribute("port", request.getLocalPort());
+		%>
         <script>
-			var basePath = "${basePath }";
+			var basePath = "http://${host }:${port }${basePath }";
+			var userNo = "${userNo }";
 		</script>
 		<link href="${basePath }assets/global/plugins/font-opensans/Open-Sans.css" rel="stylesheet" type="text/css" />
 		<link href="${basePath }assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />

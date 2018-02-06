@@ -77,11 +77,16 @@ define(['assets/common/config'], function(config) {
 			zhuguanArray[currentNum-1] = currentwt.find(":hidden").val();
 			answerArray[currentNum-1] = currentwt.find(':radio:checked').val();
 		}
-		
+		var alert = App.getAlert({positionClass:"toast-top-center"});
 		nextBtn.click(function(){
 			prevBtn.show();
 			var _prevwt = $("#wt"+currentNum);
 			recordResult( _prevwt );
+			console.info(answerArray[currentNum-1]);
+			if(answerArray[currentNum-1] == undefined || answerArray[currentNum-1] == ""){
+				alert.warning("请选择一个答案后再操作", "提示");
+				return false;
+			}
 			if(currentNum < totolNum){
 				currentNum++;
 				if(currentNum > loadNum){
@@ -141,7 +146,7 @@ define(['assets/common/config'], function(config) {
 				var html ='<div  id="'+ wtId +'" style="display:none">'
 					+'<div class="row">'
 					+'	<div class="col-xs-8 col-md-8">'
-					+' 		<p class="text-justify "></p>'
+					+' 		<div class="question"></div>'
 					+'	</div>'
 					+'	<div style="margin-top: 40px;" class="col-xs-4 col-md-4 ">'
 					+'		<input type="hidden" name="zhuguan" value="0">'
@@ -153,7 +158,7 @@ define(['assets/common/config'], function(config) {
 					+'</div>'
 				+'</div>';
 				var _html = $(html);
-				_html.find(".text-justify").html('<label>'+ currentNum +'：</label>'+result.name );
+				_html.find(".question").html('<label>第'+ currentNum +'题：</label>'+result.name );
 				var _ans =  _html.find(".wt_answer");
 				console.info(result.ansList);
 				$.each(result.ansList, function(index, obj, array) {

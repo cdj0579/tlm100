@@ -41,6 +41,14 @@
 			    padding-top: 7px;
 			}
 			article p {color:#000;}
+			.dtqk {
+				padding:0 15px 10px;
+			}
+			.dtqk>p{
+				text-indent:15px;
+				margin-top: 0;
+				margin-bottom: 10px;
+			}
 		</style>
 	</head>
 	<body > 
@@ -63,6 +71,11 @@
 				<p> 不确定的做对：<span name='bqd_right'>${data.unsure }分</span></p>
 				<p> 确定的做错：<span name='qd_error'>${data.sureError }分</span></p>
 				<p>测试总用时：<span name='time'>${fn:replace(data.use_time,":", "分")  }秒</span></p>
+			</article>
+			<article class='dtqk' >
+				<h4 >答题情况</h4>
+				<p>您的答案：${fn:replace(csdtRecord.test_answer,";","，" )}</p>
+				<p>正确答案：${fn:replace(csdtRecord.right_answer,";","，" ) }</p>
 			</article>
 			</c:if>
 		</section>

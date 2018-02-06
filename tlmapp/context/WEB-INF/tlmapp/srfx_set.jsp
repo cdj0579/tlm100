@@ -66,7 +66,7 @@
 	            </div>
 	            <div class="form-group">
 	            	 <div class="col-xs-8 col-sm-8 col-md-8">
-	            	<label style="padding:0 10px;text-indent:15px;color: red;">最近一次考试成绩：</label>
+	            	<label style="padding:0 10px;text-indent:25px;color: red;">最近一次考试成绩：</label>
 	            	</div>
 	            </div>
 	            <div class="row">
