@@ -8,6 +8,7 @@ define(["validate.additional", "select3", "ztree.select"], function(){
 	var addUrl = "base/cstk/add";
 	var updateUrl = "base/cstk/update";
 	var cstEditor = null;
+	var optionEditor = null;
 	var id = -1;
 	
 	var initValidHandler = function(modal){
@@ -124,11 +125,29 @@ define(["validate.additional", "select3", "ztree.select"], function(){
 					$optionForm.find('select[name="option"]').trigger('change');
 				}
 				
+				$('#cke_cst_option').remove();
+				require(["ckeditor-ckfinder"], function(){
+					CKEDITOR.on( 'instanceCreated', function( event ) {
+						var editor = event.editor;
+						CKFinder.setupCKEditor(editor, basePath+'assets/global/plugins/ckfinder/');
+						editor.on('focus', function(){
+							$('.cke_button_icon.cke_button__jme_icon').css({
+								backgroundSize: "auto"
+							});
+						});
+						optionEditor = editor;
+					});
+					CKEDITOR.inline('cst_option', {
+						customConfig : basePath+'assets/jagl/inlineConfig.js',
+						extraPlugins: 'jme'
+					});
+				});
+				
 				$optionForm.validateB({
 		            submitHandler: function () {
 		            	var data = {
 	            			option: $optionForm.find('select[name="option"]').val(),
-	            			name: $optionForm.find('textarea[name="name"]').val()
+	            			name: optionEditor.getData()
 		            	};
 		            	if($tr){
 		            		dt.api().row($tr).data(data).draw();
@@ -172,17 +191,7 @@ define(["validate.additional", "select3", "ztree.select"], function(){
 				nameField: "name"
 	    	});
 			
-			if(isAdd){
-				initTable([]);
-				ininCke();
-			} else {
-				App.getJSON(basePath+'base/cstk/'+id, {}, function(result){
-					$form.loadForm(result.data);
-					initTable(result.data.options);
-					ininCke();
-				});
-			}
-			
+
 			var ininCke = function(){
 				$('#cke_cst_name').remove();
 				require(["ckeditor-ckfinder"], function(){
@@ -202,6 +211,17 @@ define(["validate.additional", "select3", "ztree.select"], function(){
 					});
 				});
 			};
+			
+			if(isAdd){
+				initTable([]);
+				ininCke();
+			} else {
+				App.getJSON(basePath+'base/cstk/'+id, {}, function(result){
+					$form.loadForm(result.data);
+					initTable(result.data.options);
+					ininCke();
+				});
+			}
 			
 			initValidHandler(modal);
 			initSaveHandler(modal);
