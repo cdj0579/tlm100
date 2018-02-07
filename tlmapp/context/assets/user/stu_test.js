@@ -79,18 +79,16 @@ define(['assets/common/config'], function(config) {
 		}
 		var alert = App.getAlert({positionClass:"toast-top-center"});
 		nextBtn.click(function(){
-			prevBtn.show();
 			var _prevwt = $("#wt"+currentNum);
 			recordResult( _prevwt );
-			console.info(answerArray[currentNum-1]);
 			if(answerArray[currentNum-1] == undefined || answerArray[currentNum-1] == ""){
 				alert.warning("请选择一个答案后再操作", "提示");
 				return false;
-			}
+			}	
+			prevBtn.show();
 			if(currentNum < totolNum){
 				currentNum++;
 				if(currentNum > loadNum){
-					console.info("加载第"+loadNum);
 					getOneCstInfo(loadNum, _prevwt);
 					loadNum = currentNum;
 				}else{
@@ -104,7 +102,6 @@ define(['assets/common/config'], function(config) {
 				setAlertMsg("完成测试，提交结果...");
 				testOverSumbit();
 			}
-			
 		});
 		prevBtn.click(function(){
 			var _nextwt = $("#wt"+currentNum);
