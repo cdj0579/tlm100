@@ -340,14 +340,16 @@ public class AppSystemController {
 			}
 			StudentInfo info= (StudentInfo)user.getInfo();
 			if(flag){
-				Map<String,Object> data = appSrfxService.dealFxReasult(info.getNjId(), info.getMbxxId(), user.getUserNo(), 1);
+				Map<String,Object> data = appSrfxService.dealFxReasult(info.getNjId(), info.getMbxxId(), user.getUserNo(), 1, info.getDqId());
 				request.setAttribute("data", data);
 			}else{
 				request.setAttribute("info", info);
 				DicService ds = new DicService();
 				List<Map<String, Object>> nj_list = ds.get("nj_dic", "id", "name", null, null, null);
 				request.setAttribute("njList", nj_list);
-				List<Map<String, Object>> school_list = ds.get("mbxx", "id", "name", null, "dq_id", info.getDqId());
+				List<Map<String, Object>> dqList = ds.get("xzqh", "code", "name", null, "pid", "330500");
+		    	request.setAttribute("dqList", dqList);
+				List<Map<String, Object>> school_list = ds.get("mbxx", "CONCAT(id,'|',dq_id)", "name", null, null, null);
 				request.setAttribute("mbxxList", school_list);
 			}
 		} catch (Exception e) {
@@ -367,7 +369,7 @@ public class AppSystemController {
 		try {
 			int xkId = PageUtils.getIntParam(request, "xkId");
 			StudentInfo info= (StudentInfo)user.getInfo();
-			Map<String,Object> data = appSrfxService.dealFxReasult(info.getNjId(), info.getMbxxId(), user.getUserNo(), xkId);
+			Map<String,Object> data = appSrfxService.dealFxReasult(info.getNjId(), info.getMbxxId(), user.getUserNo(), xkId, info.getDqId());
 			AjaxDataModal dm = new AjaxDataModal(true);
 			dm.put("data", data);
             return dm;
@@ -387,6 +389,7 @@ public class AppSystemController {
     public Object saveSrfxSet(HttpServletRequest request) {
 		try {
 			int njId = PageUtils.getIntParam(request, "nj");
+			String dateTime = PageUtils.getParam(request, "dateTime", null);
 			int yw_cj = PageUtils.getIntParam(request, "yw_cj");
 			int yw_mf = PageUtils.getIntParam(request, "yw_mf");
 			int kx_cj = PageUtils.getIntParam(request, "kx_cj");
@@ -397,7 +400,8 @@ public class AppSystemController {
 			int sx_mf = PageUtils.getIntParam(request, "sx_mf");
 			int sh_cj = PageUtils.getIntParam(request, "sh_cj");
 			int sh_mf = PageUtils.getIntParam(request, "sh_mf");
-			int mbxxId = PageUtils.getIntParam(request, "mbxx");
+			String xxId = PageUtils.getParam(request, "mbxx", "-2");
+			int mbxxId =Integer.parseInt(xxId.split("[|]")[0]);
 			
 			AjaxDataModal dm = new AjaxDataModal(true);
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
@@ -414,6 +418,7 @@ public class AppSystemController {
 			bean.setYwmf(yw_mf);
 			bean.setYycj(yy_cj);
 			bean.setYymf(yy_mf);
+			bean.setDateTime(dateTime);
 			appService.saveKSCJ(bean, mbxxId, user.getUserId());
 			((StudentInfo)user.getInfo()).setMbxxId(mbxxId);
             return dm;

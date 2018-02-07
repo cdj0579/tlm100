@@ -21,10 +21,12 @@
 		<link href="${basePath }assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
         <link href="${basePath }assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
         <link href="${basePath }assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
-		  <link href="${basePath }assets/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css" />
+		<link href="${basePath }assets/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" href="${basePath }assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" type="text/css"></link>
 		<link href="${basePath }assets/common/theme/default/css/style.css" rel="stylesheet" id="style_default" type="text/css" />
 		<style type="text/css">
 			.col-xs-2, .col-sm-2, .col-md-2,
+			.col-xs-8, .col-md-8,.col-xs-7, .col-sm-7, .col-md-7,
 			.col-xs-3, .col-sm-3, .col-md-3 {
 				padding-left: 0px;
 				padding-right: 0px;
@@ -41,6 +43,10 @@
 			    padding-top: 7px;
 			    padding-right: 15px;
 			}
+			.input-group,.form-horizontal .form-group select{
+				 margin-bottom:15px;
+			}
+			
 		</style>
 	</head>
 	<body > 
@@ -55,7 +61,7 @@
 		 	<form class="form-horizontal" action="" method="post">
 		 		<div class="form-group">
 	                <label class="col-xs-4 col-sm-4 col-md-4 control-label">所在年级：</label>
-	                <div class="col-xs-8 col-sm-8 col-md-8">
+	                <div class="col-xs-7 col-sm-7 col-md-7">
 	                	<select name="nj" class="select2 form-control" >
 	                		<option value="-1">请选择...</option>
 	                		<c:forEach var="nj" items="${njList }">
@@ -68,6 +74,13 @@
 	            	 <div class="col-xs-8 col-sm-8 col-md-8">
 	            	<label style="padding:0 10px;text-indent:25px;color: red;">最近一次考试成绩：</label>
 	            	</div>
+	            </div>
+	           <div class="form-group">
+	                <label class="col-xs-3  col-sm-3 col-md-3 control-label ">考试时间:</label>
+                 	<div class="input-group date form_date col-xs-8 col-md-8 ">
+		               	<input class="form-control" name='dateTime' size="16" type="text" readonly>
+						<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+		           	</div>
 	            </div>
 	            <div class="row">
 	                <label class="col-xs-3  col-sm-3 col-md-3 control-label ">语文:</label>
@@ -119,14 +132,24 @@
 	                	<input type="text" placeholder="满分" value='80'  name="sh_mf"/> 
 	            	</div>
 	            </div>
-	            
+	             <div class="form-group">
+	                <label class="col-xs-4 col-sm-4 col-md-4 control-label">所在区域：</label>
+	                <div class="col-xs-7 col-sm-7 col-md-7">
+	                	<select name="dqId" class="select2 form-control" >
+	                		<option value="-1">请选择</option>
+                     		<c:forEach var="dq" items="${dqList}">
+	                        	<option value="${dq.id }">${dq.name }</option>
+							</c:forEach>
+	                    </select>
+	            	</div>	            	
+	            </div>
 	            <div class="form-group">
 	                <label class="col-xs-4 col-sm-4 col-md-4 control-label">目标学校：</label>
-	                <div class="col-xs-8 col-sm-8 col-md-8">
+	                <div class="col-xs-7 col-sm-7 col-md-7">
 	                	<select name="mbxx" class="select2 form-control" >
 	                		<option value="-1">请选择...</option>
 	                		<c:forEach var="xx" items="${mbxxList }">
-	                        	<option value="${xx['id'] }"  ${xx['id'] == info.mbxxId?'selected':'' }>${xx['name'] }</option>
+	                        	<option value="${xx['id'] }" >${xx['name'] }</option>
 							</c:forEach>
 	                    </select>
 	            	</div>	            	

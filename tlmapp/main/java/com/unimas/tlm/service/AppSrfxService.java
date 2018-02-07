@@ -3,6 +3,7 @@ package com.unimas.tlm.service;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,10 +24,10 @@ public class AppSrfxService {
 	private int nextStartMoth = 2; //下学期开始月份
 	private int nextQzMonth = 5; //下学期期末开始月份
 	
-	public Map<String,Object> dealFxReasult(int njId,int mbxxId,String userNo,int kmId){
+	public Map<String,Object> dealFxReasult(int njId,int mbxxId,String userNo,int kmId,String dqId){
 		Map<String,Object> result = new HashMap<String, Object>();
 		Connection conn = null;
-		
+		int ksfzs = 45; //每课时的分钟数
 		Date date = new Date();
 		int currentMonth = DateUtils.month(date);
 		int xq = 1; //当前学期： 1：上学期；2：下学期
@@ -57,17 +58,17 @@ public class AppSrfxService {
 			
 			int A2 = 0;
 			if(c > 6){
-				A2 = this.getGgz(conn, njId, xq, kmId);
+				A2 = this.getGgz(conn, njId, xq, kmId, dqId);
 			}
-			result.put("A2", A2);
+			result.put("A2", division(A2,ksfzs) );
 			int A1_1  = 0;
 			int A1_2  = 0;
 			if(d > 6){
-				A1_1 = this.getClbqValue(conn, njId, xq, kmId, true);
-				A1_2 = this.getClbqValue(conn, njId, xq, kmId, false);
+				A1_1 = this.getClbqValue(conn, njId, xq, kmId, true, dqId);
+				A1_2 = this.getClbqValue(conn, njId, xq, kmId, false, dqId);
 			}
-			result.put("A1_1", A1_1);
-			result.put("A1_2", A1_2);
+			result.put("A1_1", division(A1_1, ksfzs));
+			result.put("A1_2", division(A1_2, ksfzs));
 			
 			int A3  = 0;
 			int A4  = 0;
@@ -80,9 +81,9 @@ public class AppSrfxService {
 			if(mbfx >= fsMap.get("k2") ){
 				A4  = this.getA3A4(conn, currentMonth, njId, xq, kmId, false);
 			}
-			result.put("A3", A3);
-			result.put("A4", A4);
-			result.put("total", A1_1+A1_2+A2+A3+A4 );
+			result.put("A3", division(A3, ksfzs) );
+			result.put("A4", division(A4, ksfzs) );
+			result.put("total", division( A1_1+A1_2+A2+A3+A4, ksfzs) );
 			
 		}catch (Exception e) {
 			// TODO: handle exception
@@ -92,6 +93,20 @@ public class AppSrfxService {
 		
 		return result;
 	}
+	
+	/**
+	 * 两整数相除保留一位小数
+	 * @param a 被除数
+	 * @param b 除数
+	 * @return
+	 */
+	public String division(int a ,int b){
+        String result = "";
+        float num =(float)a/b;
+        DecimalFormat df = new DecimalFormat("0.0");
+        result = df.format(num);
+        return result;
+    }
 	
 	public Map<String,Object> getLastCj(Connection conn,String userNo){
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -150,16 +165,17 @@ public class AppSrfxService {
 	 * @param kmId 	当前科目编号
 	 * @return
 	 */
-	public int getGgz(Connection conn,int njId,int xq, int kmId){
+	public int getGgz(Connection conn,int njId,int xq, int kmId,String dqId){
 		int result = 0;
-		String sql = "select IFNULL(sum(ks),0) count from zsd_main where nj_id = ? and xq = ? and km_id = ?";
+		String sql = "select IFNULL(sum(ks),0) count from zsd_main where nj_id = ? and xq = ? and km_id = ? and dq_id=?";
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, njId);
 			stmt.setInt(2, xq);
-			stmt.setInt(2, kmId);
+			stmt.setInt(3, kmId);
+			stmt.setString(4, dqId);
 			rs = stmt.executeQuery();
 			result = ResultSetHandler.toInt(rs);
 		}catch (Exception e) {
@@ -179,7 +195,7 @@ public class AppSrfxService {
 	 * @param flag  true: 基础知识点；false：重难知识点
 	 * @return
 	 */
-	public int getClbqValue(Connection conn,int njId,int xq, int kmId,boolean flag){
+	public int getClbqValue(Connection conn,int njId,int xq, int kmId,boolean flag,String dqId){
 		int result = 0;
 		if(xq == 1){ 
 			njId = njId -1 ;
@@ -187,7 +203,7 @@ public class AppSrfxService {
 		}else{
 			xq = 1;
 		}
-		String sql = "select IFNULL(sum(ks),0) count from zsd_main where nj_id = ? and xq = ? and km_id = ? and ( nd_id=? or nd_id=? )";
+		String sql = "select IFNULL(sum(ks),0) count from zsd_main where nj_id = ? and xq = ? and km_id = ? and ( nd_id=? or nd_id=? ) and dq_id=?";
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
@@ -202,6 +218,7 @@ public class AppSrfxService {
 				stmt.setInt(4, 9);
 				stmt.setInt(5, 10);
 			}
+			stmt.setString(6, dqId);
 			rs = stmt.executeQuery();
 			result = ResultSetHandler.toInt(rs);
 		}catch (Exception e) {
@@ -302,7 +319,7 @@ public class AppSrfxService {
 	
 	public static void main(String[] args) {
 		AppSrfxService app = new  AppSrfxService();
-		Map<String, Object> dataMap = app.dealFxReasult(1, 12, "S722326671", 1);
+		Map<String, Object> dataMap = app.dealFxReasult(1, 12, "S722326671", 1,"330500");
 		System.out.println(dataMap);
 	}
 }

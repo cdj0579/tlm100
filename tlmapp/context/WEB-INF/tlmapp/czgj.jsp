@@ -18,6 +18,7 @@
 			data.yy = "${data.yy }";
 			data.sh = "${data.sh }";
 			data.total = "${data.total }";
+			data.time = "${data.time }".split(",", 6);
 		</script>
 		<link href="${basePath }assets/global/plugins/font-opensans/Open-Sans.css" rel="stylesheet" type="text/css" />
 		<link href="${basePath }assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -73,7 +74,16 @@
             xAxis: [{
             	type: "category",
             	splitLine: {show: true},
-            	data: ["近6","近5","近4","近3","近2","近1"]
+            	axisLabel:{  
+                     interval:0,  
+                     rotate:-45,//倾斜度 -90 至 90 默认为0  
+                     margin:2,  
+                     textStyle:{  
+                         fontWeight:"bolder",  
+                         color:"#000000"  
+                     }  
+                 },    
+            	data: data.time // ["近6","近5","近4","近3","近2","近1"]
             }],
             yAxis: [{
             	type : 'value',

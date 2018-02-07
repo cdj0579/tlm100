@@ -78,12 +78,12 @@
 			  	<div class="tab-pane active">
 			  		<table class="table table-bordered">
 			  			<tbody>
-			  				<tr><td rowspan="2">A1查漏补缺</td><td>A1.1基础知识点</td><td v="1">${data.A1_1 }</td></tr>
-			  				<tr><td>A1.2重难知识点</td><td v="2">${data.A1_2 }</td></tr>
-			  				<tr><td>A2同步巩固</td><td>知识点</td><td v="3">${data.A2 }</td></tr>
-			  				<tr><td>A3综合训练</td><td>综合题型</td><td v="4">${data.A3 }</td></tr>
-			  				<tr><td>A4压轴专题</td><td>压轴专题</td><td v="5">${data.A4 }</td></tr>
-			  				<tr><td>总课时</td><td v="6"></td><td v="7">${data.total }</td></tr>
+			  				<tr><td rowspan="2">A1查漏补缺</td><td>A1.1基础知识点</td><td ><span v="1">${data.A1_1 }</span>课时</td></tr>
+			  				<tr><td>A1.2重难知识点</td><td><span v="2">${data.A1_2 }</span>课时</td></tr>
+			  				<tr><td>A2同步巩固</td><td>知识点</td><td><span v="3">${data.A2 }</span>课时</td></tr>
+			  				<tr><td>A3综合训练</td><td>综合题型</td><td><span v="4">${data.A3 }</span>课时</td></tr>
+			  				<tr><td>A4压轴专题</td><td>压轴专题</td><td><span v="5">${data.A4 }</span>课时</td></tr>
+			  				<tr><td>总课时</td><td v="6"></td><td><span v="7">${data.total }</span>课时</td></tr>
 			  			</tbody>
 			  		</table>
 			  	</div>

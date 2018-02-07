@@ -79,7 +79,7 @@
                 /errors/** = anon
                 /user/teacher/register = anon
                 /register = anon
-                /saveStuHeadImg2 = anon 
+                /saveStuHeadImg2/* = anon 
                 <!-- 登录相关 -->
                 /login = authc
                <!--  /app/login = appAuthc -->

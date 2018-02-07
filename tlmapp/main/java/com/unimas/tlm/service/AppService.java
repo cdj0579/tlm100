@@ -68,6 +68,25 @@ public class AppService {
     	return result;
     }
 	
+    public int checkCjByKsjj(Connection conn,String userNo,String dateTime) throws Exception{
+    	PreparedStatement stmt = null;
+		ResultSet rs = null;
+		int num = -1;
+		try {
+			String sql = "select id from kaoshichengji where user_no= ? and kssj=?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, userNo);
+			stmt.setString(2, dateTime);
+			rs = stmt.executeQuery();
+			num = ResultSetHandler.toInt(rs);
+		} catch(Exception e){
+			throw e;
+		} finally {
+			DBFactory.close(null, stmt, rs);
+		}
+    	return num;
+    }
+    
     /**
      * 
      * @param id
@@ -83,6 +102,8 @@ public class AppService {
 			stu.setId(userId);
 			stu.setMbxxId(mbxxId);
 			new JdbcDao<StudentInfo>().save(conn, stu);
+			int id = this.checkCjByKsjj(conn,info.getUserNo(),info.getDateTime());
+			info.setId(id);
 			new JdbcDao<KscjBean>().save(conn, info);
 			conn.commit();
 		} catch(Exception e){
@@ -109,6 +130,7 @@ public class AppService {
     	Integer[] yy = new Integer[dataLen];
     	Integer[] sh = new Integer[dataLen];
     	Integer[] total = new Integer[dataLen];
+    	String timestr = "";
     	Connection conn = null;
     	PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -119,6 +141,7 @@ public class AppService {
 			rs = stmt.executeQuery();
 			while(rs.next()){
 				dataLen-- ;
+				timestr = ","+rs.getString("kssj")+ timestr;
 				sx[dataLen] = rs.getInt("sx_cj") * 100 / rs.getInt("sx_mf"); 
 				kx[dataLen] = rs.getInt("kx_cj") * 100 / rs.getInt("kx_mf"); 
 				yw[dataLen] = rs.getInt("yw_cj") * 100 / rs.getInt("yw_mf"); 
@@ -130,10 +153,10 @@ public class AppService {
 		} finally {
 			DBFactory.close(conn, stmt, rs);
 		}
-		  System.out.println( Arrays.asList(sx));
 		for(int i=dataLen-1 ;i >=0 ;i--){
 			sx[i] =  0;  kx[i] =  0;  yw[i] =  0;
 			yy[i] =  0;  sh[i] =  0;  total[i] = 0;
+			timestr = ","+ timestr;
 		}
 		result.put("sx", Arrays.asList(sx));
 		result.put("kx", Arrays.asList(kx));
@@ -141,6 +164,7 @@ public class AppService {
 		result.put("yy", Arrays.asList(yy));
 		result.put("sh", Arrays.asList(sh));
 		result.put("total", Arrays.asList(total));
+		result.put("time", timestr.substring(1));
     	return result ;
     }
     
@@ -155,7 +179,7 @@ public class AppService {
          List<String> list=Arrays.asList(array);  
          System.out.println(list);
          for(int i=0;i<list.size();i++){  
-             System.out.println(list.get(i));  
+             System.out.println(list.get(i));
          }  
 	}
 }

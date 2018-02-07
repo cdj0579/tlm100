@@ -46,7 +46,10 @@ public class KscjBean extends JdbcBean {
 	
 	@Column(name="sh_mf", nullNumberValue=-1)
 	private int shmf = -1; //社会满分
-
+	
+	@Column( name="kssj" )
+	private String dateTime; //考试时间 yyyy-MM-dd
+	
 	public String getUserNo() {
 		return userNo;
 	}
@@ -141,6 +144,14 @@ public class KscjBean extends JdbcBean {
 
 	public void setShmf(int shmf) {
 		this.shmf = shmf;
+	}
+
+	public String getDateTime() {
+		return dateTime;
+	}
+
+	public void setDateTime(String dateTime) {
+		this.dateTime = dateTime;
 	}
 	
 	

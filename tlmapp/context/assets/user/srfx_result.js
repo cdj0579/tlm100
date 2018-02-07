@@ -31,12 +31,12 @@ define(['assets/common/config'], function(config) {
 				$("span[name='mbfs']").html(data.mbfs);
 				$("span[name='cj']").html(data[xk+'_cj']);
 				$("span[name='cjmf']").html(data[xk+'_mf']);
-				$("td[v='1']").html(data.A1_1);
-				$("td[v='2']").html(data.A1_2);
-				$("td[v='3']").html(data.A2);
-				$("td[v='4']").html(data.A3);
-				$("td[v='5']").html(data.A4);
-				$("td[v='7']").html(data.total);
+				$("span[v='1']").html(data.A1_1);
+				$("span[v='2']").html(data.A1_2);
+				$("span[v='3']").html(data.A2);
+				$("span[v='4']").html(data.A3);
+				$("span[v='5']").html(data.A4);
+				$("span[v='7']").html(data.total);
 	     	});
 		 	
 		});
