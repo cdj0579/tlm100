@@ -68,7 +68,10 @@ public class fenxiangController {
     		int xb = PageUtils.getIntParam(request, "xb");
     		String dqId = PageUtils.getParam(request, "dqId", null);
 //    		int xuexiaoId = PageUtils.getIntParam(request, "xxId");
-    		String xxId = PageUtils.getParam(request, "xxId", "-2").split("-")[0];
+    		String xxId = PageUtils.getParam(request, "xxId", "-2");
+    		if(!"-1".equals(xxId)){
+    			xxId = xxId.split("-")[0];
+    		}
     		int xuexiaoId = Integer.parseInt(xxId);
     		if(xuexiaoId <= 0) xuexiaoId = -2;
     		int nj = PageUtils.getIntParam(request, "nj");
