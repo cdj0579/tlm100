@@ -236,6 +236,9 @@ public class AppSystemController {
 	@ResponseBody
     public Object saveStuHeadImg2(HttpServletRequest request,@PathVariable int userId) {
 		String txImg = PageUtils.getParam(request, "headImg", null);
+		if(!txImg.startsWith("data:image")){
+			txImg = "data:image/jpeg;base64,"+txImg;
+		}
 		try {
 			AjaxDataModal dm = new AjaxDataModal(true);
 			appService.saveStuTxImg(userId,txImg);
