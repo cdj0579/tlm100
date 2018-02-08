@@ -232,7 +232,7 @@ public class AppSystemController {
 		}
     }
 	
-	@RequestMapping(value = "/saveStuHeadImg2/${userId}",method = RequestMethod.POST)
+	@RequestMapping(value = "/saveStuHeadImg2/{userId}",method = RequestMethod.POST)
 	@ResponseBody
     public Object saveStuHeadImg2(HttpServletRequest request,@PathVariable int userId) {
 		String txImg = PageUtils.getParam(request, "headImg", null);
