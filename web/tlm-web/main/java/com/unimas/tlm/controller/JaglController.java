@@ -69,6 +69,8 @@ public class JaglController {
     	try {
 			JaBean bean = service.getJaInfoById(id);
 			request.setAttribute("info", bean);
+			
+			request.setAttribute("basePath", PageUtils.getBasePath(request));
 		} catch (Exception e) {}
         return  "jagl/view";
     }

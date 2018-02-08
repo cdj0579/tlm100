@@ -58,7 +58,8 @@ body
 	/* Remove the background color to make it transparent */
 	background-color: #fff;
 
-	margin: 20px;
+	margin: auto !important;
+	width: 900px !important;
 }
 
 .cke_editable
@@ -68,6 +69,12 @@ body
 
 	/* Fix for missing scrollbars with RTL texts. (#10488) */
 	word-wrap: break-word;
+}
+
+.cke_editable table.Table
+{
+	margin: 0;
+	width: 100%;
 }
 
 @media screen and (max-width: 768px) {

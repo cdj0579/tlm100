@@ -500,7 +500,10 @@ public class BaseController {
     		int kmId = PageUtils.getIntParamAndCheckEmpty(request, "kmId", "错误的学科ID！");
 			int njId = PageUtils.getIntParamAndCheckEmpty(request, "njId", "错误的年级ID！");
 			int xq = PageUtils.getIntParamAndCheckEmpty(request, "xq", "未选择正确的上下学期！");
-			service.copyZj(newDqId, newBbId, dqId, bbId, kmId, njId, xq);
+			boolean copyZsd = PageUtils.getBooleanParam(request, "copyZsd");
+			boolean copyXt = PageUtils.getBooleanParam(request, "copyXt");
+			boolean copyZsdContent = PageUtils.getBooleanParam(request, "copyZsdContent");
+			service.copyZj(newDqId, newBbId, dqId, bbId, kmId, njId, xq, copyZsd, copyZsdContent, copyXt);
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;

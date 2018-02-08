@@ -3,8 +3,11 @@ package com.unimas.tlm.dao.zs;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import com.unimas.jdbc.DBFactory;
 import com.unimas.jdbc.handler.ResultSetHandler;
 import com.unimas.jdbc.handler.UpdateInsertHandler;
@@ -82,6 +85,45 @@ public class XtDao extends JdbcDao<XtBean> {
 			}
 			rs = stmt.executeQuery();
 			return ResultSetHandler.listBean(rs, XtBean.class);
+		} finally {
+			DBFactory.close(conn, stmt, rs);
+		}
+	}
+	
+	public List<XtBean> query(List<Integer> zsdIds) throws Exception {
+		if(zsdIds == null || zsdIds.isEmpty()) return null;
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DBFactory.getConn();
+			stmt = conn.createStatement();
+			String sql = "select * from xt_zsd_ref where zsd_id in ("+Joiner.on(",").join(zsdIds)+")";
+			rs = stmt.executeQuery(sql);
+			List<XtZsdRef> refs = ResultSetHandler.listBean(rs, XtZsdRef.class);
+			List<Integer> xtIds = Lists.newArrayList();
+			if(refs == null || refs.isEmpty()){
+				return null;
+			}
+			for(XtZsdRef ref : refs){
+				xtIds.add(ref.getXtId());
+			}
+			sql = "select * from xt_main where id in ("+Joiner.on(",").join(xtIds)+")";
+			rs = stmt.executeQuery(sql);
+			List<XtBean> xtes = ResultSetHandler.listBean(rs, XtBean.class);
+			for(XtBean xt : xtes){
+				List<XtZsdRef> tmpRef = Lists.newArrayList();
+				for(int i=0;i<refs.size();i++){
+					XtZsdRef ref = refs.get(i);
+					if(xt.getId() == ref.getXtId()){
+						tmpRef.add(ref);
+						ref.setXt(xt);
+						refs.remove(i--);
+					}
+				}
+				xt.setRefs(tmpRef);
+			}
+			return xtes;
 		} finally {
 			DBFactory.close(conn, stmt, rs);
 		}

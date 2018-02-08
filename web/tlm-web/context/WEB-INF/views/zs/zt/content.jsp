@@ -45,8 +45,8 @@
 				                	<div class="input-icon right">
 				                    	<i class="fa"></i>
 				                     	<select name="xq" class="form-control" validate="{required:true}">
-				                     		<option value="1" selected="selected">上学期</option>
-				                     		<option value="2">下学期</option>
+				                     		<option value="1">上学期</option>
+				                     		<option value="2" selected="selected">下学期</option>
 				                     	</select>
 				                    </div>
 				                </div>
@@ -59,8 +59,8 @@
 				                	<div class="input-icon right">
 				                    	<i class="fa"></i>
 				                     	<select name="qzqm" class="form-control" validate="{required:true}">
-				                     		<option value="1" selected="selected">期中</option>
-                     						<option value="2">期末</option>
+				                     		<option value="1">期中</option>
+                     						<option value="2" selected="selected">期末</option>
 				                     	</select>
 				                    </div>
 				                </div>

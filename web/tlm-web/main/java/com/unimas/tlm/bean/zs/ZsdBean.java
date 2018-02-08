@@ -1,5 +1,9 @@
 package com.unimas.tlm.bean.zs;
 
+import java.util.List;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import com.unimas.jdbc.handler.annotation.Column;
 import com.unimas.jdbc.handler.annotation.DefaultValue;
 import com.unimas.jdbc.handler.annotation.Table;
@@ -50,6 +54,12 @@ public class ZsdBean extends JdbcBean {
 	private boolean isSelf;
 	@Column(ignore=true, name="modified_id", toType=ToType.toInt)
 	private int modifiedId;
+	@Column(ignore=true)
+	@JsonIgnore
+	private List<ZsdContentBean> contents;
+	@Column(ignore=true)
+	@JsonIgnore
+	private List<XtBean> xtes;
 	
 	public int getNjId() {
 		return njId;
@@ -140,6 +150,18 @@ public class ZsdBean extends JdbcBean {
 	}
 	public void setSelf(boolean isSelf) {
 		this.isSelf = isSelf;
+	}
+	public List<ZsdContentBean> getContents() {
+		return contents;
+	}
+	public void setContents(List<ZsdContentBean> contents) {
+		this.contents = contents;
+	}
+	public List<XtBean> getXtes() {
+		return xtes;
+	}
+	public void setXtes(List<XtBean> xtes) {
+		this.xtes = xtes;
 	}
 	public int getModifiedId() {
 		return modifiedId;

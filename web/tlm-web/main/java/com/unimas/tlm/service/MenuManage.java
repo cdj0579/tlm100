@@ -109,6 +109,7 @@ public class MenuManage {
 			children.add(getMenuItem(PageView.XKDW));
 			children.add(getMenuItem(PageView.ZJGL));
 			children.add(getMenuItem(PageView.JFGZ));
+			children.add(getMenuItem(PageView.CONFIG));
 			
 			Map<String, Object> yhgl = getMenuItem(PageView.YHGL);
 			children = new ArrayList<Map<String, Object>>();
@@ -202,6 +203,10 @@ public class MenuManage {
 		 * 积分规则配置
 		 */
 		JFGZ("jfgz", "积分规则", null, null, Lists.newArrayList(HOME)),
+		/**
+		 * 系统配置基础信息配置
+		 */
+		CONFIG("config", "系统配置", null, null, Lists.newArrayList(HOME)),
 		/**
 		 * 任务管理
 		 */

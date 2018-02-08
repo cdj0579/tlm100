@@ -2,6 +2,8 @@ package com.unimas.tlm.bean.zs;
 
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import com.unimas.jdbc.handler.annotation.Column;
 import com.unimas.jdbc.handler.annotation.Table;
 import com.unimas.jdbc.handler.entry.SelectSqlModal.LeftField;
@@ -43,6 +45,9 @@ public class XtBean extends JdbcBean {
 	private ZtBean zt;
 	@Column(ignore=true)
 	private List<ZsdBean> zsds;
+	@Column(ignore=true)
+	@JsonIgnore
+	private List<XtZsdRef> refs;
 	
 	public String getName() {
 		return name;
@@ -121,6 +126,12 @@ public class XtBean extends JdbcBean {
 	}
 	public void setZsds(List<ZsdBean> zsds) {
 		this.zsds = zsds;
+	}
+	public List<XtZsdRef> getRefs() {
+		return refs;
+	}
+	public void setRefs(List<XtZsdRef> refs) {
+		this.refs = refs;
 	}
 	public String getUserNo() {
 		return userNo;

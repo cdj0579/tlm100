@@ -427,8 +427,29 @@ public class ZsglController {
 		}
     }
     
+    @RequestMapping(value="zsd/content/getById")
+	@ResponseBody
+	public AjaxDataModal zsdContentById(HttpServletRequest request) {
+		try {
+			AjaxDataModal json = new AjaxDataModal(true);
+			int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的专题知识点ID！");
+			ZsdContentBean bean = service.getZsdContentById(id);
+			json.put("data", bean);
+			return json;
+		} catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("加载知识点内容失败！", e);
+			}
+			return uiex.toDM();
+		}
+	}
+    
     @RequestMapping(value="zsd/content/update",method = RequestMethod.POST)
     @ResponseBody
+    @RwPointcut
     @RequiresRoles("teacher")
     @HydPointcut(type=HydRule.EDIT_ZSD_CONTENT)
     public AjaxDataModal updateZsdContent(HttpServletRequest request) {
@@ -442,7 +463,11 @@ public class ZsglController {
 			int isShare = PageUtils.getIntParamAndCheckEmpty(request, "isShare", "请选择是否隐藏！");
 			String content = PageUtils.getParamAndCheckEmpty(request, "content", "知识点内容不能为空！");
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-			service.saveZsdContentOnUser(id, pid, name, isOriginal, yyfs, isShare, content, user);
+			ZsdContentBean b = service.saveZsdContentOnUser(id, pid, name, isOriginal, yyfs, isShare, content, user);
+			int rwId = PageUtils.getIntParam(request, "rwId");
+			if(rwId > 0){
+				RwHandlerFactory.setRwInfo(rwId, b.getId());
+			}
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;
@@ -685,8 +710,29 @@ public class ZsglController {
 		}
     }
     
+    @RequestMapping(value="zt/content/getById")
+	@ResponseBody
+	public AjaxDataModal ztContentById(HttpServletRequest request) {
+		try {
+			AjaxDataModal json = new AjaxDataModal(true);
+			int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的专题内容ID！");
+			ZtContentBean bean = service.getZtContentById(id);
+			json.put("data", bean);
+			return json;
+		} catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("加载专题内容失败！", e);
+			}
+			return uiex.toDM();
+		}
+	}
+    
     @RequestMapping(value="zt/content/update",method = RequestMethod.POST)
     @ResponseBody
+    @RwPointcut
     @RequiresRoles("teacher")
     @HydPointcut(type=HydRule.EDIT_ZT_CONTENT)
     public AjaxDataModal updateZtContent(HttpServletRequest request) {
@@ -700,7 +746,11 @@ public class ZsglController {
 			int isShare = PageUtils.getIntParamAndCheckEmpty(request, "isShare", "请选择是否隐藏！");
 			String content = PageUtils.getParamAndCheckEmpty(request, "content", "专题内容不能为空！");
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-			service.saveZtContentOnUser(id, pid, name, isOriginal, yyfs, isShare, content, user);
+			ZtContentBean b = service.saveZtContentOnUser(id, pid, name, isOriginal, yyfs, isShare, content, user);
+			int rwId = PageUtils.getIntParam(request, "rwId");
+			if(rwId > 0){
+				RwHandlerFactory.setRwInfo(rwId, b.getId());
+			}
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;
@@ -977,6 +1027,7 @@ public class ZsglController {
 		}
 	}
     
+    
     @RequestMapping(value="xt/delete")
 	@ResponseBody
 	@RequiresRoles("teacher")
@@ -1039,8 +1090,29 @@ public class ZsglController {
 		}
     }
     
+    @RequestMapping(value="xt/getById")
+	@ResponseBody
+	public AjaxDataModal getXtById(HttpServletRequest request) {
+		try {
+			AjaxDataModal json = new AjaxDataModal(true);
+			int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的习题ID！");
+			XtBean bean = service.getXtById(id);
+			json.put("data", bean);
+			return json;
+		} catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("加载习题信息失败！", e);
+			}
+			return uiex.toDM();
+		}
+	}
+    
     @RequestMapping(value="xt/update",method = RequestMethod.POST)
     @ResponseBody
+    @RwPointcut
     @RequiresRoles("teacher")
     @HydPointcut(type=HydRule.EDIT_XT)
     public AjaxDataModal updateXt(HttpServletRequest request) {
@@ -1065,7 +1137,11 @@ public class ZsglController {
 			String content = PageUtils.getParamAndCheckEmpty(request, "content", "习题题目不能为空！");
 			String answer = PageUtils.getParamAndCheckEmpty(request, "answer", "习题详解不能为空！");
 			ShiroUser user = (ShiroUser)SecurityUtils.getSubject().getPrincipals().getPrimaryPrincipal();
-			service.saveXt(id, ndId, ztId, zsdIds, name, typeId, isOriginal, yyfs, isShare, content, answer, user);
+			XtBean b = service.saveXt(id, ndId, ztId, zsdIds, name, typeId, isOriginal, yyfs, isShare, content, answer, user);
+			int rwId = PageUtils.getIntParam(request, "rwId");
+			if(rwId > 0){
+				RwHandlerFactory.setRwInfo(rwId, b.getId());
+			}
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;

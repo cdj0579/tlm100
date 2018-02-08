@@ -27,6 +27,11 @@ define(['assets/common/config'], function(config) {
 		var baseParams = {};
 		
 		var o = RememberBaseInfo.load();
+		$.extend(o, {
+			njId: 3,
+			xq: 2,
+			qzqm: 2
+		});
 		
 		var initTable = function(){
 			dt = $table.dataTable( {

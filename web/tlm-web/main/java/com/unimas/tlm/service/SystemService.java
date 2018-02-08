@@ -1,9 +1,14 @@
 package com.unimas.tlm.service;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
+import com.unimas.jdbc.DBFactory;
+import com.unimas.jdbc.handler.ResultSetHandler;
 import com.unimas.tlm.bean.HydRule;
 import com.unimas.tlm.bean.jfrw.JfRule;
 import com.unimas.tlm.dao.JdbcDao;
@@ -37,6 +42,37 @@ public class SystemService {
 	 */
 	public List<Map<String, Object>> getUserMenus(String basePath) throws Exception{
 		return new MenuManage(basePath).getUserMenus();
+	}
+	
+	public static Map<String, Object> loadConfig() throws Exception {
+		Statement stmt = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			conn = DBFactory.getConn();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("select value from config where name='ks_pt'");
+			int ks_pt = Integer.parseInt(ResultSetHandler.toString(rs));
+			Map<String, Object> config = Maps.newHashMap();
+			config.put("ks_pt", ks_pt);
+			return config;
+		} finally {
+			DBFactory.close(conn, stmt, rs);
+		}
+	}
+	
+	public static void saveConfig(int ks_pt) throws Exception {
+		Connection conn = null;
+		Statement stmt = null;
+		try {
+			conn = DBFactory.getConn();
+			stmt = conn.createStatement();
+			stmt.executeUpdate("update config set value="+ks_pt+" where name='ks_pt'");
+		} catch(Exception e){
+			throw e;
+		} finally {
+			DBFactory.close(conn, stmt, null);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")

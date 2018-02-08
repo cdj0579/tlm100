@@ -330,10 +330,10 @@ define(['RememberBaseInfo', 'ZstxTree', 'Viewer', 'datatables.bt', 'bootstrap-se
 		}else 
 		if(baseParams.kmId && baseParams.kmId > 0 
 			&& baseParams.njId && baseParams.njId > 0
-			&& baseParams.dqId
+			&& (baseParams.dqId || (setting.type != 'zsd' && setting.type != 'zsdContent' && setting.type != 'xt'))
 			&& baseParams.xq && baseParams.xq > 0
-			&& (baseParams.bbId || (setting.type != 'zsd' && setting.type != 'zsdContent' && setting.type != 'xt')) 
-			&& (baseParams.qzqm || (setting.type != 'zt' && setting.type != 'ztContent'))){
+			&& ((baseParams.bbId && baseParams.bbId > 0) || (setting.type != 'zsd' && setting.type != 'zsdContent' && setting.type != 'xt')) 
+			&& ((baseParams.qzqm && baseParams.qzqm > 0) || (setting.type != 'zt' && setting.type != 'ztContent'))){
 			currentNode = null;
 			reloadTree();
 		}

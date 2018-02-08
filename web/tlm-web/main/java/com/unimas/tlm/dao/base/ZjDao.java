@@ -8,6 +8,10 @@ import com.unimas.jdbc.handler.SelectHandler;
 import com.unimas.jdbc.handler.entry.SelectSqlModal;
 import com.unimas.tlm.bean.JdbcBean;
 import com.unimas.tlm.bean.base.ZjBean;
+import com.unimas.tlm.bean.zs.XtBean;
+import com.unimas.tlm.bean.zs.XtZsdRef;
+import com.unimas.tlm.bean.zs.ZsdBean;
+import com.unimas.tlm.bean.zs.ZsdContentBean;
 import com.unimas.tlm.dao.JdbcDao;
 
 public class ZjDao extends JdbcDao<ZjBean> {
@@ -27,6 +31,23 @@ public class ZjDao extends JdbcDao<ZjBean> {
 	
 	private void saveBean(Connection conn, ZjBean bean) throws Exception {
 		ZjBean p = (ZjBean)super.save(conn, bean);
+		List<ZsdBean> zsdes = bean.getZsdes();
+		if(zsdes != null && zsdes.size() > 0){
+			for(ZsdBean zsd : zsdes){
+				zsd.setId(-1);
+				zsd.setZjId(p.getId());
+				zsd.setDqId(p.getDqId());
+				super.save(conn, zsd);
+				List<ZsdContentBean> contents = zsd.getContents();
+				if(contents != null && contents.size() > 0){
+					for(ZsdContentBean content : contents){
+						content.setId(-1);
+						content.setPid(zsd.getId());
+						super.save(conn, content);
+					}
+				}
+			}
+		}
 		List<ZjBean> children = bean.getChildren();
 		if(children != null && !children.isEmpty()){
 			for(ZjBean b : children){
@@ -36,7 +57,7 @@ public class ZjDao extends JdbcDao<ZjBean> {
 		}
 	}
 	
-	public void save(List<ZjBean> list) throws Exception {
+	public void save(List<ZjBean> list, List<XtBean> xtes) throws Exception {
 		if(list == null || list.isEmpty()) return;
 		Connection conn = null;
 		try {
@@ -44,6 +65,22 @@ public class ZjDao extends JdbcDao<ZjBean> {
 			conn.setAutoCommit(false);
 			for(ZjBean bean : list){
 				this.saveBean(conn, bean);
+			}
+			if(xtes != null && xtes.size() > 0){
+				for(XtBean xt : xtes){
+					super.save(conn, xt);
+					List<XtZsdRef> refs = xt.getRefs();
+					if(refs != null && refs.size() > 0){
+						for(XtZsdRef ref : refs){
+							if(ref.getZsd() != null){
+								XtZsdRef tmp = new XtZsdRef();
+								tmp.setXtId(xt.getId());
+								tmp.setZsdId(ref.getZsd().getId());
+								super.save(conn, tmp);
+							}
+						}
+					}
+				}
 			}
 			conn.commit();
 		} catch(Exception e){

@@ -16,10 +16,15 @@ import com.unimas.tlm.bean.base.CstBean;
 import com.unimas.tlm.bean.base.MbxxBean;
 import com.unimas.tlm.bean.base.XkdwBean;
 import com.unimas.tlm.bean.base.ZjBean;
+import com.unimas.tlm.bean.zs.XtBean;
+import com.unimas.tlm.bean.zs.XtZsdRef;
+import com.unimas.tlm.bean.zs.ZsdBean;
+import com.unimas.tlm.bean.zs.ZsdContentBean;
 import com.unimas.tlm.dao.JdbcDao;
 import com.unimas.tlm.dao.base.CstkDao;
 import com.unimas.tlm.dao.base.MbxxDao;
 import com.unimas.tlm.dao.base.ZjDao;
+import com.unimas.tlm.service.zs.ZsService;
 
 @Service
 public class BaseService {
@@ -107,19 +112,40 @@ public class BaseService {
 		return (List<ZjBean>) new ZjDao().query(zj);
 	}
 	
-	
-	public void copyZj(String newDqId, int newBbId, String dqId, int bbId, int kmId, int njId, int xq) throws Exception{
+	public void copyZj(String newDqId, int newBbId, String dqId, int bbId, int kmId, int njId, int xq, boolean copyZsd, boolean copyZsdContent, boolean copyXt) throws Exception{
 		List<ZjBean> zjList = queryZjList(bbId, dqId, kmId, njId, xq);
 		if(zjList == null) return;
 		List<ZjBean> treeList = Lists.newArrayList();
 		Map<Integer, ZjBean> idMaps = Maps.newHashMap();
+		ZsService service = new ZsService();
+		List<ZsdBean> zsdList = Lists.newArrayList();
 		for(int i=0;i<zjList.size();i++){
 			ZjBean bean = zjList.get(i);
 			int id = bean.getId();
 			idMaps.put(id, bean);
-			bean.setId(-1);
 			bean.setDqId(newDqId);
 			bean.setBbId(newBbId);
+			if(copyZsd){
+				List<ZsdBean> zsdes = service.queryZsd(bean.getId());
+				if(zsdes != null && zsdes.size() > 0){
+					for(ZsdBean zsd : zsdes){
+						int zsdId = zsd.getId();
+						if(copyZsdContent){
+							List<ZsdContentBean> zsdContents = service.queryZsdContent(zsdId);
+							if(zsdContents != null && zsdContents.size() > 0){
+								for(ZsdContentBean content : zsdContents){
+									content.setId(-1);
+								}
+								zsd.setContents(zsdContents);
+							}
+						}
+					}
+					bean.setId(-1);
+					bean.setZsdes(zsdes);
+					zsdList.addAll(zsdes);
+				}
+			}
+			bean.setId(-1);
 		}
 		for(ZjBean bean : zjList){
 			int pid = bean.getPid();
@@ -130,7 +156,32 @@ public class BaseService {
 				p.putChild(bean);
 			}
 		}
-		new ZjDao().save(treeList);
+		List<XtBean> xtes = null;
+		if(copyXt && zsdList.size() > 0){
+			List<Integer> zsdIds = Lists.newArrayList();
+			Map<Integer, ZsdBean> zsdMap = Maps.newHashMap();
+			for(ZsdBean zsd : zsdList){
+				int zsdId = zsd.getId();
+				zsd.setId(-1);
+				zsdMap.put(zsdId, zsd);
+				zsdIds.add(zsdId);
+			}
+			xtes = service.queryXt(zsdIds);
+			if(xtes != null && xtes.size() > 0){
+				for(XtBean xt : xtes){
+					xt.setId(-1);
+					List<XtZsdRef> refs = xt.getRefs();
+					for(XtZsdRef ref : refs){
+						int zsdId = ref.getZsdId();
+						ZsdBean zsd = zsdMap.get(zsdId);
+						if(zsd != null){
+							ref.setZsd(zsd);
+						}
+					}
+				}
+			}
+		}
+		new ZjDao().save(treeList, xtes);
 	}
 	
 	public ZjBean saveZj(int id, String dqId, int bbId, int kmId, int njId, int xq, String name, String bm, int xh, int pid) throws Exception{
@@ -169,7 +220,8 @@ public class BaseService {
 	
 	public static void main(String[] args) throws Exception {
 		//System.out.println(new BaseService().queryCtsList());
-		new BaseService().deleteZj(69);
+		//new BaseService().deleteZj(69);
+		new BaseService().copyZj("330502", -1, "330501", -1, 1, 1, 1, true, true, true);
 	}
 
 }

@@ -155,6 +155,12 @@ public class ZsService {
 		return new ZsdDao().getContentByIds(ids, type);
 	}
 	
+	public ZsdContentBean getZsdContentById(int id) throws Exception {
+		ZsdContentBean bean = new ZsdContentBean();
+		bean.setId(id);
+		return (ZsdContentBean)new ZsdDao().getById(bean);
+	} 
+	
 	public ZsdContentBean saveZsdContentOnUser(int id, int pid, String name, int isOriginal, int yyfs, int isShare, 
 			String content, ShiroUser user) throws Exception{
 		ZsdContentBean bean = new ZsdContentBean();
@@ -181,6 +187,20 @@ public class ZsService {
 	@SuppressWarnings("unchecked")
 	public List<ZsdBean> queryZsd(String dqId, int kmId, int njId, int xq, String userNo) throws Exception{
 		return (List<ZsdBean>)new ZsdDao().query(dqId, kmId, njId, xq, userNo);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ZsdBean> queryZsd(int zjId) throws Exception{
+		ZsdBean bean = new ZsdBean();
+		bean.setZjId(zjId);
+		return (List<ZsdBean>)new ZsdDao().query(bean);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ZsdContentBean> queryZsdContent(int zsdId) throws Exception{
+		ZsdContentBean bean = new ZsdContentBean();
+		bean.setPid(zsdId);
+		return (List<ZsdContentBean>)new ZsdDao().query(bean);
 	}
 	
 	public Object getInfo(int id, String type) throws Exception {
@@ -304,6 +324,12 @@ public class ZsService {
 		zt.setNdId(ndId);
 		zt.setDesc(desc);
 		new ZtDao().save(zt);
+	}
+	
+	public ZtContentBean getZtContentById(int id) throws Exception {
+		ZtContentBean bean = new ZtContentBean();
+		bean.setId(id);
+		return (ZtContentBean)new ZtDao().getById(bean);
 	}
 	
 	public ZtContentBean saveZtContentOnUser(int id, int pid, String name, int isOriginal, int yyfs, int isShare, String content, ShiroUser user) throws Exception{
@@ -511,6 +537,16 @@ public class ZsService {
 	
 	public List<XtBean> queryXt(String dqId, int kmId, int njId, int xq) throws Exception{
 		return new XtDao().query(dqId, kmId, njId, xq, null);
+	}
+	
+	public List<XtBean> queryXt(List<Integer> zsdIds) throws Exception{
+		return new XtDao().query(zsdIds);
+	}
+	
+	public XtBean getXtById(int id) throws Exception {
+		XtBean bean = new XtBean();
+		bean.setId(id);
+		return (XtBean)new XtDao().getById(bean);
 	}
 	
 	public void deleteXt(int id) throws Exception{

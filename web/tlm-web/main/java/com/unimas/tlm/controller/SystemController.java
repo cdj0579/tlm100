@@ -24,6 +24,7 @@ import com.unimas.tlm.bean.datamodal.AjaxDataModal;
 import com.unimas.tlm.bean.datamodal.DataTableDM;
 import com.unimas.tlm.exception.UIException;
 import com.unimas.tlm.service.IndexService;
+import com.unimas.tlm.service.SystemService;
 import com.unimas.tlm.service.MenuManage.PageView;
 import com.unimas.tlm.service.dic.DicService;
 import com.unimas.tlm.service.user.UserService;
@@ -99,6 +100,43 @@ public class SystemController {
     public String jfgz(Model model,HttpServletRequest request) {
     	PageUtils.setPageView(request, PageView.JFGZ);
     	return "jfgz/index";
+    }
+    
+    /**
+     * 系统基础信息配置页面的请求
+     *
+     * @return
+     */
+    @RequestMapping(value="/config",method = RequestMethod.GET)
+    public String config(Model model,HttpServletRequest request) {
+    	PageUtils.setPageView(request, PageView.CONFIG);
+    	try {
+			request.setAttribute("data", SystemService.loadConfig());
+		} catch (Exception e) {}
+    	return "config/index";
+    }
+    
+    /**
+     * 系统基础信息配置页面的请求
+     *
+     * @return
+     */
+    @RequestMapping(value="/config",method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxDataModal config_post(Model model,HttpServletRequest request) {
+    	try {
+			int ks_pt = PageUtils.getIntParamAndCheckEmpty(request, "ks_pt", "课时不能为空！");
+			SystemService.saveConfig(ks_pt);
+			return new AjaxDataModal(true);
+		}  catch (Exception e) {
+			UIException uiex = null;
+			if(e instanceof UIException){
+				uiex = (UIException)e;
+			} else {
+				uiex = new UIException("保存系统基础信息失败！", e);
+			}
+			return uiex.toDM();
+		}
     }
 	
 	/**

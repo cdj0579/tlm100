@@ -9,6 +9,7 @@ import com.unimas.jdbc.handler.annotation.Column;
 import com.unimas.jdbc.handler.annotation.Table;
 import com.unimas.jdbc.handler.entry.SelectSqlModal.LeftField;
 import com.unimas.tlm.bean.JdbcBean;
+import com.unimas.tlm.bean.zs.ZsdBean;
 
 @Table("zj")
 public class ZjBean extends JdbcBean {
@@ -42,6 +43,9 @@ public class ZjBean extends JdbcBean {
 	private ZjBean parent;
 	@Column(ignore=true)
 	private boolean configed = false;
+	@Column(ignore=true)
+	@JsonIgnore
+	private List<ZsdBean> zsdes;
 	
 	public int getNjId() {
 		return njId;
@@ -108,6 +112,12 @@ public class ZjBean extends JdbcBean {
 	}
 	public void setXh(int xh) {
 		this.xh = xh;
+	}
+	public List<ZsdBean> getZsdes() {
+		return zsdes;
+	}
+	public void setZsdes(List<ZsdBean> zsdes) {
+		this.zsdes = zsdes;
 	}
 	public List<ZjBean> getChildren() {
 		return children;

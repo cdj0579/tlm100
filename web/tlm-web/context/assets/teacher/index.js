@@ -90,6 +90,47 @@ define(['assets/common/config'], function(config) {
 		};
 		
 		var initTable2 = function(){
+			
+			
+			var showEditXtWin = function(d){
+				App.ajaxModal({
+					id: "addXtRw",
+					scroll: true,
+					width: "900",
+					required: ["addXt"],
+					remote: basePath+"assets/zs/xt/edit.html",
+					callback: function(modal, args){
+						args[0].init(d, modal, reload);
+					}
+				});
+			};
+			
+			var showEditZsdWin = function(d){
+				App.ajaxModal({
+					id: "addZsdRw",
+					scroll: true,
+					width: "900",
+					required: ["addZsd"],
+					remote: basePath+"assets/zs/zsd/editContent.html",
+					callback: function(modal, args){
+						args[0].init(d, modal, reload);
+					}
+				});
+			};
+			
+			var showEditZtWin = function(d){
+				App.ajaxModal({
+					id: "addZtRw",
+					scroll: true,
+					width: "900",
+					required: ["addZt"],
+					remote: basePath+"assets/zs/zt/editContent.html",
+					callback: function(modal, args){
+						args[0].init(d, modal, reload);
+					}
+				});
+			};
+			
 			dt2 = $table2.dataTable( {
 				ajax: {
 	        		url: basePath+"jfrw/rw/dwcrw",
@@ -135,7 +176,8 @@ define(['assets/common/config'], function(config) {
 	    	        		  //return '<span class="font-grey-cascade">已获取积分<span class="font-blue">'+full.jf+'</span>。</span>';
 	    	        		  return '<span class="badge badge-success badge-roundless">审核通过</span>';
 	    	        	  } else if(data == 3){
-	    	        		  return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="原因：'+full.shyj+'"><span class="badge badge-danger badge-roundless">审核不通过</span></div>';
+	    	        		  return '<div class="tooltips" data-container="body" data-placement="top" data-original-title="原因：'+full.shyj+'"><span class="badge badge-danger badge-roundless">审核不通过</span></div>'
+	    	        		  		+'<a href="javascript:;" class="btn blue wcrw"><i class="fa fa-edit"></i> 重新完成</a>';
 	    	        	  } else if(data == 4){
 	    	        		  return '<span class="badge badge-danger badge-roundless">超时未完成</span>';
 	    	        	  } else if(data == 5){
@@ -169,42 +211,39 @@ define(['assets/common/config'], function(config) {
 				};
 				if(type == 0){
 					d.zsdId = data.sourceId;
-					App.ajaxModal({
-						id: "addXtRw",
-						scroll: true,
-						width: "900",
-						required: ["addXt"],
-						remote: basePath+"assets/zs/xt/edit.html",
-						callback: function(modal, args){
-							args[0].init(d, modal, reload);
-						}
-					});
+					d.name = data.sourceName;
+					if(data.contentId > 0){
+						App.getJSON(basePath+"zs/xt/getById", {id: data.contentId}, function(result){
+							$.extend(d, result.data);
+							showEditXtWin(d);
+						});
+					} else {
+						showEditXtWin(d);
+					}
 				} else if(type == 1){
 					d.pid = data.sourceId;
 					d.zsdName = data.sourceName;
-					App.ajaxModal({
-						id: "addZsdRw",
-						scroll: true,
-						width: "900",
-						required: ["addZsd"],
-						remote: basePath+"assets/zs/zsd/editContent.html",
-						callback: function(modal, args){
-							args[0].init(d, modal, reload);
-						}
-					});
+					d.name = data.sourceName;
+					if(data.contentId > 0){
+						App.getJSON(basePath+"zs/zsd/content/getById", {id: data.contentId}, function(result){
+							$.extend(d, result.data);
+							showEditZsdWin(d);
+						});
+					} else {
+						showEditZsdWin(d);
+					}
 				} else if(type == 2){
 					d.pid = data.sourceId;
 					d.ztName = data.sourceName;
-					App.ajaxModal({
-						id: "addZtRw",
-						scroll: true,
-						width: "900",
-						required: ["addZt"],
-						remote: basePath+"assets/zs/zt/editContent.html",
-						callback: function(modal, args){
-							args[0].init(d, modal, reload);
-						}
-					});
+					d.name = data.sourceName;
+					if(data.contentId > 0){
+						App.getJSON(basePath+"zs/zt/content/getById", {id: data.contentId}, function(result){
+							$.extend(d, result.data);
+							showEditZtWin(d);
+						});
+					} else {
+						showEditZtWin(d);
+					}
 				} else {
 					App.getAlert().warning("错误的任务类型！", "警告");
 				}

@@ -198,6 +198,14 @@ define(["validate.additional", "select3", "ztree", "ztree.select"], function(){
 	    		reload(_data);
 	    	});
 			
+			var $enableSwitch = $form.find('input[name="copyZsd"]');
+			$enableSwitch.bootstrapSwitch().on("switchChange.bootstrapSwitch", function(){
+				var checked = $enableSwitch.prop("checked");
+				$form.hideOrShowFormItem(["copyXt"], checked);
+			});
+			
+			App.initUniform();
+			
 			initValidHandler(modal);
 			initSaveHandler(modal);
 		}
