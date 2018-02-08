@@ -77,7 +77,7 @@ public class AppSystemController {
 		String tx = user.getTxImg();
 		if( isGrzy ){
 			String userNo = user.getUserNo();
-			request.setAttribute("userNo",userNo);
+			request.setAttribute("userNo",user.getUserId());
 			if(isReloadTxImg){
 				tx = new String(service.getStudentByUserNo(userNo).getTx());
 				user.setTxImg(tx);
