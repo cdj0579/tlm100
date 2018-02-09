@@ -13,6 +13,8 @@ public class XkdwBean extends JdbcBean {
 	@Column(ignore=true)
 	@LeftField(name="name", joinTable="km_dic", joinField="id", refField="kmId")
 	private String kmName;
+	@Column(name="level0", nullNumberValue=-1)
+	private int level0 = -1;
 	@Column(name="level1", nullNumberValue=-1)
 	private int level1 = -1;
 	@Column(name="level2", nullNumberValue=-1)
@@ -29,6 +31,12 @@ public class XkdwBean extends JdbcBean {
 	}
 	public void setKmName(String kmName) {
 		this.kmName = kmName;
+	}
+	public int getLevel0() {
+		return level0;
+	}
+	public void setLevel0(int level0) {
+		this.level0 = level0;
 	}
 	public int getLevel1() {
 		return level1;

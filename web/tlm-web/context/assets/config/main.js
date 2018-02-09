@@ -16,7 +16,7 @@ define(['assets/common/config'], function(config) {
 	});
 	
 	require(['app','layout','demo']);
-	require(['domready!', 'app', "validate.additional"], function (doc, App){
+	require(['domready!', 'app', "validate.additional", "select3"], function (doc, App){
 		var $form = $('form');
 		var initValidHandler = function(){
 	    	validForm = $form.validateB({
@@ -40,6 +40,10 @@ define(['assets/common/config'], function(config) {
 				$form.submit();
 			});
 		};
+		
+		$form.find('select[name="cstl"]').select2({
+    		placeholder: "请选择"
+    	});
 		
 		initValidHandler();
 		initSaveHandler();

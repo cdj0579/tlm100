@@ -311,9 +311,10 @@ public class BaseController {
     	try {
     		int id = PageUtils.getIntParamAndCheckEmpty(request, "id", "错误的学科档位ID！");
     		int kmId = PageUtils.getIntParamAndCheckEmpty(request, "kmId", "错误的学科ID！");
+    		int level0 = PageUtils.getIntParamAndCheckEmpty(request, "level0", "错误的档位分数！");
     		int level1 = PageUtils.getIntParamAndCheckEmpty(request, "level1", "错误的档位分数！");
     		int level2 = PageUtils.getIntParamAndCheckEmpty(request, "level2", "错误的档位分数！");
-			service.setXkdw(id, kmId, level1, level2);
+			service.setXkdw(id, kmId, level0, level1, level2);
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;

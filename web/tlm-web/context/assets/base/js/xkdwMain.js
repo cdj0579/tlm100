@@ -42,8 +42,9 @@ define(['assets/common/config'], function(config) {
 				drawCallback: function(){ App.handleTooltips();  },
 	            columns: [
 	                  { title: "学科", data: "kmName"},
-	                  { title: "档位一", data: "level1"},
-	                  { title: "档位二", data: "level2"},
+	                  { title: "档位一", data: "level0"},
+	                  { title: "档位二", data: "level1"},
+	                  { title: "档位三", data: "level2"},
 	    	          { title: "操作", data: "id", render: function(data, type, full){
 	    	        	  return '<a href="javascript:;" class="btn blue edit"> 设置 <i class="fa fa-edit"></i></a>';
 	    	          }}

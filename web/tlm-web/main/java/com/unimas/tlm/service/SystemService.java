@@ -53,22 +53,33 @@ public class SystemService {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("select value from config where name='ks_pt'");
 			int ks_pt = Integer.parseInt(ResultSetHandler.toString(rs));
+			rs = stmt.executeQuery("select value from config where name='cstl'");
+			int cstl = Integer.parseInt(ResultSetHandler.toString(rs));
 			Map<String, Object> config = Maps.newHashMap();
 			config.put("ks_pt", ks_pt);
+			config.put("cstl", cstl);
 			return config;
 		} finally {
 			DBFactory.close(conn, stmt, rs);
 		}
 	}
 	
-	public static void saveConfig(int ks_pt) throws Exception {
+	public static void saveConfig(int ks_pt, int cstl) throws Exception {
 		Connection conn = null;
 		Statement stmt = null;
 		try {
 			conn = DBFactory.getConn();
+			conn.setAutoCommit(false);
 			stmt = conn.createStatement();
 			stmt.executeUpdate("update config set value="+ks_pt+" where name='ks_pt'");
+			stmt.executeUpdate("update config set value="+cstl+" where name='cstl'");
+			conn.commit();
 		} catch(Exception e){
+			try{
+				if(conn != null){
+					conn.rollback();
+				}
+			} catch(Exception e1){}
 			throw e;
 		} finally {
 			DBFactory.close(conn, stmt, null);

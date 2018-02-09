@@ -126,7 +126,8 @@ public class SystemController {
     public AjaxDataModal config_post(Model model,HttpServletRequest request) {
     	try {
 			int ks_pt = PageUtils.getIntParamAndCheckEmpty(request, "ks_pt", "课时不能为空！");
-			SystemService.saveConfig(ks_pt);
+			int cstl = PageUtils.getIntParamAndCheckEmpty(request, "cstl", "课时不能为空！");
+			SystemService.saveConfig(ks_pt, cstl);
 			return new AjaxDataModal(true);
 		}  catch (Exception e) {
 			UIException uiex = null;

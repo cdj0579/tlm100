@@ -70,10 +70,11 @@ public class BaseService {
 		return (List<XkdwBean>)new JdbcDao<XkdwBean>().query(new XkdwBean());
 	}
 	
-	public void setXkdw(int id, int kmId, int level1, int level2) throws Exception{
+	public void setXkdw(int id, int kmId, int level0, int level1, int level2) throws Exception{
 		XkdwBean bean = new XkdwBean();
 		bean.setId(id);
 		bean.setKmId(kmId);
+		bean.setLevel0(level0);
 		bean.setLevel1(level1);
 		bean.setLevel2(level2);
 		new JdbcDao<XkdwBean>().save(bean);
