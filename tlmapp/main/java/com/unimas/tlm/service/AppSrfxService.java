@@ -37,6 +37,7 @@ public class AppSrfxService {
 		
 		try{
 			conn =  DBFactory.getConn();
+			ksfzs = getKs(conn);
 			result = this.getLastCj(conn, userNo);
 			System.out.println(result);
 			if(result == null ){
@@ -107,6 +108,30 @@ public class AppSrfxService {
         result = df.format(num);
         return result;
     }
+	//
+	/**
+	 * 获取课时时间（每课时多少分钟数）
+	 * @param conn
+	 * @return
+	 */
+	public int getKs(Connection conn){
+		int ks_pt = 45;
+		String sql = "select value from config where name='ks_pt'";
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = conn.prepareStatement(sql);
+			rs = stmt.executeQuery();
+			ks_pt =ResultSetHandler.toInt(rs);
+			if( ks_pt == -1 ){
+				 ks_pt = 45;
+			}
+		}catch (Exception e) {
+		}finally{
+			DBFactory.close(null, stmt, rs);
+		}
+		return ks_pt;
+	}
 	
 	public Map<String,Object> getLastCj(Connection conn,String userNo){
 		Map<String, Object> result = new HashMap<String, Object>();
