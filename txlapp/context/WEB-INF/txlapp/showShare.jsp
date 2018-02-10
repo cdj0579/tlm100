@@ -157,10 +157,10 @@
 				</c:if>
 			});
 			$("footer .inBtn").click(function(){
-				self.location = basePath + "fx/${data.jgId }/${data.lryId }"
+				self.location = "http://tlm100.com:${port }"+basePath + "fx/${data.jgId }/${data.lryId }"
 			});
 			$(".share").click(function(){
-				var url = "share:${data.mainTitle }:${data.subTitle }:http://${host }:${port }"+ basePath + "fx/${data.jgId }/${data.lryId }/showShare"
+				var url = "share:${data.mainTitle }:${data.subTitle }:http://tlm100.com:${port }"+ basePath + "fx/${data.jgId }/${data.lryId }/showShare"
 				//console.info(url);
 				self.location = url
 			});

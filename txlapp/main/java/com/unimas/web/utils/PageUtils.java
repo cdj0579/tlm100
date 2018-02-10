@@ -117,7 +117,8 @@ public class PageUtils {
 	 * @return
 	 */
 	public static String getSystemUrl(HttpServletRequest req){
-		return req.getScheme()+"://"+req.getLocalAddr()+":"+req.getLocalPort()+getContextPath(req);
+//		return req.getScheme()+"://"+req.getLocalAddr()+":"+req.getLocalPort()+getContextPath(req);
+		return req.getScheme()+"://tlm100.com:"+req.getLocalPort()+getContextPath(req);
 	}
 	
 	/**
