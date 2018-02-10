@@ -19,6 +19,13 @@ define(['assets/common/config'], function(config) {
 		$("#setting").click(function(){
 			location.href= App.remoteUrlPre +"reSrfx";
 		});
+		var $number = $('input[type=number]');
+		var $span7 = $("span[v='7']");
+		var num = 40;
+		format = function(){
+			$span7.html((total/num).toFixed(1));
+		}
+		format(); //初始为span7赋值
 		
 		$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
 			 /* e.target // 激活的标签页
@@ -36,10 +43,20 @@ define(['assets/common/config'], function(config) {
 				$("span[v='3']").html(data.A2);
 				$("span[v='4']").html(data.A3);
 				$("span[v='5']").html(data.A4);
-				$("span[v='7']").html(data.total);
+				total = data.total;
+				format(); //为span7赋值
 	     	});
 		 	
 		});
+		$number.change(function(){
+			var n = parseInt($number.val());
+			if( n > 0){
+				num = n;
+				format(); //为span7赋值
+			}else{
+				$number.val(num)
+			}
+		})
 		
 	});
 	

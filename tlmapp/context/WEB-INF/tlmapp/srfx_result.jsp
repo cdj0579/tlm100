@@ -11,6 +11,7 @@
 		<%PageUtils.initBasePath(request); %>
         <script>
 			var basePath = "${basePath }";
+			var total = ${data.total }
 		</script>
 		<link href="${basePath }assets/global/plugins/font-opensans/Open-Sans.css" rel="stylesheet" type="text/css" />
 		<link href="${basePath }assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -50,6 +51,14 @@
 			 .table-bordered>thead>tr>th{
 				border-color: #000;
 			}
+			.table>tbody>tr>td[v='6'] {
+				padding:0;
+			}
+			input[type=number]  {
+				width: 40px;
+				margin: 0;
+				padding: 2px 2px 2px 8px;
+			}
 		</style>
 	</head>
 	<body > 
@@ -78,18 +87,18 @@
 			  	<div class="tab-pane active">
 			  		<table class="table table-bordered">
 			  			<tbody>
-			  				<tr><td rowspan="2">A1查漏补缺</td><td>A1.1基础知识点</td><td ><span v="1">${data.A1_1 }</span>课时</td></tr>
-			  				<tr><td>A1.2重难知识点</td><td><span v="2">${data.A1_2 }</span>课时</td></tr>
-			  				<tr><td>A2同步巩固</td><td>知识点</td><td><span v="3">${data.A2 }</span>课时</td></tr>
-			  				<tr><td>A3综合训练</td><td>综合题型</td><td><span v="4">${data.A3 }</span>课时</td></tr>
-			  				<tr><td>A4压轴专题</td><td>压轴专题</td><td><span v="5">${data.A4 }</span>课时</td></tr>
-			  				<tr><td>总课时</td><td v="6"></td><td><span v="7">${data.total }</span>课时</td></tr>
+			  				<tr><td rowspan="2">A1查漏补缺</td><td>A1.1基础知识点</td><td ><span v="1">${data.A1_1 }</span>分钟</td></tr>
+			  				<tr><td>A1.2重难知识点</td><td><span v="2">${data.A1_2 }</span>分钟</td></tr>
+			  				<tr><td>A2同步巩固</td><td>知识点</td><td><span v="3">${data.A2 }</span>分钟</td></tr>
+			  				<tr><td>A3综合训练</td><td>综合题型</td><td><span v="4">${data.A3 }</span>分钟</td></tr>
+			  				<tr><td>A4压轴专题</td><td>压轴专题</td><td><span v="5">${data.A4 }</span>分钟</td></tr>
+			  				<tr><td>总课时</td><td v="6"><input type="number" value="40" />分钟/课时</td><td><span v="7"></span>课时</td></tr>
 			  			</tbody>
 			  		</table>
 			  	</div>
 			</div>
 			<div>
-				<p> 温馨提示您与目标的差距：</p>
+				<p> 温馨提示您与目标的差距（总分以目标总分为准）：</p>
 				<c:if test="${data.diff_1 > 0 }">
 					<p>	数学：<span name='low_sx'>${data.diff_1 }</span>分</p>
 				</c:if>

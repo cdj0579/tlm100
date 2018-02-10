@@ -27,7 +27,7 @@ public class AppSrfxService {
 	public Map<String,Object> dealFxReasult(int njId,int mbxxId,String userNo,int kmId,String dqId){
 		Map<String,Object> result = new HashMap<String, Object>();
 		Connection conn = null;
-		int ksfzs = 45; //每课时的分钟数
+		//int ksfzs = 45; //每课时的分钟数
 		Date date = new Date();
 		int currentMonth = DateUtils.month(date);
 		int xq = 1; //当前学期： 1：上学期；2：下学期
@@ -37,7 +37,7 @@ public class AppSrfxService {
 		
 		try{
 			conn =  DBFactory.getConn();
-			ksfzs = getKs(conn);
+			//ksfzs = getKs(conn);
 			result = this.getLastCj(conn, userNo);
 			System.out.println(result);
 			if(result == null ){
@@ -49,42 +49,92 @@ public class AppSrfxService {
 			
 			Map<String, Integer> fsMap = this.getXkdw(conn,mbxxId, kmId);
 			result.putAll(fsMap);
+			int[] data = getCjAndCjmf(result, kmId);
+			int e  = data[0] * 100 / data[1];  // 成绩分数（e）
+			
+			int mbfx = fsMap.get("mbfs");
+			int mf = fsMap.get("mf");
+			mbfx = mbfx * 100 / mf ;  // 目标分数（m）
 			
 			int addYear = njId; //年级编号转换为相差年限；
 			if(currentMonth >= prevStartMoth ){
 				addYear = addYear - 1;
 			}
-			int d = addYear*12 + ( currentMonth - prevStartMoth ); //入学以来有多少月(不含当月)
-			int c = 36 - d ; //离毕业还剩多少月(含当月)
+			int c = addYear*12 + ( currentMonth - prevStartMoth ); //入学以来有多少月(不含当月)
+			int d = 36 - c ; //离毕业还剩多少月(含当月)
+			int k1 = fsMap.remove("k0");
+			int k2 = fsMap.remove("k1");
+			int k3 = fsMap.remove("k2");
 			
-			int A2 = 0;
-			if(c > 6){
-				A2 = this.getGgz(conn, njId, xq, kmId, dqId);
-			}
-			result.put("A2", division(A2,ksfzs) );
 			int A1_1  = 0;
 			int A1_2  = 0;
-			if(d > 6){
-				A1_1 = this.getClbqValue(conn, njId, xq, kmId, true, dqId);
-				A1_2 = this.getClbqValue(conn, njId, xq, kmId, false, dqId);
-			}
-			result.put("A1_1", division(A1_1, ksfzs));
-			result.put("A1_2", division(A1_2, ksfzs));
-			
+			int A2_1 = 0;
+			int A2_2 = 0;
 			int A3  = 0;
 			int A4  = 0;
-			int mbfx = fsMap.get("mbfs");
-			int mf = fsMap.get("mf");
-			mbfx = mbfx * 100 / mf ;
-			if(mbfx >= fsMap.get("k1") ){
-				A3  = this.getA3A4(conn, currentMonth, njId, xq, kmId, true);
+			
+			int mqj = 4; //目标分所在的区间
+			int eqj = 1; //成绩分所在的区间
+			if(mbfx >= k3 ){
+				mqj = 4;
+			} else if(mbfx >= k2 ){
+				mqj = 3;
+			} else if(mbfx >= k1 ){
+				mqj = 2;
+			} else {
+				mqj = 1;
 			}
-			if(mbfx >= fsMap.get("k2") ){
+			if( e < k1 ){
+				eqj = 1;
+			} else if( e < k2 ){
+				eqj = 2;
+			} else if( e < k3 ){
+				eqj = 3;
+			}else{
+				eqj = 4;
+			}
+			
+			if( eqj >= mqj ){
+				eqj = mqj;
+			}
+			switch(eqj){
+			case 1 :
+				if(c >= 4){
+					A1_1 = this.getClbqValue(conn, njId, xq, kmId, true, dqId);
+				}
+				if(d >= 6){
+					A2_1 = this.getGgz(conn, njId, xq, kmId, dqId,true);
+				}
+				if(mqj == 1){
+					break;
+				}
+			case 2 :
+				if(c >= 4){
+					A1_2 = this.getClbqValue(conn, njId, xq, kmId, false, dqId);
+				}
+				if(d >= 6){
+					A2_2 = this.getGgz(conn, njId, xq, kmId, dqId,false);
+				}
+				if(mqj == 2){
+					break;
+				}
+			case 3 :
+				A3  = this.getA3A4(conn, currentMonth, njId, xq, kmId, true);
+				if(mqj == 3){
+					break;
+				}
+			case 4 :
 				A4  = this.getA3A4(conn, currentMonth, njId, xq, kmId, false);
 			}
-			result.put("A3", division(A3, ksfzs) );
-			result.put("A4", division(A4, ksfzs) );
-			result.put("total", division( A1_1+A1_2+A2+A3+A4, ksfzs) );
+			
+			
+			int A2 =  A2_1 +  A2_2 ;
+			result.put("A2", A2  /*division(A2,ksfzs)*/ );
+			result.put("A1_1", A1_1 /*division(A1_1, ksfzs)*/);
+			result.put("A1_2", A1_2 /*division(A1_2, ksfzs)*/);
+			result.put("A3", A3 /*division(A3, ksfzs)*/ );
+			result.put("A4", A4 /*division(A4, ksfzs)*/ );
+			result.put("total", A1_1+A1_2+A2+A3+A4 /*division( A1_1+A1_2+A2+A3+A4, ksfzs)*/ );
 			
 		}catch (Exception e) {
 			// TODO: handle exception
@@ -161,7 +211,7 @@ public class AppSrfxService {
 	 */
 	public Map<String, Integer> getXkdw(Connection conn,int mbxxId,int kmId){
 		Map<String, Integer> result = new HashMap<String, Integer>();
-		String sql = "select level1,level2,mbfs,mf from xkdw T1 LEFT JOIN mbxx_mbf T2 ON T2.mbxx_id=? and T1.km_id = T2.km_id  where T1.km_id = ? ;";
+		String sql = "select level0,level1,level2,mbfs,mf from xkdw T1 LEFT JOIN mbxx_mbf T2 ON T2.mbxx_id=? and T1.km_id = T2.km_id  where T1.km_id = ? ;";
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
@@ -170,6 +220,7 @@ public class AppSrfxService {
 			stmt.setInt(2, kmId);
 			rs = stmt.executeQuery();
 			if(rs.next()){
+				result.put("k0", rs.getInt("level0"));
 				result.put("k1", rs.getInt("level1"));
 				result.put("k2", rs.getInt("level2"));
 				result.put("mf", rs.getInt("mf"));
@@ -188,11 +239,13 @@ public class AppSrfxService {
 	 * @param njId  年级编号
 	 * @param xq 	当前学期： 1：上学期；2：下学期
 	 * @param kmId 	当前科目编号
+	 * @param dqId 所属区域id
+	 * @param flag  true: 基础知识点；false：重难知识点
 	 * @return
 	 */
-	public int getGgz(Connection conn,int njId,int xq, int kmId,String dqId){
+	public int getGgz(Connection conn,int njId,int xq, int kmId,String dqId,boolean flag){
 		int result = 0;
-		String sql = "select IFNULL(sum(ks),0) count from zsd_main where nj_id = ? and xq = ? and km_id = ? and dq_id=?";
+		String sql = "select IFNULL(sum(ks),0) count from zsd_main where nj_id = ? and xq = ? and km_id = ? and dq_id=? and ( nd_id=? or nd_id=? )";
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
@@ -201,6 +254,13 @@ public class AppSrfxService {
 			stmt.setInt(2, xq);
 			stmt.setInt(3, kmId);
 			stmt.setString(4, dqId);
+			if( flag ){
+				stmt.setInt(5, 7);
+				stmt.setInt(6, 8);
+			}else{
+				stmt.setInt(5, 9);
+				stmt.setInt(6, 10);
+			}
 			rs = stmt.executeQuery();
 			result = ResultSetHandler.toInt(rs);
 		}catch (Exception e) {
@@ -212,12 +272,13 @@ public class AppSrfxService {
 	}
 	
 	/**
-	 * 获取入学6个月以上的 查漏补缺提分值（基础知识点 或 重难知识点）
+	 * 获取入学4个月以上的 查漏补缺提分值（基础知识点 或 重难知识点）
 	 * @param conn  数据库连接
 	 * @param njId  年级编号
 	 * @param xq 	当前学期： 1：上学期；2：下学期
 	 * @param kmId  科目编号
 	 * @param flag  true: 基础知识点；false：重难知识点
+	 * @param dqId 所属区域id
 	 * @return
 	 */
 	public int getClbqValue(Connection conn,int njId,int xq, int kmId,boolean flag,String dqId){
@@ -296,7 +357,30 @@ public class AppSrfxService {
 		}
 		return result;
 	}
-	
+	private int[] getCjAndCjmf(Map<String, Object> dataMap ,int km){
+		int cj = 0;
+		int cjmf = 0;
+		if(km == 1) {
+			cj = (Integer)dataMap.get("sx_cj");
+			cjmf = (Integer)dataMap.get("sx_mf");
+		}else if(km == 2) {
+			cj = (Integer)dataMap.get("kx_cj");
+			cjmf = (Integer)dataMap.get("kx_mf");
+		}else if(km == 3) {
+			cj = (Integer)dataMap.get("yw_cj");
+			cjmf = (Integer)dataMap.get("yw_mf");
+		}else if(km == 4) {
+			cj = (Integer)dataMap.get("yy_cj");
+			cjmf = (Integer)dataMap.get("yy_mf");
+		}else if(km == 5) {
+			cj = (Integer)dataMap.get("sh_cj");
+			cjmf = (Integer)dataMap.get("sh_mf");
+		}
+		int[] result = new int[2];
+		result[0] = cj;
+		result[1] = cjmf;
+		return result;
+	}
 	public void getDiffScore(Connection conn,Map<String, Object> dataMap ,int mbxxId){
 		String sql = "select km_id, mbfs,mf from mbxx_mbf where mbxx_id=?";
 		PreparedStatement stmt = null;
@@ -309,21 +393,10 @@ public class AppSrfxService {
 				int km = rs.getInt("km_id");
 				int cj = 0;
 				int cjmf = 0;
-				if(km == 1) {
-					cj = (Integer)dataMap.get("sx_cj");
-					cjmf = (Integer)dataMap.get("sx_mf");
-				}else if(km == 2) {
-					cj = (Integer)dataMap.get("kx_cj");
-					cjmf = (Integer)dataMap.get("kx_mf");
-				}else if(km == 3) {
-					cj = (Integer)dataMap.get("yw_cj");
-					cjmf = (Integer)dataMap.get("yw_mf");
-				}else if(km == 4) {
-					cj = (Integer)dataMap.get("yy_cj");
-					cjmf = (Integer)dataMap.get("yy_mf");
-				}else if(km == 5) {
-					cj = (Integer)dataMap.get("sh_cj");
-					cjmf = (Integer)dataMap.get("sh_mf");
+				if(km >= 1 && km <= 5){
+					int[] data = getCjAndCjmf(dataMap, km);
+					cj = data[0];
+					cjmf = data[1];
 				}else{
 					continue;
 				}
@@ -344,7 +417,7 @@ public class AppSrfxService {
 	
 	public static void main(String[] args) {
 		AppSrfxService app = new  AppSrfxService();
-		Map<String, Object> dataMap = app.dealFxReasult(1, 12, "S722326671", 1,"330500");
+		Map<String, Object> dataMap = app.dealFxReasult(1, 12, "S722326671", 1,"330501");
 		System.out.println(dataMap);
 	}
 }

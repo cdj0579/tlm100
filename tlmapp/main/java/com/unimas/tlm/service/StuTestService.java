@@ -28,6 +28,7 @@ public class StuTestService {
 		try{
 			conn =  DBFactory.getConn();
 			List<Object> idsList = this.getCstIds(conn, njId, kmId);
+			testNumLimit = getCstlNum(conn) ;
 			if(idsList.size() > 0){
 				List<Object> testIds = this.getRandomId(idsList, testNumLimit);
 				Map<String, Object> dataInfo = this.getOneCstInfo(conn, (Integer)testIds.get(0));
@@ -42,6 +43,30 @@ public class StuTestService {
 			DBFactory.close(conn, null, null);
 		}
 		return result ;
+	}
+	
+	/**
+	 * 获取课时时间（每课时多少分钟数）
+	 * @param conn
+	 * @return
+	 */
+	public int getCstlNum(Connection conn){
+		int count = 20;
+		String sql = "select value from config where name='cstl'";
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = conn.prepareStatement(sql);
+			rs = stmt.executeQuery();
+			count =ResultSetHandler.toInt(rs);
+			if( count == -1 ){
+				count = 20;
+			}
+		}catch (Exception e) {
+		}finally{
+			DBFactory.close(null, stmt, rs);
+		}
+		return count;
 	}
 	
 	private List<Object> getCstIds(Connection conn,int njId,int kmId){
