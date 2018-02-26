@@ -26,7 +26,9 @@
     </style>
 </head>
 <body class="cke_editable cke_editable_themed cke_contents_ltr cke_show_borders" oncontextmenu=self.event.returnValue=false onselectstart="return false">
-	<div style="position: fixed;top: 10px;left: 50px;"><a href="javascript: window.print();" class="btn blue print"><i class="fa fa-print"></i> 添加</a></div>
+	<c:if test="${isPrint == 1}">
+	<div style="position: fixed;top: 10px;left: 50px;"><a href="javascript: window.print();" class="btn blue print"><i class="fa fa-print"></i> 打印</a></div>
+	</c:if>
 	${info.content }
 </body>
 </html>

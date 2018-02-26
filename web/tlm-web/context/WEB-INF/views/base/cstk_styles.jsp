@@ -13,4 +13,18 @@
 	border: 1px solid gray;
 	-webkit-appearance: textfield;
 }
+table.dataTable tbody td{
+	vertical-align: middle;
+}
+
+table.dataTable tbody td p,.cke_textarea_inline p{
+	margin:3px 0;
+}
+.cke_textarea_inline p:first-child{
+	margin-top:20px;
+}
+.cke_textarea_inline p:last-child{
+	margin-bottom:20px;
+}
+
 </style>

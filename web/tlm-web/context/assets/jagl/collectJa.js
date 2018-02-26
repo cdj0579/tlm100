@@ -49,7 +49,11 @@ define(['datatables.bt', "select3"], function(a, b, RememberBaseInfo){
                   { title: "创建时间", width: "20%", data: "insertTime"},
                   { title: "更新时间", width: "20%", data: "modifyTime"},
     	          { title: "操作", width: "8%", data: "id", render: function(data, type, full){
-    	        	  return '<a href="'+basePath+'jagl/view/'+full.id+'" target="_blank" class="btn yellow look"><i class="fa fa-search-plus"></i> 预览</a>';
+    	        	  var flag = "";
+    	        	  if(full.collected != "true" && full.collected != true){
+    	        		  flag = "-0"
+    	        	  }
+    	        	  return '<a href="'+basePath+'jagl/view/'+full.id+ flag +'" target="_blank" class="btn yellow look"><i class="fa fa-search-plus"></i> 预览</a>';
     	          }}
     	      ]
 	      } );

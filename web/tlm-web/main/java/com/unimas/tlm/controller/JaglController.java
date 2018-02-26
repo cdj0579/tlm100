@@ -64,9 +64,16 @@ public class JaglController {
      * 教案预览页面
      * @return
      */
-    @RequestMapping(value="view/{id}",method = RequestMethod.GET)
-    public String view(@PathVariable int id, HttpServletRequest request) {
+    @RequestMapping(value="view/{idflag}",method = RequestMethod.GET)
+    public String view(@PathVariable String idflag, HttpServletRequest request) {
     	try {
+    		String[] ids = idflag.split("[-]");
+    		int isPrint = 1; //是否显示打印按钮 1：显示；0：不显示
+    		if(ids.length == 2){
+    			isPrint = 0;
+    		}
+    		request.setAttribute("isPrint", isPrint);
+    		int id = Integer.parseInt(ids[0]);
 			JaBean bean = service.getJaInfoById(id);
 			request.setAttribute("info", bean);
 			

@@ -203,7 +203,9 @@ define(["validate.additional", "select3", "ztree.select"], function(){
 								backgroundSize: "auto"
 							});
 						});
-						cstEditor = editor;
+						if(editor.name =='cst_name'){
+							cstEditor = editor;
+						}
 					});
 					CKEDITOR.inline('cst_name', {
 						customConfig : basePath+'assets/jagl/inlineConfig.js',

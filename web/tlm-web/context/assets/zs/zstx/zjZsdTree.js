@@ -200,8 +200,7 @@ define(['ztree'],function(){
 	};
 	
 	var reload = function(params){
-		App.getJSON(basePath+"base/zj/bb/tree", params, function(result){
-			
+		App.post(basePath+"base/zj/bb/tree", params, function(result){
 			var rows = [];
 			if(result.data && result.data.length > 0){
 				$.each(result.data, function(){
