@@ -61,6 +61,7 @@ public class MenuManage {
 			menus.add(getMenuItem(PageView.XUEXIAO));
 			
 			menus.add(getMenuItem(PageView.CONFIG));
+			menus.add(getMenuItem(PageView.SHAREIMGSET));
 		} else if(subject.hasRole("lry")){
 			menus.add(getMenuItem(PageView.WDFX));
 		}
@@ -129,6 +130,10 @@ public class MenuManage {
 		 * 分配规则管理
 		 */
 		FENPEIGUIZE("fpgzgl", "分配规则", "fa fa-edit", null, Lists.newArrayList(HOME)),
+		/**
+		 * 分享页面四张图片设置
+		 */
+		SHAREIMGSET("simgset","分享图片设置", " " , null, Lists.newArrayList(HOME)),
 		/**
 		 
 		 * 联系人管理
