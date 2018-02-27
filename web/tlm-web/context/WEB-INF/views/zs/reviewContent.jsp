@@ -7,6 +7,8 @@
 	-ms-user-select: none; /*IE10*/
 	-khtml-user-select: none; /*早期浏览器*/
 	user-select: none;
+	overflow: auto;
+	height:500px;
 }
 </style>
 <div class="modal-header">
