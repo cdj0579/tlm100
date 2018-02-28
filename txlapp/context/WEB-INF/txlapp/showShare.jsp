@@ -23,6 +23,10 @@
 				font-size: 16px;
 				background-color:#f4f4f4;
 			}
+			.imgDiv {
+				position:fixed;
+				top:0;
+			}
 			.title {
 				font-size: 24px;
 				font-weight: bold;
@@ -34,7 +38,7 @@
 				font-weight: normal;
 				color: #999;
 			}
-			section{padding:0 10px;}
+			section{padding:0 10px;margin-top:263px;margin-bottom: 160px;}
 			.model {
 				margin-top: 25px;
 				padding:0 12px;
@@ -45,6 +49,8 @@
 			hr{margin:5px 0;border-top: 1px solid #ccc;}
 			
 			footer{
+				position:fixed;
+				bottom:0;
 				background-color: #34495e;
 				padding:20px 10px;
     			color: #fff;
@@ -59,7 +65,7 @@
 				background-color: #368c7a;
 			}
 			.head-bar{
-				position:fixed;padding:10px 20px;width:100%;top:0;
+				position:fixed;padding:10px 20px;width:100%;top:0;z-index:999;
 			}
 			.back,.share {
 				border:0;
@@ -106,8 +112,8 @@
 				</section>
 		 	</c:when>
 		 	<c:otherwise>
-		 		<div>
-					<img style="width: 100%;height:248px ;" src="${basePath }assets/global/img/${data.imgName }" />
+		 		<div class="imgDiv">
+					<img style="width: 100%;height:248px ;" src="${data.imgName }" />
 				</div>
 				<section>
 					

@@ -98,7 +98,7 @@
 			        		 	</c:if>
 			        		 </script>
                         	<div class="swiper-slide">
-				            	<img src="${basePath }assets/global/img/${img.name }" />
+				            	<img src="${img.name }" />
 				            </div>
 						</c:forEach>
 					</div>
