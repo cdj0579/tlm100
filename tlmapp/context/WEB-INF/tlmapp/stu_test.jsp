@@ -47,6 +47,10 @@
 				padding: 5px 20px 0;
 				margin-bottom: 10px;
 			}
+			.wt_answer>.row p{
+				margin: 0px;
+				display: inline;
+			}
 			
 			.wt_footer {
 				position:relative;
